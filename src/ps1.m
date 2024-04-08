@@ -1,3 +1,6 @@
+%% Center of mass
+cm = computeCM("res/mass.csv");
+
 %% Surface properties
 [barycenter, normal, area] = surfaces("res/area.csv");
 
