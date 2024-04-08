@@ -31,6 +31,15 @@
  \fancyfoot[C]{\thepage}
 }
 
+% Bibliography
+\usepackage[
+backend=biber,
+style=ieee,
+sorting=ynt
+]{biblatex}
+
+\addbibresource{citations.bib}
+
 % Table of contents
 \setcounter{tocdepth}{5}
 
@@ -89,5 +98,8 @@ PS1 & - Created document \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \section{\Large CONCLUSION}
 
+\newpage
+\section{\Large REFERENCES}
+\printbibliography[heading=none]
 
 \end{document}
