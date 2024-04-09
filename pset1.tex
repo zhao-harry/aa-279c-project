@@ -21,9 +21,14 @@ We select the NASA JPL and ISRO NISAR mission as the mission on which to base ou
 
 NISAR is a joint earth-observation satellite missions between NASA and ISRO. It is the first satellite to use two different Synthetic Aperture Radar (SAR) technologies in both the L-band and S-band. Both frequencies can penetrate clouds, but the L-band can penetrate thicker vegetation that the S-band cannot. Meaning, NISAR has the unique ability to be used in far more applications than previous SAR satellites, ranging from disaster response to agriculture cases \cite{NisarApps}.
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{Images/NISAR Diagram.jpg}
+\caption{The basic components of the NISAR satellites.}
+\label{NISAR Diagram}
+\end{figure}
 
-
-As shown in \textbf{Figure 1}, NISAR's satellite consists of a 1.9 m x 1.8 m x 1.2 m spacecraft bus cuboid with a 1.2 m wide octagonal Radar Instrument Structure (RIS). The satellite is powered by a 23 m$^2$ solar panel array split on the left and right side of the satellite. Additionally, a 12 m diameter radar antenna is held up by a 9 m long boom with a 7" x 7" cross-section area \cite{NisarMission}.
+As shown in Figure \ref{NISAR Diagram}, NISAR's satellite consists of a 1.9 m x 1.8 m x 1.2 m spacecraft bus cuboid with a 1.2 m wide octagonal Radar Instrument Structure (RIS). The satellite is powered by a 23 m\textsuperscript{2} solar panel array split on the left and right side of the satellite. Additionally, a 12 m diameter radar antenna is held up by a 9 m long boom with a 7" x 7" cross-section area \cite{NisarMission}.
 
 Table \ref{NisarMassProps} contains mass properties of the satellite. Unfortunately, mass distribution and inertia properties of NISAR are not publicly available, so they were omitted from the report. However, they are estimated in the next section.
 
@@ -43,12 +48,25 @@ Total                            & 2678               \\ \hline
 \label{NisarMassProps}
 \end{table}
 
-Since NISAR is a relatively large satellite, it has a complex ADCS system with an array of sensors and actuators. Sensors include star sensors, sun sensors, GPS, and a 3-axis gyroscope for roll, pitch, and yaw. For actuators, NISAR has four 50 N$\cdot$m reaction wheels mounted tetrahedral, three 565 and 350 A$\cdot$m$^2$ magnetorquers, and fourteen thrusters (ten canted 11 N thrusters, one central 11 N thruster, and four 1 N thrusters for roll) \cite{NisarMission}.
+Since NISAR is a relatively large satellite, it has a complex ADCS system with an array of sensors and actuators. Sensors include star sensors, sun sensors, GPS, and a 3-axis gyroscope for roll, pitch, and yaw. For actuators, NISAR has four 50 N$\cdot$m reaction wheels mounted tetrahedral, three 565 and 350 A$\cdot$m\textsuperscript{2} magnetorquers, and fourteen thrusters (ten canted 11 N thrusters, one central 11 N thruster, and four 1 N thrusters for roll) \cite{NisarMission}.
 
 \subsection{PROBLEM 5}
 \textit{Simplify spacecraft geometry, make assumptions on mass distribution, e.g. splitting it in its core parts, define body axes (typically related to geometry and payload), compute moments of inertia and full inertia tensor w.r.t. body axes. Show your calculations.}
 
-We simplify the spacecraft geometry into six components, each individually assumed to have uniform mass distribution. These components of the simplified geometry are: bus structure, RIS (Radar Instrument Structure), RAB (radar antenna boom), RAR (radar antenna reflector), and two solar panels (identified as the +y solar panel and -y solar panel). The bus structure is modeled as a rectangular prism, while the RIS is modeled as an octagonal prism. The RAB is also modeled as a rectangular prism, while the RAR is modeled as a thin disk and the solar panels are modeled as thin rectangular plates. Within each geometry, our model assumes mass is distributed uniformly. From analyzing diagrams found in technical reports, we estimate that the RAR is tilted -3.87\degree about the y-axis (relative to the x-axis), while the RAB is modeled as a single beam with an angle approximately -18\degree from vertical (from the z-axis, about the y-axis in the x-z plane).
+We simplify the spacecraft geometry into six components, each individually assumed to have uniform mass distribution. These components of the simplified geometry are: bus structure, RIS (Radar Instrument Structure), RAB (radar antenna boom), RAR (radar antenna reflector), and two solar panels (identified as the +y solar panel and -y solar panel). The bus structure is modeled as a rectangular prism, while the RIS is modeled as an octagonal prism. The RAB is also modeled as a rectangular prism, while the RAR is modeled as a thin disk and the solar panels are modeled as thin rectangular plates. Within each geometry, our model assumes mass is distributed uniformly. From analyzing diagrams found in technical reports, we estimate that the RAR is tilted -3.87\degree{} about the y-axis (relative to the x-axis), while the RAB is modeled as a single beam with an angle approximately -18\degree{} from vertical (from the z-axis, about the y-axis in the x-z plane).
+
+We compute the center of mass after extracting the centroid of each component. The
+
+[MOI CALCULATIONS]
+- Basic computations for
+    1. Bus - rectangular prism
+    2. Solar panels - flat plate
+    3. RIS - octagonal prism
+    4. RAB - rectangular prism + rotation
+    5. RAR - flat disk + rotation
+- Parallel axis theorem (including tensor)
+- Inertia tensors
+- Final result and comparison to CAD
 
 \subsection{PROBLEM 6}
 \textit{Discretize your spacecraft through its outer surfaces (geometry). Develop a Matlab/Simulink function to handle barycenter (geometry, no mass distribution) coordinates, size, and unit vectors normal to each outer surface of the spacecraft in body frame. You can list all this information in a Matrix. This will be essential later on to compute environmental torques acting on the spacecraft from forces, surface orientation, and the vectors connecting the satellite’s center of mass to each surface’s center of mass.}
@@ -57,7 +75,7 @@ For the purpose of discretizing the spacecraft into surfaces, we consider the ou
 
 \lstinputlisting{src/surfaces.m}
 
-This function stores the data into arrays of barycenter coordinates, unit normal vector components, and area. Each row of an array corresponds to a particular surface. The data is shown in Table \ref{tab:surfaces}, annotated with the identity of each surfaces.
+This function stores the data into arrays of barycenter coordinates, unit normal vector components, and area. Each row of an array corresponds to a particular surface. The data is shown in Table \ref{tab:surfaces}, annotated with the identity of each surface.
 
 \begin{longtable}{lrrrrrrr}
 \caption{Surface parameters}
@@ -144,33 +162,3 @@ I_{zx} & I_{zy} & I_{zz} \\
 \end{bmatrix}
 [kg/m^2].
 \end{equation}
-
-\begin{lstlisting}
-function L_loc = LagrangePoints(mu)
-%For a given value of mu, this function computes the location
-%of all five Lagrange points for the circular restricted three
-%body problem.
-
-%Compute the location of the libration points
-    l = 1 - mu;
-
-    L_loc = zeros(5,3);
-
-    %L1
-    p_L1 = [1, 2*(mu - l), l^2 - 4*l*mu + mu^2, 2*mu*l*(l - mu) + mu - l,...
-        mu^2*l^2 + 2*(l^2 + mu^2), mu^3 - l^3];
-    L1roots = roots(p_L1);
-    L1 = 0;
-    for i = 1:5
-        if (L1roots(i) > -mu) & (L1roots(i) < l)
-         L1 = L1roots(i);
-        end
-    end
-    L_loc(1,1) = L1;
-
-    %L2
-    %L3
-    %L4
-    %L5
-end
-\end{lstlisting}
