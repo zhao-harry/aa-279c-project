@@ -23,8 +23,8 @@ NISAR is a joint earth-observation satellite missions between NASA and ISRO. It 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.4]{Images/NISAR Diagram.jpg}
-\caption{The basic components of the NISAR satellites.}
+\includegraphics[scale=0.4]{Images/nisar_diagram.jpg}
+\caption{The basic components of the NISAR satellite}
 \label{NISAR Diagram}
 \end{figure}
 
@@ -55,7 +55,7 @@ Since NISAR is a relatively large satellite, it has a complex ADCS system with a
 
 We simplify the spacecraft geometry into six components, each individually assumed to have uniform mass distribution. These components of the simplified geometry are: bus structure, RIS (Radar Instrument Structure), RAB (radar antenna boom), RAR (radar antenna reflector), and two solar panels (identified as the +y solar panel and -y solar panel). The bus structure is modeled as a rectangular prism, while the RIS is modeled as an octagonal prism. The RAB is also modeled as a rectangular prism, while the RAR is modeled as a thin disk and the solar panels are modeled as thin rectangular plates. Within each geometry, our model assumes mass is distributed uniformly. From analyzing diagrams found in technical reports, we estimate that the RAR is tilted -3.87\degree{} about the y-axis (relative to the x-axis), while the RAB is modeled as a single beam with an angle approximately -18\degree{} from vertical (from the z-axis, about the y-axis in the x-z plane).
 
-We choose the body axes to have an origin at the center of the rectangular bus. This configuration is chose because the bus houses the ADCS hardware, including actuators and sensors. The x-axis points in the direction of the RIS, and the z-axis points up vertically, normal to the upper surface of the bus. We compute the center of mass after extracting the centroid of each component. The mass of each component is previous found in Table \ref{tab:mass}. The centroid of each component is listed in Table \ref{tab:centroid}.
+We choose the body axes to have an origin at the center of the rectangular bus. This configuration is chosen because the bus houses the ADCS hardware, including actuators and sensors. The x-axis points in the direction of the RIS, and the z-axis points up vertically, normal to the upper surface of the bus. We compute the center of mass after extracting the centroid of each component. The mass of each component is previous found in Table \ref{tab:mass}. The centroid of each component is listed in Table \ref{tab:centroid}.
 
 \begin{longtable}{l|r|r|r}
 \caption{Component centroids}
@@ -149,7 +149,7 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 \end{bmatrix}
 \end{align*}
 
-For the RIS, we model the geometry as an octagonal prism. When calculating the moment of inertia about the non-axisymmetric axes, we approximate the geometry as a cylinder with radius equal to the average of the octagonal radius (distance from center to vertex) and the apothem.
+For the RIS, we model the geometry as an octagonal prism. For the moment of inertia about the axisymmetric axis of the octagon, we use the formula $m \left(\frac{S^{2}}{24} + \frac{a^{2}}{2}\right)$, where $S$ is the side length and $a$ is the apothem length \cite{McCarron}. When calculating the moment of inertia about the non-axisymmetric axes, we approximate the geometry as a cylinder with radius equal to the average of the octagonal radius (distance from center to vertex) and the apothem.
 
 \begin{align*}
 I_{RIS} &=
@@ -262,6 +262,7 @@ where $x$, $y$, $z$ are the coordinates of the center of mass of the component, 
 Performing the parallel axis theorem and summing the inertia tensors, we obtain the following inertia tensor for the entire spacecraft:
 
 \begin{equation*}
+I_{NISAR,body} =
 \begin{bmatrix}
 15783.996 & 0 & -2341.659 \\
 0 & 22227.752 & 0 \\
@@ -272,6 +273,7 @@ Performing the parallel axis theorem and summing the inertia tensors, we obtain 
 Compare this with the inertia tensor computed by SolidWorks CAD software:
 
 \begin{equation*}
+I_{NISAR,body} =
 \begin{bmatrix}
 15780.361 & 0 & -2336.285 \\
 0 & 22225.721 & 0 \\
@@ -342,11 +344,21 @@ RAR bottom (-z)                & 4.28  & 0     & 8.31  & 0.067  & 0      & -0.99
 \subsection{PROBLEM 7}
 \textit{At this stage you should have a simple 3D model of your spacecraft including geometry and mass properties of each element. Plot body axes (triad) in 3D superimposed to spacecraft 3D model.}
 
-A 3D model of the spacecraft is shown in Figure \ref{CAD model}. The body axes are shown, where the origin is chosen as the center of the spacecraft bus.
+A 3D model of the spacecraft is shown in Figure \ref{fig:simple_model}. The model shown is a screen capture from the SolidWorks CAD software.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{Images/CAD Model (Simplified).png}
-\caption{A 3D model of the simplified satellite geometry.}
-\label{CAD model}
+\includegraphics[scale=0.4]{Images/ps1_simple_model.png}
+\caption{A 3D model of the simplified satellite geometry}
+\label{fig:simple_model}
 \end{figure}
+
+We also plot the model in MATLAB by importing an STL version of the CAD model. We show the body axes in Figure \ref{fig:MATLAB_model}, with the origin chosen as the center of the spacecraft bus.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Images/ps1_model.png}
+\caption{Satellite model in MATLAB with body axes shown}
+\label{fig:MATLAB_model}
+\end{figure}
+
