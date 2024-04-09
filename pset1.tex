@@ -7,7 +7,42 @@ The ultimate goal of the project is to work on a satellite using modern observat
 \subsection{PROBLEM 2}
 \textit{Conduct survey of satellites which have characteristics similar to selected project. Use internet, publications, and books as resources.}
 
-The body axes and principal axes are \textit{co-located and aligned at the spacecraft center of mass}; on the other hand, the CAD axes is located on the bottom face of the Sun shield and its z-axis is co-linear with the aforementioned frames.
+Space agencies such as NASA have had a vested interest in being able to gather satellite images and data from Earth for decades now. Because of this, many satellites have been designed to do what we aim to do.
+
+For example, Soil Moisture Active Passive (SMAP) is a NASA satellite launched in 2015 that utilizes L-band synthetic aperture radar (SAR) technology to measure soil moisture from LEO. This data has applications in climate change research climate change research applications (such as updating climate models) and some day-to-day activities (such as improving weather forecasts). SMAP was unique in the sense that it had a large deployable reflector that was attached to a boom \cite{SMAP}. In addition, the companies EOSSAR and Capella Space are developing satellites that use SAR technology in the X-band and S-band regimes for applications ranging from agriculture to mining \cite{EOSSAR, Capella}. Additionally, agencies have been partnering up to create SAR satellites. The most notable example is NASA and ISRO partnering to work on NASA-ISRO Synthetic Aperture Radar (NISAR), which is a satellite that captures data in the L-band and S-band SAR frequencies \cite{NisarMission}. Overall, the unique capabilities of NISAR over the other satellites and the availability of data for it made NISAR the prime candidate for this project.
+
+\subsection{PROBLEM 3}
+\textit{Select preferred existing satellite and payload for project. Similarity is helpful, but not strictly required.}
+
+This project will be based on the NISAR satellite.
+
+[IMAGE OF NISAR]
+
+\subsection{PROBLEM 4}
+\textit{Collect basic information on mission, requirements, ADCS sensors and actuators, mechanical layout, mass, mass distribution, and inertia properties.}
+
+NISAR is a joint earth-observation satellite missions between NASA and ISRO. It is the first satellite to use two different Synthetic Aperture Radar (SAR) technologies in both the L-band and S-band. Both frequencies can penetrate clouds, but the L-band can penetrate thicker vegetation that the S-band cannot. Meaning, NISAR has the unique ability to be used in far more applications than previous SAR satellites, ranging from disaster response to agriculture cases \cite{NisarApps}.
+
+As shown in \textbf{Figure 1}, NISAR's satellite consists of a 1.9 m x 1.8 m x 1.2 m spacecraft bus cuboid with a 1.2 m wide octagonal Radar Instrument Structure (RIS). The satellite is powered by a 23 m$^2$ solar panel array split on the left and right side of the satellite. Additionally, a 12 m diameter radar antenna is held up by a 9 m long boom with a 7" x 7" cross-section area \cite{NisarMission}.
+
+The table below contains mass properties of the satellite. Unfortunately, mass distribution and inertia properties of NISAR are not publicly available, so they were omitted from the report. However, they are estimated in the next section.
+
+\begin{table}[]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Component}               & \textbf{Mass (kg)} \\ \hline
+Radar Instrument Structure (RIS) & 1375.9             \\ \hline
+Spacecraft Bus                   & 964.1              \\ \hline
+Radar Antenna Boom (RAB)         & 192                \\ \hline
+Radar Antenna Reflector (RAR)    & 100                \\ \hline
+Solar Array (total)              & 46                 \\ \hline
+Total                            & 2678               \\ \hline
+\end{tabular}
+\end{table}
+
+Since NISAR is a larger satellite, it has a pretty complex ADCS system with an array of sensors and actuators. On the sensor side, it has a mixture of star sensors; sun sensors; GPS; and 3 gyroscopes used for roll, pitch, and yaw. For actuators, NISAR has four 50 N$\cdot$m reaction wheels mounted tetrahedral, three 565 and 350 A$\cdot$m$^2$ magnetorquers, and fourteen thrusters (ten canted 11 N thrusters, one central 11 N thruster, and four 1 N thrusters for roll) \cite{NisarMission}.
+
+
 
 \begin{figure}[H]
 \centering
