@@ -2,40 +2,44 @@
 \subsection{PROBLEM 1}
 \textit{Select some key ADCS characteristics of your mission, including orbit (e.g., LEO, MEO, GEO, HEO, Interplanetary), target attitude (e.g., Sun pointing, Inertial pointing, Earth pointing, Resident Space Object pointing), attitude state representation (e.g., Euler angles, Gibbs vector, Quaternions Direction Cosine Matrix, Euler Axis/Angle), sensors suite (Gyros, Magnetometers, Star Trackers, Earth Sensor, Sun Sensor), actuator suite (Thrusters, Magnetorquers, Reaction Wheels, Momentum Wheel, Gravity Gradient).}
 
-The ultimate goal of the project is to work on a satellite using synthetic aperture radar (SAR) designed to gather key environmental data on Earth. The satellite will be in low Earth orbit (LEO) and a state described in quaternoins to avoid gimble locking. For state estimation, the spacecraft will require gyroscopes, star trackers, and a potentially a sun sensor. For actuation, the spacecraft will likely require thrusters, reaction wheels, and magnetorquers.
+Our mission will utilize a satellite with synthetic aperture radar (SAR), designed to gather key remote sensing and environmental data for the Earth. The satellite will be in low Earth orbit (LEO) and use quaternions to describe its orientation, avoiding gimbal lock effects of other conventions. For state estimation, the spacecraft will require gyroscopes, star trackers, and a potentially a sun sensor. For actuation, the spacecraft will likely utilize thrusters, reaction wheels, and magnetorquers.
 
 \subsection{PROBLEM 2}
 \textit{Conduct survey of satellites which have characteristics similar to selected project. Use internet, publications, and books as resources.}
 
-Space agencies such as NASA have had a vested interest in being able to gather satellite images and data from Earth for decades now. Because of this, many satellites have been designed to do what we aim to do.
+Space agencies such as NASA have been constructing SAR satellites to gather satellite images and data of Earth for over a decade. Additionally, there exist commercial entities also utilizing SAR in their spacecraft.
 
-For example, Soil Moisture Active Passive (SMAP) is a NASA satellite launched in 2015 that utilizes L-band synthetic aperture radar (SAR) technology to measure soil moisture from LEO. This data has applications in climate change research climate change research applications (such as updating climate models) and some day-to-day activities (such as improving weather forecasts). SMAP was unique in the sense that it had a large deployable reflector that was attached to a boom \cite{SMAP}. Additionally, companies EOS and Capella Space are developing satellites that use SAR technology in the X-band and S-band frequencies for applications ranging from agriculture to mining \cite{EOSSAR, Capella}. Additionally, agencies have been partnering up to create SAR satellites. The most notable example is NASA and ISRO partnering to work on NASA-ISRO Synthetic Aperture Radar (NISAR), which is a satellite that captures data in the L-band and S-band SAR frequencies \cite{NISARMission}. Overall, the unique capabilities of NISAR over the other satellites and the availability of data for it made NISAR the prime candidate for this project.
+For example, Soil Moisture Active Passive (SMAP) is a NASA satellite launched in 2015 that utilizes L-band synthetic aperture radar (SAR) technology to measure soil moisture from LEO. This data has applications in climate change research climate change research applications (such as updating climate models) and some day-to-day activities (such as improving weather forecasts). SMAP is unique in that it had a large deployable reflector, held above the spacecraft body by a deployable boom \cite{SMAP}.
+
+Companies EOS and Capella Space are also developing satellites that use SAR technology in the X-band and S-band frequencies for commercial applications ranging from agriculture to mining \cite{EOSSAR, Capella}. The commercial applicability of SAR is substantial, especially as SAR can penetrate cloud cover while generating high-resolution data, making it superior to many other forms of remote sensing technology. EOS claims to obtain resolution of up to 0.25 m, while Capella Space claims a capability of up to 0.5 m. These satellites all operate in LEO, which enables high-frequency monitoring of the Earth's surface.
+
+NASA and ISRO have partnered to create a SAR satellite as well. The joint project between NASA JPL and ISRO has resulted in the NASA-ISRO Synthetic Aperture Radar (NISAR), a satellite that captures data in the L-band and S-band SAR frequencies \cite{NISARMission}. NISAR's high resolution will permit the detailed measurement of the Earth's surface, enabling better observation of changes in Earth's crust for disaster prevention and mitigation. NISAR will also support science goals such as monitoring ice sheets and the oceans, and its orbit is designed to cover the entire Earth every 12 days.
 
 \subsection{PROBLEM 3}
 \textit{Select preferred existing satellite and payload for project. Similarity is helpful, but not strictly required.}
 
-We select the NASA JPL and ISRO NISAR mission as the mission on which to base our satellite. Later, we will simplify some of the geometries for our analysis.
+We select the NASA JPL and ISRO NISAR mission as the mission on which to base our satellite. In the following section, we describe mission details and basic specifications. We simplify the satellite geometry and compute the center of mass and inertia tensor of the satellite. We will also analyze the satellite's external surfaces, which are relevant to disturbances such as atmospheric drag and solar radiation pressure.
 
 \subsection{PROBLEM 4}
 \textit{Collect basic information on mission, requirements, ADCS sensors and actuators, mechanical layout, mass, mass distribution, and inertia properties.}
 
-NISAR is a joint earth-observation satellite missions between NASA and ISRO. It is the first satellite to collect two different Synthetic Aperture Radar (SAR) regimes, operating in both the L-band and S-band. Both frequencies can penetrate clouds, but the L-band can penetrate thicker vegetation that the S-band cannot. Uniquely, NISAR can be used in a wider range of applications than earlier SAR satellites, including disaster response and agriculture \cite{NISARApps}.
+NISAR is a joint Earth-observation satellite mission between NASA and ISRO. It is the first satellite to operate in two different Synthetic Aperture Radar (SAR) bands, incorportating both L- and S-band SAR instruments. Both frequencies can penetrate clouds for reliable data collection, but the L-band can also penetrate thicker vegetation that the S-band cannot. Uniquely, NISAR is intended to be used for a wide range of science objectives, including disaster response and agriculture \cite{NISARApps}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.4]{Images/nisar_diagram.jpg}
+\includegraphics[scale=0.5]{Images/nisar_diagram.jpg}
 \caption{The basic components of the NISAR satellite}
 \label{NISAR Diagram}
 \end{figure}
 
-As shown in Figure \ref{NISAR Diagram}, NISAR's satellite consists of a 1.9 m x 1.8 m x 1.2 m spacecraft bus cuboid with a 1.2 m wide octagonal Radar Instrument Structure (RIS). The satellite is powered by a 23 m\textsuperscript{2} solar panel array split on the left and right side of the satellite. Additionally, a 12 m diameter radar antenna is held up by a 9 m long boom with a 7" x 7" cross-section area \cite{NISARMission}.
+As shown in Figure \ref{NISAR Diagram}, NISAR's satellite consists of a 1.2 m x 1.8 m x 1.9 m spacecraft bus cuboid with a 1.2 m wide octagonal Radar Instrument Structure (RIS). The spacecraft bus includes ADCS hardware, power subsystem, and engineering payload, while the RIS houses hardware for the L- and S-band SAR. The satellite is powered by 23 m\textsuperscript{2} of solar panels, consisting of an array of two panels, one on each side of the satellite. Additionally, a 12 m diameter radar antenna is positioned above the body of the spacecraft, attached by a 9 m long boom. This boom consists of beams with 7 in x 7 in cross-section area \cite{NISARMission}.
 
-Table \ref{tab:mass} contains mass properties of the satellite. Unfortunately, detailed mass distribution and inertia properties of NISAR are not openly available, so we provide estimates of mass distribution based on known overall component-level masses. We will compute moments of inertia in a following section.
+Table \ref{tab:mass} contains mass properties of the satellite. Unfortunately, detailed mass distribution and inertia properties of NISAR are not openly available, so we provide estimates of mass distribution based on known overall component-level masses. We are given total masses for the bus structure and RIS, and we also know the masses of the payloads located within, allowing us to compute an accurate mass for these components \cite{NISARMission}. We estimate that solar panels have a mass of 23 kg each based on knowledge that NISAR's solar panels are 23 m\textsuperscript{2} and a typical solar panel mass per area is 2.06 kg/m\textsuperscript{2} \cite{SolarPanelMass}. We know that the entire radar antenna assembly has a mass of 292 kg, and we estimate that the reflector has a mass of approximately 100 kg based on a similar deployable SAR S- and L-band mesh antenna reflector \cite{L3Harris}. We will use these masses to compute center of mass and moments of inertia in the following section. For our model, we neglect the effects of the truss structure supporting the antenna reflector, instead modeling the entire RAR as just the disk-shaped reflector mesh.
 
 \begin{longtable}{l|r}
 \caption{Mass of NISAR components}
 \label{tab:mass}\\
-\textbf{Components}              & \multicolumn{1}{l}{\textbf{Mass {[}kg{]}}} \\ \hline
+\textbf{Components}              & \multicolumn{1}{l}{\textbf{Mass [kg]}} \\ \hline
 \endfirsthead
 %
 \endhead
@@ -48,14 +52,16 @@ Radar Antenna Boom (RAB)         & 192                                        \\
 Radar Antenna Reflector (RAR)    & 100                                       
 \end{longtable}
 
-Since NISAR is a relatively large satellite, it has a complex ADCS system with an array of sensors and actuators. Sensors include star sensors, sun sensors, GPS, and a 3-axis gyroscope for roll, pitch, and yaw. For actuators, NISAR has four 50 N$\cdot$m reaction wheels mounted tetrahedral, three 565 and 350 A$\cdot$m\textsuperscript{2} magnetorquers, and fourteen thrusters (ten canted 11 N thrusters, one central 11 N thruster, and four 1 N thrusters for roll) \cite{NISARMission}.
+Since NISAR is a remote sensing satellite requiring high attitude control performance, it has an ADCS system with an array of sensors and actuators. Sensors include star sensors, sun sensors, GPS, and a 3-axis gyroscope for roll, pitch, and yaw. For actuators, NISAR has four 50 N$\cdot$m reaction wheels mounted in tetrahedral configuration, three 565 and 350 A$\cdot$m\textsuperscript{2} magnetorquers, and fourteen thrusters (ten canted 11 N thrusters, one central 11 N thruster, and four 1 N thrusters for roll) \cite{NISARMission}.
 
 \subsection{PROBLEM 5}
 \textit{Simplify spacecraft geometry, make assumptions on mass distribution, e.g. splitting it in its core parts, define body axes (typically related to geometry and payload), compute moments of inertia and full inertia tensor w.r.t. body axes. Show your calculations.}
 
-We simplify the spacecraft geometry into six components, each individually assumed to have uniform mass distribution. These components of the simplified geometry are: bus structure, RIS (Radar Instrument Structure), RAB (radar antenna boom), RAR (radar antenna reflector), and two solar panels (identified as the +y solar panel and -y solar panel). The bus structure is modeled as a rectangular prism, while the RIS is modeled as an octagonal prism. The RAB is also modeled as a rectangular prism, while the RAR is modeled as a thin disk and the solar panels are modeled as thin rectangular plates. Within each geometry, our model assumes mass is distributed uniformly. From analyzing diagrams found in technical reports, we estimate that the RAR is tilted -3.87\degree{} about the y-axis (relative to the x-axis), while the RAB is modeled as a single beam with an angle approximately -18\degree{} from vertical (from the z-axis, about the y-axis in the x-z plane).
+We simplify the spacecraft geometry into six components, each individually assumed to have uniform mass distribution. These components of the simplified geometry are: bus structure (including ADCS hardware and engineering payload), RIS (Radar Instrument Structure), RAB (radar antenna boom), RAR (radar antenna reflector), and two solar panels (identified as the +y solar panel and -y solar panel). The bus structure is modeled as a rectangular prism, while the RIS is modeled as an octagonal prism. The RAB is also modeled as a rectangular prism, while the RAR is modeled as a thin disk and the solar panels are modeled as thin rectangular plates. Within each geometry, our model assumes mass is distributed uniformly. From analyzing diagrams found in technical reports, we estimate that the RAR is tilted -3.87\degree{} about the y-axis (relative to the x-axis), while the RAB is modeled as a single beam with an angle approximately -18\degree{} from vertical (from the z-axis, about the y-axis in the x-z plane). Note that we have simplified the shape of the RAB from a beam of two angled segments to a single, straight beam.
 
-We choose the body axes to have an origin at the center of the rectangular bus. This configuration is chosen because the bus houses the ADCS hardware, including actuators and sensors. The x-axis points in the direction of the RIS, and the z-axis points up vertically, normal to the upper surface of the bus. We compute the center of mass after extracting the centroid of each component. The mass of each component is previous found in Table \ref{tab:mass}. The centroid of each component is listed in Table \ref{tab:centroid}.
+We choose the body axes to have an origin at the center of the rectangular bus. This configuration is chosen because the bus houses the ADCS hardware, including actuators and sensors. The x-axis points in the direction of the RIS, and the z-axis points up vertically, normal to the upper surface of the bus. See Figure \ref{fig:MATLAB_model} for a visual depiction of the body axes relative to the spacecraft.
+
+We compute the center of mass after extracting the centroid of each component. The mass of each component is previously found in Table \ref{tab:mass}. The centroid of each component is listed in Table \ref{tab:centroid}.
 
 \begin{longtable}{l|r|r|r}
 \caption{Component centroids}
@@ -73,7 +79,7 @@ RAB      & -0.899 & 0    & 5.194 \\
 RAR      & 4.283   & 0    & 8.308
 \end{longtable}
 
-The center of mass formula is:
+The center of mass can be found by taking the weighted average of each component centroid, weighted by the mass of each component. The center of mass formula is:
 
 \begin{equation*}
     \Vec{r}_{cm} = \frac{\sum m_{i} \Vec{r}_{i}}{\sum m_{i}}
@@ -149,7 +155,7 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 \end{bmatrix}
 \end{align*}
 
-For the RIS, we model the geometry as an octagonal prism. For the moment of inertia about the axisymmetric axis of the octagon, we use the formula $m \left(\frac{S^{2}}{24} + \frac{a^{2}}{2}\right)$, where $S$ is the side length and $a$ is the apothem length \cite{McCarron}. When calculating the moment of inertia about the non-axisymmetric axes, we approximate the geometry as a cylinder with radius equal to the average of the octagonal radius (distance from center to vertex) and the apothem.
+For the RIS, we model the geometry as an octagonal prism. For the moment of inertia about the axisymmetric axis of the octagon, we use the formula $m \left(\frac{S^{2}}{24} + \frac{a^{2}}{2}\right)$, where $S$ is the side length and $a$ is the apothem length, where the apothem is the perpendicular length from a side of the octagon to the center \cite{McCarron}. When calculating the moment of inertia about the non-axisymmetric axes, we approximate the geometry as a cylinder with radius equal to the average of the octagonal radius (distance from center to vertex) and the apothem. As will be shown later, this approximation yields a very close result to the inertia tensor generated from the CAD model.
 
 \begin{align*}
 I_{RIS} &=
@@ -172,7 +178,7 @@ m \left(\frac{S^{2}}{24} + \frac{a^{2}}{2}\right) & 0 & 0 \\
 \end{bmatrix}
 \end{align*}
 
-For the RAB, we first model the geometry as a rectangular prism. We also must rotate the inertia tensor to match the orientation of the body axes.
+For the RAB, we first model the geometry as a rectangular prism. We also must rotate the inertia tensor to match the orientation of the body axes, as the RAB itself is rotated relative to the bus about the y-axis by -18\degree{} from vertical (z-axis).
 
 \begin{align*}
 I_{RAB} &=
@@ -195,7 +201,7 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 \end{bmatrix}
 \end{align*}
 
-Incorporating a rotation:
+We apply the rotation to the inertia tensor using a rotation matrix about the y-axis. Note that doing so results in non-zero products of inertia, meaning our principal axes will not be aligned with our body axes.
 
 \begin{align*}
 I_{RAB,rotated} &= R_{y}(-18\degree) I_{RAB} R_{y}^{\intercal}(-18\degree) \\
@@ -230,7 +236,7 @@ m \frac{R^{2}}{4} & 0 & 0 \\
 \end{bmatrix}
 \end{align*}
 
-Incorporating a rotation:
+Applying a rotation:
 
 \begin{align*}
 I_{RAR,rotated} &= R_{y}(-3.87\degree) I_{RAR} R_{y}^{\intercal}(-3.87\degree) \\
@@ -259,7 +265,7 @@ where $x$, $y$, $z$ are the coordinates of the center of mass of the component, 
     I' = I_{c} + mD
 \end{equation*}
 
-Performing the parallel axis theorem and summing the inertia tensors, we obtain the following inertia tensor for the entire spacecraft:
+Performing the parallel axis theorem on each component and summing the inertia tensors, we obtain the following inertia tensor for the entire spacecraft:
 
 \begin{equation*}
 I_{NISAR,body} =
@@ -344,7 +350,19 @@ RAR bottom (-z)                & 4.28  & 0     & 8.31  & 0.067  & 0      & -0.99
 \subsection{PROBLEM 7}
 \textit{At this stage you should have a simple 3D model of your spacecraft including geometry and mass properties of each element. Plot body axes (triad) in 3D superimposed to spacecraft 3D model.}
 
-A 3D model of the spacecraft is shown in Figure \ref{fig:simple_model}. The model shown is a screen capture from the SolidWorks CAD software.
+
+
+A 3D model of the spacecraft is shown in Figure \ref{fig:complex_model}. The model shown is a screen capture from the SolidWorks CAD software.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{Images/ps1_complex_model.png}
+\caption{A 3D model of the satellite}
+\label{fig:complex_model}
+\end{figure}
+
+
+We also show a simplified model of the spacecraft in Figure \ref{fig:simple_model}. This is the model we use to compute our mass and surface properties.
 
 \begin{figure}[H]
 \centering
