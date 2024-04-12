@@ -15,11 +15,16 @@ days = 0.5;
 tspan = 0:days*86400;
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t_out,y_out] = ode113(@propagator,tspan,yECI,options);
-plot3(y_out(:,1),y_out(:,2),y_out(:,3))
+
+plot3(y_out(:,1),y_out(:,2),y_out(:,3),'LineWidth',2,'Color','green')
 xlabel('i [km]')
 ylabel('y [km]')
 zlabel('z [km]')
 axis equal
+hold on
+[xE,yE,zE] = ellipsoid(0,0,0,6378.1,6378.1,6378.1,20);
+surface(xE,yE,zE,'FaceColor','blue','EdgeColor','black');
+hold off
 saveas(gcf,'Images/ps2_problem1.png');
 
 %% Problem 2
