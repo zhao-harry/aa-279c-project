@@ -1,3 +1,6 @@
+%% Problem Set 2
+clear; close all; clc
+
 %% Problem 1
 a = 7125.48662; % km
 e = 0.0011650;
@@ -19,4 +22,11 @@ zlabel('z [km]')
 axis equal
 saveas(gcf,'Images/ps2_problem1.png');
 
-%% Problem 3
+%% Problem 2
+I = computeMOI("res/mass.csv");
+
+[rotation_matrix, I_principal] = eig(I);
+x_principal = rotation_matrix(:,1);
+y_principal = rotation_matrix(:,3);
+z_principal = rotation_matrix(:,2);
+
