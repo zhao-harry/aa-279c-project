@@ -1,13 +1,8 @@
-function [wx, wy, wz] = eulerPropagator(Ix, Iy, Iz, tf, dt, wx, wy, wz)
-    
-    % Iteration
-    for n = 1:(tf/dt)
-        wx_dot = (Iy-Iz)/Ix*wy*wz;
-        wy_dot = (Iz-Ix)/Iy*wz*wx;
-        wz_dot = (Ix-Iy)/Iz*wx*wy;
-
-        wx = wx_dot*dt + wx;
-        wy = wy_dot*dt + wy;
-        wz = wz_dot*dt + wz;
-    end
+function [wDot] = eulerPropagator(t, w, Ix, Iy, Iz)
+    wx = w(1);
+    wy = w(2);
+    wz = w(3);
+    wDot(1) = (Iy-Iz)/Ix*wy*wz;
+    wDot(2) = (Iz-Ix)/Iy*wz*wx;
+    wDot(3) = (Ix-Iy)/Iz*wx*wy;
 end
