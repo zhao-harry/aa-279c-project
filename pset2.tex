@@ -1,0 +1,41 @@
+\section{\Large PROBLEM SET 2}
+\subsection{PROBLEM 1}
+\textit{Define orbit initial conditions and make sure you can propagate the orbit of the satellite over multiple orbits using either a Keplerian propagator or a numerical integration scheme (see AA279A material). Best would be to use a numerical integrator, so that you can later try to feed the same environmental forces for orbit propagation which are applied for attitude propagation (very cool!).}
+% Idk, look over AA 279A notes
+% HARRY
+
+
+\subsection{PROBLEM 2}
+\textit{In general the body axes are not the principal axes. Identify principal axes through the eigenvector/eigenvalue problem discussed in class and compute the rotation matrix from body to principal axes.}
+% This step: find eigenvalues and eigenvectors, where eigenvalues specify the principal axes inertia tensor and the eigenvectors specify the rotation
+% KUSAL
+
+
+\subsection{PROBLEM 3}
+\textit{At this stage you should have a simple 3D model of your spacecraft including geometry and mass properties of each element. This includes at least two coordinate systems, body and principal axes respectively, and the direction cosine matrix between them. Plot axes of triads in 3D superimposed to spacecraft 3D model.}
+% All we have to do in this step is literally just plot another set of triads.
+% KUSAL
+
+
+\subsection{PROBLEM 4}
+\textit{Program Euler equations in principal axes (e.g. in Matlab/Simulink). No external torques.}
+
+
+\subsection{PROBLEM 5}
+\textit{Numerically integrate Euler equations from arbitrary initial conditions ($\omega<\qty{10}{\degree/\second}$, $\omega_{i}\neq0$). Multiple attitude revolutions.}
+
+
+\subsection{PROBLEM 6}
+\textit{Plot rotational kinetic energy and momentum ellipsoids in 3D (axis equal) corresponding to chosen initial conditions. Verify that semi-axis of ellipsoids corresponds to theoretical values.}
+
+
+\subsection{PROBLEM 7}
+\textit{Plot polhode in same 3D plot. Verify that it is the intersection between the ellipsoids.}
+
+
+\subsection{PROBLEM 8}
+\textit{Plot polhode in three 2D planes identified by principal axes (axis equal). Verify that shapes of resulting conic sections correspond to theory.}
+
+
+\subsection{PROBLEM 9}
+\textit{Repeat above steps changing initial conditions, e.g. setting angular velocity vector parallel to principal axis. Is the behavior according to expectations?}
