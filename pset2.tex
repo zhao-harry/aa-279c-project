@@ -4,6 +4,22 @@
 % Idk, look over AA 279A notes
 % HARRY
 
+From the science users' handbook, we obtain the following orbital elements \cite{NISARHandbook}.
+
+\begin{table}[H]
+\begin{tabular}{lllllll}
+\textbf{OE} & \textit{a} & \textit{e} & \textit{i} & \textit{$\Omega$} & \textit{$\omega$} & \textit{$\nu$} \\ \hline
+\textbf{Value} & 7125.48662 km & 0.0011650 & 98.40508$\degree$ & -19.61601$\degree$ & 89.99764$\degree$ & -89.99818$\degree$
+\end{tabular}
+\end{table}
+
+We convert these using a MATLAB function into ECI coordinates that can be fed into a numerical orbital propagator.
+
+\lstinputlisting{src/oe2eci.m}
+
+Then, we can numerically propagate in MATLAB using \texttt{ode113}.
+
+\lstinputlisting{src/propagator.m}
 
 \subsection{PROBLEM 2}
 \textit{In general the body axes are not the principal axes. Identify principal axes through the eigenvector/eigenvalue problem discussed in class and compute the rotation matrix from body to principal axes.}
