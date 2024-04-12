@@ -1,8 +1,6 @@
 \section{\Large PROBLEM SET 2}
 \subsection{PROBLEM 1}
 \textit{Define orbit initial conditions and make sure you can propagate the orbit of the satellite over multiple orbits using either a Keplerian propagator or a numerical integration scheme (see AA279A material). Best would be to use a numerical integrator, so that you can later try to feed the same environmental forces for orbit propagation which are applied for attitude propagation (very cool!).}
-% Idk, look over AA 279A notes
-% HARRY
 
 From the science users' handbook, we obtain the following orbital elements \cite{NISARHandbook}.
 
@@ -13,13 +11,22 @@ From the science users' handbook, we obtain the following orbital elements \cite
 \end{tabular}
 \end{table}
 
-We convert these using a MATLAB function into ECI coordinates that can be fed into a numerical orbital propagator.
+We convert these using a MATLAB function into ECI coordinates that can be fed into a numerical orbital propagator. Notice that we first convert the orbital elements a, e, and $\nu$ into perifocal (PQW) coordinates, using a and e to find the semi-latus rectum and a, e, and $\nu$ to find the distance to the central body (Earth). Then, we perform a series of rotations on these coordinates parameterized by $\omega$, i, and $\Omega$ to obtain new coordinates in the ECI frame.
 
 \lstinputlisting{src/oe2eci.m}
 
-Then, we can numerically propagate in MATLAB using \texttt{ode113}.
+Then, we can numerically propagate in MATLAB using \texttt{ode113} using a function that computes the time derivative of the ECI state. This is accomplished simply by setting the time derivative of position equal to the velocity portion of the state and setting the time derivative of velocity equal to an acceleration computed using the law of universal gravitation. Note that while our propagator does not include disturbance forces, it will be easy to incorporate these later. See the appendix corresponding to Problem Set 2 for application of \texttt{ode113}.
 
 \lstinputlisting{src/propagator.m}
+
+Now, we plot the trajectory for one orbit in Figure \ref{fig:simple_propagator}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{Images/ps2_problem1.png}
+\caption{A single orbit for NISAR in ECI coordinates (no perturbations)}
+\label{fig:simple_propagator}
+\end{figure}
 
 \subsection{PROBLEM 2}
 \textit{In general the body axes are not the principal axes. Identify principal axes through the eigenvector/eigenvalue problem discussed in class and compute the rotation matrix from body to principal axes.}
