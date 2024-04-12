@@ -25,9 +25,11 @@ We select the NASA JPL and ISRO NISAR mission as the mission on which to base ou
 
 NISAR is a joint Earth-observation satellite mission between NASA and ISRO. It is the first satellite to operate in two different Synthetic Aperture Radar (SAR) bands, incorportating both L- and S-band SAR instruments. Both frequencies can penetrate clouds for reliable data collection, but the L-band can also penetrate thicker vegetation that the S-band cannot. Uniquely, NISAR is intended to be used for a wide range of science objectives, including disaster response and agriculture \cite{NISARApps}.
 
+NISAR ADCS requirements are \textless 273 arcseconds for pointing and \textless 500 m for orbit control \cite{Siqueira}. The satellite duty cycle is specified as \textgreater 30\%. NISAR will operate in LEO with nominal altitude of 747 km and 6 AM/6 PM orbit. NISAR's L- and S-band instruments operate at 24 cm and 12 cm wavelengths, respectively. NISAR collects terrestial SAR imagery with an image swatch of 240 km using a sweep approach. The science payload can also perform polarimetry, with the SAR incorporating multiple polarization modes.
+
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{Images/nisar_diagram.jpg}
+\includegraphics[scale=0.38]{Images/nisar_diagram.jpg}
 \caption{The basic components of the NISAR satellite}
 \label{NISAR Diagram}
 \end{figure}
@@ -64,7 +66,7 @@ We choose the body axes to have an origin at the center of the rectangular bus. 
 We compute the center of mass after extracting the centroid of each component. The mass of each component is previously found in Table \ref{tab:mass}. The centroid of each component is listed in Table \ref{tab:centroid}.
 
 \begin{longtable}{l|r|r|r}
-\caption{Component centroids}
+\caption{Component centroids [m]}
 \label{tab:centroid}\\
 \textbf{Part} & \multicolumn{1}{l}{\textbf{x}} & \multicolumn{1}{l}{\textbf{y}} & \multicolumn{1}{l}{\textbf{z}} \\ \hline
 \endfirsthead
@@ -85,7 +87,7 @@ The center of mass can be found by taking the weighted average of each component
     \Vec{r}_{cm} = \frac{\sum m_{i} \Vec{r}_{i}}{\sum m_{i}}
 \end{equation*}
 
-This yields a result for center of mass at $[1.046, 0, 0.683] m$ relative to the origin we defined. We created the following MATLAB script to compute the center of mass from a CSV file containing centroid and mass data.
+This yields a result for center of mass at $\qty[parse-numbers = false]{[1.046, 0, 0.683]}{\metre}$ relative to the origin we defined. We created the following MATLAB script to compute the center of mass from a CSV file containing centroid and mass data.
 
 \lstinputlisting{src/computeCM.m}
 
@@ -93,7 +95,7 @@ We compute the moment of inertia of the satellite, finding an inertia tensor in 
 
 To compute the moment of inertia, we need the following geometric properties of each component:
 
-\begin{longtable}{l|l|l|l|l|l}
+\begin{longtable}{l|r|r|r|r|r}
 \caption{Dimensions of modeled components [m]}
 \label{tab:dimensions}\\
 \textbf{Part} & \textbf{L (x-dim)} & \textbf{W (y-dim)} & \textbf{H (z-dim)} & \textbf{S (oct. side length)} & \textbf{R (radius)} \\ \hline
@@ -125,11 +127,13 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 0 & 0 & m \frac{L^{2} + W^{2}}{12} 
 \end{bmatrix} \\
 &=
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 550.340 & 0 & 0 \\
 0 & 405.725 & 0 \\
 0 & 0 & 375.9993 
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{align*}
 
 For the solar panels, we approximate their geometry as a flat plate. These axes are also aligned, so the tensor can be diagonal.
@@ -148,11 +152,13 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 0 & 0 & m \frac{W^{2}}{12} 
 \end{bmatrix} \\
 &=
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 75.919 & 0 & 0 \\
 0 & 6.919 & 0 \\
 0 & 0 & 69 
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{align*}
 
 For the RIS, we model the geometry as an octagonal prism. For the moment of inertia about the axisymmetric axis of the octagon, we use the formula $m \left(\frac{S^{2}}{24} + \frac{a^{2}}{2}\right)$, where $S$ is the side length and $a$ is the apothem length, where the apothem is the perpendicular length from a side of the octagon to the center \cite{McCarron}. When calculating the moment of inertia about the non-axisymmetric axes, we approximate the geometry as a cylinder with radius equal to the average of the octagonal radius (distance from center to vertex) and the apothem. As will be shown later, this approximation yields a very close result to the inertia tensor generated from the CAD model.
@@ -171,11 +177,13 @@ m \left(\frac{S^{2}}{24} + \frac{a^{2}}{2}\right) & 0 & 0 \\
 0 & 0 & m \left(\frac{L^{2}}{12} + \frac{R_{avg}^{2}}{4}\right) 
 \end{bmatrix} \\
 &=
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 223.268 & 0 & 0 \\
 0 & 831.089 & 0 \\
 0 & 0 & 831.089 
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{align*}
 
 For the RAB, we first model the geometry as a rectangular prism. We also must rotate the inertia tensor to match the orientation of the body axes, as the RAB itself is rotated relative to the bus about the y-axis by -18\degree{} from vertical (z-axis).
@@ -194,11 +202,13 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 0 & 0 & m \frac{L^{2} + W^{2}}{12} 
 \end{bmatrix} \\
 &=
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 1296.506 & 0 & 0 \\
 0 & 1296.506 & 0 \\
 0 & 0 & 1.012 
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{align*}
 
 We apply the rotation to the inertia tensor using a rotation matrix about the y-axis. Note that doing so results in non-zero products of inertia, meaning our principal axes will not be aligned with our body axes.
@@ -206,11 +216,13 @@ We apply the rotation to the inertia tensor using a rotation matrix about the y-
 \begin{align*}
 I_{RAB,rotated} &= R_{y}(-18\degree) I_{RAB} R_{y}^{\intercal}(-18\degree) \\
 &=
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 1172.797 & 0 & 380.736 \\
 0 & 1296.506 & 0 \\
 380.736 & 0 & 124.720
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{align*}
 
 Finally, we model the RAR as a flat disk. Similar to the RAB, we must rotate the inertia tensor to match the orientation of the body axes.
@@ -229,11 +241,13 @@ m \frac{R^{2}}{4} & 0 & 0 \\
 0 & 0 & m \frac{R^{2}}{2} 
 \end{bmatrix} \\
 &=
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 900 & 0 & 0 \\
 0 & 900 & 0 \\
 0 & 0 & 1800 
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{align*}
 
 Applying a rotation:
@@ -241,11 +255,13 @@ Applying a rotation:
 \begin{align*}
 I_{RAR,rotated} &= R_{y}(-3.87\degree) I_{RAR} R_{y}^{\intercal}(-3.87\degree) \\
 &=
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 904.100 & 0 & -60.605 \\
 0 & 900 & 0 \\
 -60.605 & 0 & 1795.900
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{align*}
 
 Now, we use parallel axis theorem to compute the moment of inertia of each component about the body axes at the specified origin. We can use the following displacement tensor,
@@ -269,22 +285,26 @@ Performing the parallel axis theorem on each component and summing the inertia t
 
 \begin{equation*}
 I_{NISAR,body} =
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 15783.996 & 0 & -2341.659 \\
 0 & 22227.752 & 0 \\
 -2341.659 & 0 & 10663.970
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{equation*}
 
 Compare this with the inertia tensor computed by SolidWorks CAD software:
 
 \begin{equation*}
 I_{NISAR,body} =
+\qty[parse-numbers = false]{
 \begin{bmatrix}
 15780.361 & 0 & -2336.285 \\
 0 & 22225.721 & 0 \\
 -2336.285 & 0 & 10665.796
 \end{bmatrix}
+}{\kilogram\metre\squared}
 \end{equation*}
 
 The errors are 0.0230\%, 0.00914\%, 0.0171\%, and 0.230\% for $I_{xx}$, $I_{yy}$, $I_{zz}$, and $I_{xz}$, respectively. We created the following MATLAB script to compute the inertia tensor.
