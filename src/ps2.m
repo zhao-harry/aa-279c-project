@@ -17,5 +17,6 @@ xlabel('i [km]')
 ylabel('y [km]')
 zlabel('z [km]')
 axis equal
+saveas(gcf,'Images/ps2_problem1.png');
 
 %% Problem 3
