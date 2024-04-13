@@ -32,6 +32,9 @@ cm = computeCM("res/mass.csv");
 I = computeMOI("res/mass.csv",cm);
 
 [rot,IPrincipal] = eig(I);
+Ix = I(1,1);
+Iy = I(2,2);
+Iz = I(3,3);
 xPrincipal = rot(:,1);
 yPrincipal = rot(:,2);
 zPrincipal = rot(:,3);
@@ -70,3 +73,34 @@ set(textx,"Position",4 * xPrincipal + cm)
 set(texty,"Position",4 * yPrincipal + cm)
 set(textz,"Position",4 * zPrincipal + cm)
 saveas(gcf,'Images/ps2_model.png');
+
+%% Problem 5
+% Define w
+w0 = deg2rad([8; 7; 2]);
+
+tspan = 0:120;
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t_out, w_out] = ode113(@(t,w) eulerPropagator(t,w,Ix,Iy,Iz), tspan, w0, options);
+
+w_out = rad2deg(w_out);
+
+figure(1)
+plot(t_out, w_out)
+legend("\omega_x", "\omega_y", "\omega_z", "Location", "southeast")
+xlabel("Time (s)")
+ylabel("Angle (degrees)")
+saveas(1, 'Images/ps2_eulerEquations.png')
+
+%% Problem 6
+wx0 = w0(1);
+wy0 = w0(2);
+wz0 = w0(3);
+syms wx wy wz
+
+% Energy ellipsoid (2T = KE)
+KE = wy0^2*Iy + wz0^2*Iz + wx0^2*Ix;
+energyEllipsoid = wy.^2/(KE/Iy) + wz.^2/(KE/Iz) + wx.^2/(KE/Ix) - 1;
+
+wz_solve = solve(energyEllipsoid, wz);
+
+fsurf(wz_solve)
