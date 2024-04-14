@@ -88,6 +88,14 @@ The unit vectors of the principal axes ($\Vec{e}_i$) can then be used to find th
 \subsection{PROBLEM 4}
 \textit{Program Euler equations in principal axes (e.g. in Matlab/Simulink). No external torques.}
 
+We use the following equations with zero external moments ($M_{x}, M_{y}, M_{z} = 0$).
+
+\begin{align*}
+    I_{x} \Dot{\omega}_{x} + (I_{z} - I_{y}) \omega_{y} \omega_{z} &= M_{x} \\
+    I_{y} \Dot{\omega}_{y} + (I_{x} - I_{z}) \omega_{z} \omega_{x} &= M_{y} \\
+    I_{z} \Dot{\omega}_{z} + (I_{y} - I_{x}) \omega_{x} \omega_{y} &= M_{z}
+\end{align*}
+
 \lstinputlisting{src/eulerPropagator.m}
 
 
@@ -98,7 +106,7 @@ We choose arbitrary initial conditions $\omega_{x} = \qty{8}{\degree\per\second}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{Images/ps2_euler_equations.png}
+\includegraphics[scale=0.6]{Images/ps2_euler_equations.png}
 \caption{Results from numerical integration of Euler equations}
 \label{fig:ps2_euler_equations}
 \end{figure}
@@ -107,14 +115,54 @@ We choose arbitrary initial conditions $\omega_{x} = \qty{8}{\degree\per\second}
 \subsection{PROBLEM 6}
 \textit{Plot rotational kinetic energy and momentum ellipsoids in 3D (axis equal) corresponding to chosen initial conditions. Verify that semi-axis of ellipsoids corresponds to theoretical values.}
 
+For the energy ellipsoid, we compute our surface using rotational kinetic energy based on initial conditions and principal axes inertia.
+
+\begin{align*}
+    &2T = \omega_{x}^{2} I_{x} + \omega_{y}^{2} I_{y} + \omega_{z}^{2} I_{z} \\
+    &\frac{\omega_{x}^{2}}{2T/I_{x}} + \frac{\omega_{y}^{2}}{2T/I_{y}} + \frac{\omega_{z}^{2}}{2T/I_{z}} = 1
+\end{align*}
+
+Similarly, we compute our surface for the momentum ellipsoid with angular momentum.
+
+\begin{align*}
+    &L = \omega_{x}^{2} I_{x}^{2} + \omega_{y}^{2} I_{y}^{2} + \omega_{z}^{2} I_{z}^{2} \\
+    &\frac{\omega_{x}^{2}}{(L/I_{x})^{2}} + \frac{\omega_{y}^{2}}{(L/I_{y})^{2}} + \frac{\omega_{z}^{2}}{(L/I_{z})^{2}} = 1
+\end{align*}
+
+We plot both ellipsoids in Figure \ref{fig:ps2_problem6}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem6.png}
+\caption{Energy and momentum ellipsoids}
+\label{fig:ps2_problem6}
+\end{figure}
+
 
 \subsection{PROBLEM 7}
 \textit{Plot polhode in same 3D plot. Verify that it is the intersection between the ellipsoids.}
+
+Figure \ref{fig:ps2_problem8} shows that the polhode is indeed the intersection between the ellipsoids.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem7.png}
+\caption{Energy and momentum ellipsoids with polhode}
+\label{fig:ps2_problem7}
+\end{figure}
 
 
 \subsection{PROBLEM 8}
 \textit{Plot polhode in three 2D planes identified by principal axes (axis equal). Verify that shapes of resulting conic sections correspond to theory.}
 
+The polhode conic sections in Figure \ref{fig:ps2_problem8} match expected theory. The polhode as seen along the x-axis is an ellipse, while the polhode along the y-axis is a hyperbola. We also see that when seen along the z-axis, the polhode also forms an ellipse, shown as a half-ellipse in our plot.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem8.png}
+\caption{2D views of polhode}
+\label{fig:ps2_problem8}
+\end{figure}
 
 
 \subsection{PROBLEM 9}
