@@ -1,4 +1,4 @@
-function [wDot] = eulerPropagator(t, w, Ix, Iy, Iz)
+function [wDot] = eulerPropagator(t,w,Ix,Iy,Iz)
     wx = w(1);
     wy = w(2);
     wz = w(3);

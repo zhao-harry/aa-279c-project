@@ -1,8 +1,8 @@
-function I = computeMOI(filename,origin)
+function I = computeMOI(filename,reference)
     data = readmatrix(filename);
-    x = data(:,1) - origin(1);
-    y = data(:,2) - origin(2);
-    z = data(:,3) - origin(3);
+    x = data(:,1) - reference(1);
+    y = data(:,2) - reference(2);
+    z = data(:,3) - reference(3);
     m = data(:,4);
     m_bus = m(1);
     m_RIS = m(2);

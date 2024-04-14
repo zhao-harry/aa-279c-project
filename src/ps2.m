@@ -32,9 +32,9 @@ cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
 
 [rot,IPrincipal] = eig(I);
-Ix = I(1,1);
-Iy = I(2,2);
-Iz = I(3,3);
+Ix = IPrincipal(1,1);
+Iy = IPrincipal(2,2);
+Iz = IPrincipal(3,3);
 xPrincipal = rot(:,1);
 yPrincipal = rot(:,2);
 zPrincipal = rot(:,3);
@@ -48,65 +48,104 @@ quiver = findobj(gca,'type','Quiver');
 textx = findobj(gca,'type','Text','String','x');
 texty = findobj(gca,'type','Text','String','y');
 textz = findobj(gca,'type','Text','String','z');
-set(quiver,'XData',[0;0;0])
-set(quiver,'YData',[0;0;0])
-set(quiver,'ZData',[0;0;0])
-set(textx,'Position',[4 0 0])
-set(texty,'Position',[0 4 0])
-set(textz,'Position',[0 0 4])
+set(quiver,"XData",[0;0;0])
+set(quiver,"YData",[0;0;0])
+set(quiver,"ZData",[0;0;0])
+set(textx,"Position",[4 0 0])
+set(texty,"Position",[0 4 0])
+set(textz,"Position",[0 0 4])
 
 quiverPrincipal = copyobj(quiver,gca);
 textxPrincipal = copyobj(textx,gca);
 textyPrincipal = copyobj(texty,gca);
 textzPrincipal = copyobj(textz,gca);
-set(quiver,'Color',[0 1 0])
-set(quiver,'UData',4.14 * rot(1,:)')
-set(quiver,'VData',4.14 * rot(2,:)')
-set(quiver,'WData',4.14 * rot(3,:)')
-set(quiver,'XData',repmat(cm(1),3,1))
-set(quiver,'YData',repmat(cm(2),3,1))
-set(quiver,'ZData',repmat(cm(3),3,1))
-set(textx,'String','x''')
-set(texty,'String','y''')
-set(textz,'String','z''')
-set(textx,'Position',4 * xPrincipal + cm)
-set(texty,'Position',4 * yPrincipal + cm)
-set(textz,'Position',4 * zPrincipal + cm)
+set(quiver,"Color",[0 1 0])
+set(quiver,"UData",4.14 * rot(1,:)')
+set(quiver,"VData",4.14 * rot(2,:)')
+set(quiver,"WData",4.14 * rot(3,:)')
+set(quiver,"XData",repmat(cm(1),3,1))
+set(quiver,"YData",repmat(cm(2),3,1))
+set(quiver,"ZData",repmat(cm(3),3,1))
+set(textx,"String",'x''')
+set(texty,"String",'y''')
+set(textz,"String",'z''')
+set(textx,"Position",4 * xPrincipal + cm)
+set(texty,"Position",4 * yPrincipal + cm)
+set(textz,"Position",4 * zPrincipal + cm)
 saveas(gcf,'Images/ps2_model.png');
 
 %% Problem 5
 % Define w
-w0 = deg2rad([8;4;6]);
+w0Deg = [8;4;6];
+w0 = deg2rad(w0Deg);
 
 tspan = 0:120;
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,w] = ode113(@(t,w) eulerPropagator(t,w,Ix,Iy,Iz),tspan,w0,options);
 
-w = rad2deg(w);
+wDeg = rad2deg(w);
 
 figure(1)
-plot(t,w)
+plot(t,wDeg,'LineWidth',2)
 legend('\omega_{x}','\omega_{y}','\omega_{z}','Location','southeast')
 xlabel('Time [s]')
-ylabel(['Angular velocity (\omega) [' char(176) ']'])
+ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
 saveas(1,'Images/ps2_euler_equations.png')
 
-%% Problem 6 (Energy)
-wx0 = w0(1);
-wy0 = w0(2);
-wz0 = w0(3);
-syms wx wy wz
+%% Problem 6
+T = sum(IPrincipal * w0.^2,"all") / 2;
+L = sqrt(sum((w0.*IPrincipal).^2,"all"));
 
-% Energy ellipsoid
-T = (wy0^2*Iy + wz0^2*Iz + wx0^2*Ix) / 2;
-energyEllipsoid = wy.^2/(2*T/Iy) + wz.^2/(2*T/Iz) + wx.^2/(2*T/Ix) - 1;
-wzEnergy = solve(energyEllipsoid,wz);
-fsurf(wzEnergy)
+[XE,YE,ZE] = ellipsoid(0,0,0,sqrt(2*T/Ix),sqrt(2*T/Iy),sqrt(2*T/Iz),50);
+[XM,YM,ZM] = ellipsoid(0,0,0,L/Ix,L/Iy,L/Iz,50);
+
+energyEllipsoid = surf(XE,YE,ZE,'FaceAlpha',0.5,'FaceColor','blue','DisplayName','Energy Ellipsoid');
+xlabel('\omega_{x} [rad/s]')
+ylabel('\omega_{y} [rad/s]')
+zlabel('\omega_{z} [rad/s]')
+axis equal
 hold on
-
-% Momentum ellipsoid
-L = sqrt(wy0^2*Iy^2 + wz0^2*Iz^2 + wx0^2*Ix^2);
-momentumEllipsoid = wy.^2/(L^2/Iy^2) + wz.^2/(L^2/Iz^2) + wx.^2/(L^2/Ix^2) - 1;
-wzMomentum = solve(momentumEllipsoid,wz);
-fsurf(wzMomentum)
+momentumEllipsoid = surf(XM,YM,ZM,'FaceAlpha',0.5,'FaceColor','green','DisplayName','Momentum Ellipsoid');
+legend('Location','northwest')
 hold off
+saveas(1,'Images/ps2_problem6.png')
+
+%% Problem 7
+energyEllipsoid = surf(XE,YE,ZE,'FaceAlpha',0.5,'FaceColor','blue','DisplayName','Energy Ellipsoid');
+xlabel('\omega_{x} [rad/s]')
+ylabel('\omega_{y} [rad/s]')
+zlabel('\omega_{z} [rad/s]')
+axis equal
+hold on
+momentumEllipsoid = surf(XM,YM,ZM,'FaceAlpha',0.5,'FaceColor','green','DisplayName','Momentum Ellipsoid');
+plot3(w(:,1),w(:,2),w(:,3),'LineWidth',2,'Color','red','DisplayName','Polhode')
+legend('Location','northwest')
+hold off
+saveas(1,'Images/ps2_problem7.png')
+
+%% Problem 8
+subplot(1,3,1)
+plot(w(:,2),w(:,3))
+title('Polhode (along x-axis)')
+xlabel('\omega_{y} [rad/s]')
+ylabel('\omega_{z} [rad/s]')
+axis equal
+
+subplot(1,3,2)
+plot(w(:,1),w(:,3))
+title('Polhode (along y-axis)')
+xlabel('\omega_{x} [rad/s]')
+ylabel('\omega_{z} [rad/s]')
+axis equal
+
+subplot(1,3,3)
+plot(w(:,1),w(:,2))
+title('Polhode (along z-axis)')
+xlabel('\omega_{x} [rad/s]')
+ylabel('\omega_{y} [rad/s]')
+axis equal
+saveas(1,'Images/ps2_problem8.png')
+
+%% Problem 9 (Plot new ellipsoid and 3D polhode)
+
+%% Problem 9 (Plot 2D ellipsoids)
