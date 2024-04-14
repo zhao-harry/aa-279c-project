@@ -76,7 +76,15 @@ saveas(gcf,'Images/ps2_model.png');
 
 %% Problem 5
 % Define w
-w0Deg = [8;4;6];
+problem9 = false;
+LogicalStr = {'false', 'true'};
+fprintf("Problem 9 bool is: %s\n", LogicalStr{problem9+1})
+
+if ~problem9
+    w0Deg = [8;4;6];
+else
+    w0Deg = [1;0;0]*8;
+end
 w0 = deg2rad(w0Deg);
 
 tspan = 0:120;
@@ -90,7 +98,13 @@ plot(t,wDeg,'LineWidth',2)
 legend('\omega_{x}','\omega_{y}','\omega_{z}','Location','southeast')
 xlabel('Time [s]')
 ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
-saveas(1,'Images/ps2_euler_equations.png')
+
+if ~problem9
+    prob5Name = 'Images/ps2_euler_equations.png';
+else
+    prob5Name = 'Images/ps2_problem9_euler_equations.png';
+end
+saveas(1,prob5Name)
 
 %% Problem 6
 T = sum(IPrincipal * w0.^2,"all") / 2;
@@ -108,7 +122,13 @@ hold on
 momentumEllipsoid = surf(XM,YM,ZM,'FaceAlpha',0.5,'FaceColor','green','DisplayName','Momentum Ellipsoid');
 legend('Location','northwest')
 hold off
-saveas(1,'Images/ps2_problem6.png')
+
+if ~problem9
+    prob6Name = 'Images/ps2_problem6.png';
+else
+    prob6Name = 'Images/ps2_problem9_p6.png';
+end
+saveas(1,prob6Name)
 
 %% Problem 7
 energyEllipsoid = surf(XE,YE,ZE,'FaceAlpha',0.5,'FaceColor','blue','DisplayName','Energy Ellipsoid');
@@ -121,31 +141,39 @@ momentumEllipsoid = surf(XM,YM,ZM,'FaceAlpha',0.5,'FaceColor','green','DisplayNa
 plot3(w(:,1),w(:,2),w(:,3),'LineWidth',2,'Color','red','DisplayName','Polhode')
 legend('Location','northwest')
 hold off
-saveas(1,'Images/ps2_problem7.png')
+
+if ~problem9
+    prob7Name = 'Images/ps2_problem7.png';
+else
+    prob7Name = 'Images/ps2_problem9_p7.png';
+end
+saveas(1,prob7Name)
 
 %% Problem 8
 subplot(1,3,1)
-plot(w(:,2),w(:,3))
+plot(w(:,2),w(:,3),'Marker','o')
 title('Polhode (along x-axis)')
 xlabel('\omega_{y} [rad/s]')
 ylabel('\omega_{z} [rad/s]')
 axis equal
 
 subplot(1,3,2)
-plot(w(:,1),w(:,3))
+plot(w(:,1),w(:,3),'Marker','o')
 title('Polhode (along y-axis)')
 xlabel('\omega_{x} [rad/s]')
 ylabel('\omega_{z} [rad/s]')
 axis equal
 
 subplot(1,3,3)
-plot(w(:,1),w(:,2))
+plot(w(:,1),w(:,2),'Marker','o')
 title('Polhode (along z-axis)')
 xlabel('\omega_{x} [rad/s]')
 ylabel('\omega_{y} [rad/s]')
 axis equal
-saveas(1,'Images/ps2_problem8.png')
 
-%% Problem 9 (Plot new ellipsoid and 3D polhode)
-
-%% Problem 9 (Plot 2D ellipsoids)
+if ~problem9
+    prob8Name = 'Images/ps2_problem8.png';
+else
+    prob8Name = 'Images/ps2_problem9_p8.png';
+end
+saveas(1,prob8Name)
