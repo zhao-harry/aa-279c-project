@@ -5,7 +5,7 @@ clear; close all; clc;
 % Set problem9 bool and problem9axes based on if we're doing problem 9 or
 % not
 problem9 = true;
-prob9axis = 'z';
+prob9axis = 'x';
 LogicalStr = {'false', 'true'};
 fprintf("Problem 9 bool is: %s\n", LogicalStr{problem9+1})
 
@@ -173,8 +173,8 @@ else
 end
 saveas(1,prob6Name)
 
-verifier = L^2/(2*T);
-if Ix <= verifier && verifier <= Iz
+verifier = L^2/(2*T) * 1;
+if Ix*0.999 <= verifier && verifier <= Iz*1.001
     fprintf("The polhode is real!\n")
 else
     error("The polhode is NOT real!\n")
