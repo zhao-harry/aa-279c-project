@@ -248,6 +248,6 @@ end
 if ~problem9
     prob8Name = 'Images/ps2_problem8.png';
 else
-    prob8Name = ['Images/ps2_problem9_p8_,' prob9axis, '.png'];
+    prob8Name = ['Images/ps2_problem9_p8_', prob9axis, '.png'];
 end
 saveas(1,prob8Name)
