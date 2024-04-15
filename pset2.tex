@@ -115,25 +115,29 @@ We choose arbitrary initial conditions $\omega_{x} = \qty{8}{\degree\per\second}
 \subsection{PROBLEM 6}
 \textit{Plot rotational kinetic energy and momentum ellipsoids in 3D (axis equal) corresponding to chosen initial conditions. Verify that semi-axis of ellipsoids corresponds to theoretical values.}
 
-For the energy ellipsoid, we compute our surface using rotational kinetic energy based on initial conditions and principal axes inertia.
+For the energy ellipsoid, we compute our surface using rotational kinetic energy based on initial conditions and principal axes inertia tensor.
 
 \begin{align*}
     &2T = \omega_{x}^{2} I_{x} + \omega_{y}^{2} I_{y} + \omega_{z}^{2} I_{z} \\
     &\frac{\omega_{x}^{2}}{2T/I_{x}} + \frac{\omega_{y}^{2}}{2T/I_{y}} + \frac{\omega_{z}^{2}}{2T/I_{z}} = 1
 \end{align*}
 
-Similarly, we compute our surface for the momentum ellipsoid with angular momentum.
+For the given initial conditions, we get semi-major axes of the following lengths: $\omega_{x} = \qty{0.2332}{\radian\per\second}$, $\omega_{y} = \qty{0.1697}{\radian\per\second}$, and $\omega_{z} = \qty{0.1524}{\radian\per\second}$. These values make sense given the equation for the energy ellipsoid.
+
+Similarly, we compute our surface for the momentum ellipsoid with angular momentum based on our initial conditions and the principal axes inertia tensor.
 
 \begin{align*}
     &L = \omega_{x}^{2} I_{x}^{2} + \omega_{y}^{2} I_{y}^{2} + \omega_{z}^{2} I_{z}^{2} \\
     &\frac{\omega_{x}^{2}}{(L/I_{x})^{2}} + \frac{\omega_{y}^{2}}{(L/I_{y})^{2}} + \frac{\omega_{z}^{2}}{(L/I_{z})^{2}} = 1
 \end{align*}
 
+For the given initial conditions, we get semi-major axes of the following lengths: $\omega_{x} = \qty{0.3115}{\radian\per\second}$, $\omega_{y} = \qty{0.1649}{\radian\per\second}$, and $\omega_{z} = \qty{0.1330}{\radian\per\second}$. These values make sense given the equation for the momentum ellipsoid.
+
 We plot both ellipsoids in Figure \ref{fig:ps2_problem6}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps2_problem6.png}
+\includegraphics[scale=0.65]{Images/ps2_problem6.png}
 \caption{Energy and momentum ellipsoids}
 \label{fig:ps2_problem6}
 \end{figure}
@@ -142,15 +146,22 @@ We plot both ellipsoids in Figure \ref{fig:ps2_problem6}.
 \subsection{PROBLEM 7}
 \textit{Plot polhode in same 3D plot. Verify that it is the intersection between the ellipsoids.}
 
+For a polhode plot to be real, the below condition must be verified.
+
+\begin{equation*}
+    I_x < \frac{L^2}{2T} < I_z
+\end{equation*}
+
+Based on previously calculated values ($I_x = 7707.1$, $\frac{L^2}{2T} = 13752.1$, $I_z = 18050.4$) we can verify that the polhode here will be true.
+
 Figure \ref{fig:ps2_problem8} shows that the polhode is indeed the intersection between the ellipsoids.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps2_problem7.png}
+\includegraphics[scale=0.65]{Images/ps2_problem7.png}
 \caption{Energy and momentum ellipsoids with polhode}
 \label{fig:ps2_problem7}
 \end{figure}
-
 
 \subsection{PROBLEM 8}
 \textit{Plot polhode in three 2D planes identified by principal axes (axis equal). Verify that shapes of resulting conic sections correspond to theory.}
@@ -167,3 +178,53 @@ The polhode conic sections in Figure \ref{fig:ps2_problem8} match expected theor
 
 \subsection{PROBLEM 9}
 \textit{Repeat above steps changing initial conditions, e.g. setting angular velocity vector parallel to principal axis. Is the behavior according to expectations?}
+
+We show the angular velocity evolution with the initial conditions shown in Table \ref{tab:initialConditions}.
+
+\begin{table}[]
+\label{tab:initialConditions}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Case} & \textbf{$\omega_x$ (deg/s)} & \textbf{$\omega_y$ (deg/s)} & \textbf{$\omega_z$ (deg/s)} \\ \hline
+1             & 8                     & 0                     & 0                     \\ \hline
+2             & 0.08                  & 8                     & 0.08                  \\ \hline
+3             & 0.08                  & 0                     & 8                     \\ \hline
+\end{tabular}
+\end{table}
+
+Figures \ref{fig:ps2_problem9_euler_equations}, the polhode and ellipsoids in Figure \ref{fig:ps2_problem9_p7}, and the 2D views of the polhode in Figure \ref{fig:ps2_problem9_p8}. The behavior shown is as expected–when the angular velocity is parallel to the principal axis, we do not have coupling with the other components of angular velocity, and the polhode views in 2D become points rather than conic sections.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_euler_equations.png}
+\caption{Angular velocity evolution for angular velocity vector for Case 1}
+\label{fig:ps2_problem9_euler_equations}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_euler_equations.png}
+\caption{Angular velocity evolution for angular velocity vector for Case 1}
+\label{fig:ps2_problem9_euler_equations}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_euler_equations.png}
+\caption{Angular velocity evolution for angular velocity vector for Case 1}
+\label{fig:ps2_problem9_euler_equations}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_p7.png}
+\caption{Polhode and ellipsoids for angular velocity vector along first principal axis}
+\label{fig:ps2_problem9_p7}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_p8.png}
+\caption{2D views of polhode for angular velocity vector along first principal axis}
+\label{fig:ps2_problem9_p8}
+\end{figure}
