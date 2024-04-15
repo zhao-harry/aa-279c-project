@@ -174,7 +174,7 @@ end
 saveas(1,prob6Name)
 
 verifier = L^2/(2*T) * 1;
-if Ix*0.999 <= verifier && verifier <= Iz*1.001
+if Ix <= verifier && verifier <= Iz
     fprintf("The polhode is real!\n")
 else
     error("The polhode is NOT real!\n")
