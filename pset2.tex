@@ -131,15 +131,22 @@ Similarly, we compute our surface for the momentum ellipsoid with angular moment
     &\frac{\omega_{x}^{2}}{(L/I_{x})^{2}} + \frac{\omega_{y}^{2}}{(L/I_{y})^{2}} + \frac{\omega_{z}^{2}}{(L/I_{z})^{2}} = 1
 \end{align*}
 
-For the given initial conditions, we get semi-major axes of the following lengths: $\omega_{x} = \qty{0.3115}{\radian\per\second}$, $\omega_{y} = \qty{0.1649}{\radian\per\second}$, and $\omega_{z} = \qty{0.1330}{\radian\per\second}$. These values make sense given the equation for the momentum ellipsoid.
+For the given initial conditions, we get semi-major axes of the following lengths: $\omega_{x} = \qty{0.3115}{\radian\per\second}$, $\omega_{y} = \qty{0.1649}{\radian\per\second}$, and $\omega_{z} = \qty{0.1330}{\radian\per\second}$. These values make sense given the equation for the momentum ellipsoid and are shown in the plots below.
 
-We plot both ellipsoids in Figure \ref{fig:ps2_problem6}.
+We plot the energy ellipsoid in Figure \ref{fig:ps2_problem6_energy} and the momentum ellipsoid in Figure \ref{fig:ps2_problem6_momentum}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.65]{Images/ps2_problem6.png}
-\caption{Energy and momentum ellipsoids}
-\label{fig:ps2_problem6}
+\includegraphics[scale=0.65]{Images/ps2_problem6_energy.png}
+\caption{Energy ellipsoid with axes in red}
+\label{fig:ps2_problem6_energy}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.65]{Images/ps2_problem6_momentum.png}
+\caption{Momentum ellipsoid with axes in red}
+\label{fig:ps2_problem6_momentum}
 \end{figure}
 
 
@@ -179,7 +186,7 @@ The polhode conic sections in Figure \ref{fig:ps2_problem8} match expected theor
 \subsection{PROBLEM 9}
 \textit{Repeat above steps changing initial conditions, e.g. setting angular velocity vector parallel to principal axis. Is the behavior according to expectations?}
 
-We show the angular velocity evolution with the initial conditions shown in Table \ref{tab:initialConditions}.
+We show the angular velocity evolution with the initial conditions shown in Table \ref{tab:initialConditions}. Case 1 involves spinning on the principal x-axis, Case 2 involves spinning on the principal y-axis with a slight disturbance, and Case 3 involved spinning on the z-axis with a slight disturbance.
 
 \begin{table}[]
 \label{tab:initialConditions}
@@ -192,7 +199,11 @@ We show the angular velocity evolution with the initial conditions shown in Tabl
 \end{tabular}
 \end{table}
 
-Figures \ref{fig:ps2_problem9_euler_equations_x}, the polhode and ellipsoids in Figure \ref{fig:ps2_problem9_p7}, and the 2D views of the polhode in Figure \ref{fig:ps2_problem9_p8}. The behavior shown is as expected–when the angular velocity is parallel to the principal axis, we do not have coupling with the other components of angular velocity, and the polhode views in 2D become points rather than conic sections.
+The specifics of Case 1 are shown in the angular frequency plot in Figure \ref{fig:ps2_problem9_euler_equations_x}, the polhode and ellipsoids in Figure \ref{fig:ps2_problem9_p7_x}, and the 2D views of the polhode in Figure \ref{fig:ps2_problem9_p8_x}. The behavior shown is as expected–when the angular velocity is parallel to the principal axis, we do not have coupling with the other components of angular velocity, and the polhode views in 2D become points rather than conic sections.
+
+For Case 2, Figure \ref{fig:ps2_problem9_euler_equations_y} shows that the satellite will switch orbit orientation as expected based on the intermediate axis theorem. Additionally, Figure \ref{fig:ps2_problem9_p7_y}, and the 2D polhode views in Figure \ref{fig:ps2_problem9_p8_y} are also expanded given how the slight disturbances would lead to a larger section of intersection. Interestingly, there seems to be a very steep hyperbola in the xz-plane of the polhode.
+
+Figure \ref{fig:ps2_problem9_euler_equations_z} illustrates a very slight oscillation along the x and y angular velocities in Case 3. Meanwhile, the actual region of intersection in the polhode as shown in Figures \ref{fig:ps2_problem9_p7_z} and \ref{fig:ps2_problem9_p8_z} is much smaller than in most cases, but not just a single point like in the Case 1.
 
 \begin{figure}[H]
 \centering
@@ -219,21 +230,21 @@ Figures \ref{fig:ps2_problem9_euler_equations_x}, the polhode and ellipsoids in 
 \centering
 \includegraphics[scale=0.6]{Images/ps2_problem9_p7_x.png}
 \caption{Polhode and ellipsoids for angular velocity vector for Case 1}
-\label{fig:ps2_problem9_p7}
+\label{fig:ps2_problem9_p7_x}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps2_problem9_p7_y.png}
 \caption{Polhode and ellipsoids for angular velocity vector for Case 2}
-\label{fig:ps2_problem9_p7}
+\label{fig:ps2_problem9_p7_y}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps2_problem9_p7_z.png}
 \caption{Polhode and ellipsoids for angular velocity vector for Case 3}
-\label{fig:ps2_problem9_p7}
+\label{fig:ps2_problem9_p7_z}
 \end{figure}
 
 \begin{figure}[H]
