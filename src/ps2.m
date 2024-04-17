@@ -81,8 +81,12 @@ tspan = 0:120;
 w = eulerPropagator(w0,Ix,Iy,Iz,tspan,'Images/ps2_euler_equations.png');
 
 %% Problem 6
-[XE,YE,ZE] = ellipsoidEnergy(IPrincipal,w0,'Images/ps2_problem6_energy.png');
-[XM,YM,ZM] = ellipsoidMomentum(IPrincipal,w0,'Images/ps2_problem6_momentum.png');
+[XE,YE,ZE] = ellipsoidEnergy(IPrincipal, ...
+    w0, ...
+    'Images/ps2_problem6_energy.png');
+[XM,YM,ZM] = ellipsoidMomentum(IPrincipal, ...
+    w0, ...
+    'Images/ps2_problem6_momentum.png');
 
 %% Problem 7
 w = polhode(XE,YE,ZE,XM,YM,ZM,w,'Images/ps2_problem7.png');
@@ -112,11 +116,16 @@ tspan = 0:120;
 marker = 'none';
 
 %% Problem 9
-w = eulerPropagator(w0,Ix,Iy,Iz,tspan,['Images/ps2_problem9_euler_equations_', axis, '.png']);
+w = eulerPropagator(w0,Ix,Iy,Iz,tspan, ...
+    ['Images/ps2_problem9_euler_equations_', axis, '.png']);
 
-[XE,YE,ZE] = ellipsoidEnergy(IPrincipal,w0,['Images/ps2_problem9_energy_', axis, '.png']);
-[XM,YM,ZM] = ellipsoidMomentum(IPrincipal,w0,['Images/ps2_problem9_momentum_', axis, '.png']);
+[XE,YE,ZE] = ellipsoidEnergy(IPrincipal,w0, ...
+    ['Images/ps2_problem9_energy_', axis, '.png']);
+[XM,YM,ZM] = ellipsoidMomentum(IPrincipal,w0, ...
+    ['Images/ps2_problem9_momentum_', axis, '.png']);
 
-w = polhode(XE,YE,ZE,XM,YM,ZM,w,['Images/ps2_problem9_p7_', axis, '.png']);
+w = polhode(XE,YE,ZE,XM,YM,ZM,w, ...
+    ['Images/ps2_problem9_p7_', axis, '.png']);
 
-w = polhode2D(w,marker,['Images/ps2_problem9_p8_', axis, '.png']);
+w = polhode2D(w,marker, ...
+    ['Images/ps2_problem9_p8_', axis, '.png']);

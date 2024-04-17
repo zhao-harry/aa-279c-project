@@ -9,7 +9,10 @@ function [XE,YE,ZE] = ellipsoidEnergy(IPrincipal,w0,filename)
     
     % Plot energy ellipsoid
     figure(1)
-    surf(XE,YE,ZE,'FaceAlpha',0.5,'FaceColor','blue','DisplayName','Energy Ellipsoid');
+    surf(XE,YE,ZE, ...
+        'FaceAlpha',0.5, ...
+        'FaceColor','blue', ...
+        'DisplayName','Energy Ellipsoid');
     axis equal
     hold on
     quiver3(0, 0, 0, ellipsoidAxes(1), 0, 0, 'Color', 'r', 'LineWidth', 2)
@@ -21,8 +24,8 @@ function [XE,YE,ZE] = ellipsoidEnergy(IPrincipal,w0,filename)
     hold off
     saveas(1,filename)
 
-    intermediate = L^2/(2*T);
-    if (Ix <= intermediate || ismembertol(Ix, intermediate, 1e-7)) && intermediate <= Iz 
+    I = L^2/(2*T);
+    if (Ix <= I || ismembertol(Ix, I, 1e-7)) && I <= Iz 
         fprintf("The polhode is real!\n")
     else
         error("The polhode is NOT real!\n")
