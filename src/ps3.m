@@ -92,4 +92,4 @@ plot(t, eulerAngs,'LineWidth',1)
 legend('\phi','\theta','\psi', ...
     'Location', 'Southwest')
 xlabel('Time [s]')
-ylabel(['Euler Angle [deg]'])
+ylabel('Euler Angle [deg]')
