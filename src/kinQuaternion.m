@@ -1,4 +1,4 @@
-function stateDot = kinQuaternion(t,state,w,Ix,Iy,Iz)
+function stateDot = kinQuaternion(t,state,Ix,Iy,Iz)
     % state = [omega_vector; quat_vector];
     
     % Angular velocity
