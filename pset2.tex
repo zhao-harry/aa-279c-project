@@ -153,13 +153,13 @@ We plot the energy ellipsoid in Figure \ref{fig:ps2_problem6_energy} and the mom
 \subsection{PROBLEM 7}
 \textit{Plot polhode in same 3D plot. Verify that it is the intersection between the ellipsoids.}
 
-For a polhode plot to be real, the below condition must be verified.
+For a polhode plot to be real, the condition below must be verified.
 
 \begin{equation*}
     I_x < \frac{L^2}{2T} < I_z
 \end{equation*}
 
-Based on previously calculated values ($I_x = 7707.1$, $\frac{L^2}{2T} = 13752.1$, $I_z = 18050.4$) we can verify that the polhode here will be true.
+Based on previously calculated values ($I_x = 7707.1$, $\frac{L^2}{2T} = 13752.1$, $I_z = 18050.4$) we can verify that the polhode here will be real.
 
 Figure \ref{fig:ps2_problem8} shows that the polhode is indeed the intersection between the ellipsoids.
 
@@ -177,7 +177,7 @@ The polhode conic sections in Figure \ref{fig:ps2_problem8} match expected theor
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps2_problem8.png}
+\includegraphics[scale=0.7]{Images/ps2_problem8.png}
 \caption{2D views of polhode}
 \label{fig:ps2_problem8}
 \end{figure}
@@ -186,11 +186,11 @@ The polhode conic sections in Figure \ref{fig:ps2_problem8} match expected theor
 \subsection{PROBLEM 9}
 \textit{Repeat above steps changing initial conditions, e.g. setting angular velocity vector parallel to principal axis. Is the behavior according to expectations?}
 
-We show the angular velocity evolution with the initial conditions shown in Table \ref{tab:initialConditions}. Case 1 involves spinning on the principal x-axis, Case 2 involves spinning on the principal y-axis with a slight disturbance, and Case 3 involved spinning on the z-axis with a slight disturbance.
+We show the angular velocity evolution with the initial conditions shown in Table \ref{tab:ps2_problem9_conditions}. Case 1 involves rotation about the principal x-axis, Case 2 involves rotation about the principal y-axis with a slight disturbance, and Case 3 involved rotation about the z-axis with a slight disturbance.
 
-\begin{table}[]
+\begin{table}[H]
 \centering
-\label{tab:initialConditions}
+\label{tab:ps2_problem9_conditions}
 \begin{tabular}{|l|l|l|l|}
 \hline
 \textbf{Case} & \textbf{$\omega_x$ (deg/s)} & \textbf{$\omega_y$ (deg/s)} & \textbf{$\omega_z$ (deg/s)} \\ \hline
@@ -200,11 +200,11 @@ We show the angular velocity evolution with the initial conditions shown in Tabl
 \end{tabular}
 \end{table}
 
-The specifics of Case 1 are shown in the angular frequency plot in Figure \ref{fig:ps2_problem9_euler_equations_x}, the polhode and ellipsoids in Figure \ref{fig:ps2_problem9_p7_x}, and the 2D views of the polhode in Figure \ref{fig:ps2_problem9_p8_x}. The behavior shown is as expected–when the angular velocity is parallel to the principal axis, we do not have coupling with the other components of angular velocity, and the polhode views in 2D become points rather than conic sections.
+The specifics of Case 1 are shown in the angular velocity plot in Figure \ref{fig:ps2_problem9_euler_equations_x}, the polhode and ellipsoids in Figure \ref{fig:ps2_problem9_p7_x}, and the 2D views of the polhode in Figure \ref{fig:ps2_problem9_p8_x}. The behavior shown is as expected–when the angular velocity is parallel to the principal axis, we do not have coupling with the other components of angular velocity, and the polhode views in 2D become points rather than conic sections.
 
-For Case 2, Figure \ref{fig:ps2_problem9_euler_equations_y} shows that the satellite will switch orbit orientation as expected based on the intermediate axis theorem. Additionally, Figure \ref{fig:ps2_problem9_p7_y}, and the 2D polhode views in Figure \ref{fig:ps2_problem9_p8_y} are also expanded given how the slight disturbances would lead to a larger section of intersection. Interestingly, there seems to be a very steep hyperbola in the xz-plane of the polhode.
+For Case 2, Figure \ref{fig:ps2_problem9_euler_equations_y} shows that the satellite's rotational behavior will oscillate as expected, owing to the properties of the intermediate axis. Additionally, Figure \ref{fig:ps2_problem9_p7_y}, and the 2D views in Figure \ref{fig:ps2_problem9_p8_y} show a larger polhode, with the slight disturbances leading to ellipsoids with a substantial intersection. Interestingly, there seems to be a very sharp hyperbola in the xz-plane of the polhode.
 
-Figure \ref{fig:ps2_problem9_euler_equations_z} illustrates a very slight oscillation along the x and y angular velocities in Case 3. Meanwhile, the actual region of intersection in the polhode as shown in Figures \ref{fig:ps2_problem9_p7_z} and \ref{fig:ps2_problem9_p8_z} is much smaller than in most cases, but not just a single point like in the Case 1.
+Figure \ref{fig:ps2_problem9_euler_equations_z} illustrates a slight oscillation of angular velocities about the x- and y-axes in Case 3. Meanwhile, the actual region of intersection in the polhode as shown in Figures \ref{fig:ps2_problem9_p7_z} and \ref{fig:ps2_problem9_p8_z} is much smaller than in other cases, but not a single point like in the Case 1.
 
 \begin{figure}[H]
 \centering
