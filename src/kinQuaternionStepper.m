@@ -1,4 +1,4 @@
-function quats = kinQuaternionStepper(w0, qT, tf, dt, Ix, Iy, Iz)
+function [quats, wMat] = kinQuaternionStepper(w0, qT, tf, dt, Ix, Iy, Iz)
     % state = [omega_vector; phi; theta; psi];
     
     % Initialize
@@ -8,6 +8,8 @@ function quats = kinQuaternionStepper(w0, qT, tf, dt, Ix, Iy, Iz)
     numSteps = ceil(tf/dt);
     quats = nan(4,numSteps+1);
     quats(:,1) = qT;
+    wMat = nan(3,numSteps+1);
+    wMat(:,1) = w0;
     t = 0;
 
     for n = 1:numSteps
@@ -29,7 +31,8 @@ function quats = kinQuaternionStepper(w0, qT, tf, dt, Ix, Iy, Iz)
         wz = wz + wzDot*dt;
         qT = qT + qDot*dt;
 
-        quats(:,n+1) = qT;
+        quats(:,n+1) = qT/norm(qT);
+        wMat(:,n+1) = [wx; wy; wz];
         t = t + dt;
     end
 end

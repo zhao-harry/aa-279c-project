@@ -46,7 +46,7 @@ q0 = axang2quat(axang0).';
 
 tf = 60;
 dt = 0.0001;
-quats = kinQuaternionStepper(w0, q0, tf, dt, Ix, Iy, Iz);
+[quats, wQuats] = kinQuaternionStepper(w0, q0, tf, dt, Ix, Iy, Iz);
 t = 0:dt:tf;
 
 % ode113 section that doesn't work
@@ -81,10 +81,7 @@ psi0 = eul0(3);
 % 
 % eulerAngs = wrapTo360(rad2deg(state(:,4:end)));
 
-tf = 60;
-dt = 0.0001;
 eulerAngs = kinEulerAngleStepper(w0, phi0, theta0, psi0, tf, dt, Ix, Iy, Iz);
-t = 0:dt:tf;
 % saveas(1,'Images/ps4_problem6.png')
 
 figure(3)
@@ -97,16 +94,24 @@ saveas(3, 'Images/ps3_problem6_euler.png')
 
 %% Problem 7
 % Part a: Angular momentum
-L = [Ix Iy Iz] .* wAnalytical;
-L_norm = nan(length(tspan), 1);
-for n = 1:length(tspan)
+L_sat = [Ix Iy Iz] .* wAnalytical;
+
+% Convert quats to reference fram rotation matrix
+for n = 1:length(t)
+    q = quats()
+end
+
+L_norm = nan(length(t), 1);
+for n = 1:length(t)
     L_norm(n) = norm(L(n,:));
 end
 
 figure(4)
 hold on
-plot(tspan, L)
-plot(tspan, L_norm, 'k--')
+plot(t, L)
+plot(t, L_norm, 'k--')
 legend("L_{1}", "L_{2}", "L_{3}", "||L||")
 hold off
 saveas(4, 'Images/ps3_problem7a.png')
+
+% Part b: hyerpolhode of angular velocity vector

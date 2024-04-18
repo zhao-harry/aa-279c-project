@@ -1,4 +1,4 @@
-function eulerAngs = kinEulerAngleStepper(w0, phi, theta, psi, tf, dt, Ix, Iy, Iz)
+function [eulerAngs, wMat] = kinEulerAngleStepper(w0, phi, theta, psi, tf, dt, Ix, Iy, Iz)
     % state = [omega_vector; phi; theta; psi];
     
     % Initialize
@@ -8,6 +8,8 @@ function eulerAngs = kinEulerAngleStepper(w0, phi, theta, psi, tf, dt, Ix, Iy, I
     numSteps = ceil(tf/dt);
     eulerAngs = nan(3,numSteps+1);
     eulerAngs(:,1) = [phi; theta; psi];
+    wMat = nan(3,numSteps+1);
+    wMat(:,1) = w0;
     t = 0;
 
     for n = 1:numSteps
@@ -30,6 +32,7 @@ function eulerAngs = kinEulerAngleStepper(w0, phi, theta, psi, tf, dt, Ix, Iy, I
         psi = psi + psiDot*dt;
 
         eulerAngs(:,n+1) = [phi; theta; psi];
+        wMat(:,n+1) = [wx; wy; wz];
         t = t + dt;
     end
 end
