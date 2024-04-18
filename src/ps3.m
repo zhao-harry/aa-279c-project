@@ -56,15 +56,13 @@ quats = kinQuaternionStepper(w0, q0, tf, dt, Ix, Iy, Iz);
 % [t,state] = ode113(@(t,w) kinQuaternion(t,state,Ix,Iy,Iz),tspan,state,options);
 
 % quats = state(:,4:end);
-figure(1)
+figure(2)
 hold on
 plot(t, quats,'LineWidth',1)
 legend('q_{1}','q_{2}','q_{3}', 'q_{4}', ...
-plot(tspan,wDegAnalytical,'LineWidth',2)
-legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
-    'Location','southeast')
+    'Location', 'Southwest')
 xlabel('Time [s]')
-ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
+ylabel('Quaternion')
 hold off
 % saveas(1,filename)
 
@@ -89,15 +87,9 @@ eulerAngs = kinEulerAngleStepper(w0, phi0, theta0, psi0, tf, dt, Ix, Iy, Iz);
 t = 0:dt:tf;
 % saveas(1,'Images/ps4_problem6.png')
 
-figure(2)
+figure(3)
 plot(t, eulerAngs,'LineWidth',1)
 legend('\phi','\theta','\psi', ...
-%% Problem 3
-error = w - wAnalytical;
-plot(tspan,error,'LineWidth',2)
-legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
-    'Location','southeast')
+    'Location', 'Southwest')
 xlabel('Time [s]')
-ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
-ylabel('Angular velocity (\omega) [rad/s]')
-saveas(gcf,'Images/ps3_problem3.png'
+ylabel(['Euler Angle [deg]'])
