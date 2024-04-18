@@ -94,3 +94,19 @@ legend('\phi','\theta','\psi', ...
 xlabel('Time [s]')
 ylabel('Euler Angle [deg]')
 saveas(3, 'Images/ps3_problem6_euler.png')
+
+%% Problem 7
+% Part a: Angular momentum
+L = [Ix Iy Iz] .* wAnalytical;
+L_norm = nan(length(tspan), 1);
+for n = 1:length(tspan)
+    L_norm(n) = norm(L(n,:));
+end
+
+figure(4)
+hold on
+plot(tspan, L)
+plot(tspan, L_norm, 'k--')
+legend("L_{1}", "L_{2}", "L_{3}", "||L||")
+hold off
+saveas(4, 'Images/ps3_problem7a.png')
