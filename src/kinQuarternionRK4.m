@@ -1,4 +1,5 @@
 function [q,w] = kinQuarternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep)
+    % 4th order Runge-Kutta integration for quaternions, angular velocity
     nStep = ceil(tFinal/tStep);
     q = nan(nStep+1,4);
     w = nan(nStep+1,3);

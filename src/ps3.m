@@ -42,46 +42,50 @@ axang0 = [sqrt(1/2) sqrt(1/2) 0 pi/4];
 q0 = axang2quat(axang0).';
 tFinal = 120;
 tStep = 0.1;
+t = 0:tStep:tFinal;
 
+% Forward Euler
 % [q,w] = kinQuaternionForwardEuler(q0,w0,Ix,Iy,Iz,tFinal,tStep);
+
+% RK4
 [q,w] = kinQuarternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
 
-t = 0:tStep:tFinal;
 figure(2)
 hold on
-plot(t, q,'LineWidth',1)
-legend('q_{1}','q_{2}','q_{3}', 'q_{4}', ...
-    'Location', 'Southeast')
+plot(t,q,'LineWidth',1)
+legend('q_{1}','q_{2}','q_{3}','q_{4}', ...
+    'Location','Southeast')
 xlabel('Time [s]')
 ylabel('Quaternion')
 hold off
-saveas(2, 'Images/ps3_problem6_quaternions.png')
+saveas(2,'Images/ps3_problem6_quaternions.png')
 
 %% Problem 6 (Euler Angles)
-eul0 = rotm2eul(axang2rotm(axang0));
+eulerAngle0 = rotm2eul(axang2rotm(axang0))';
+state0 = [eulerAngle0;w0];
 
-phi0 = eul0(1);
-theta0 = eul0(2);
-psi0 = eul0(3);
+tFinal = 120;
+tStep = 0.1;
+t = 0:tStep:tFinal;
 
-% NOTE: ode113 method doesn't seem to work
-% state = [w0; phi0; theta0; psi];
-% tspan = 0:60;
-% options = odeset('RelTol',1e-6,'AbsTol',1e-9);
-% [t,state] = ode113(@(t,w) kinEulerAngle(t,state,Ix,Iy,Iz),tspan,state,options);
-% 
-% eulerAngs = wrapTo360(rad2deg(state(:,4:end)));
+% Forward Euler
+% state = kinEulerAngleForwardEuler(state0,Ix,Iy,Iz,tFinal,tStep);
 
-eulerAngs = kinEulerAngleStepper(w0, phi0, theta0, psi0, tf, dt, Ix, Iy, Iz);
-% saveas(1,'Images/ps4_problem6.png')
+% ode113
+tspan = 0:0.1:120;
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
+    tspan,state0,options);
+
+eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
 
 figure(3)
-plot(t, eulerAngs,'LineWidth',1)
+plot(t,eulerAngle,'LineWidth',1)
 legend('\phi','\theta','\psi', ...
-    'Location', 'Southwest')
+    'Location','Southwest')
 xlabel('Time [s]')
 ylabel('Euler Angle [deg]')
-saveas(3, 'Images/ps3_problem6_euler.png')
+saveas(3,'Images/ps3_problem6_euler.png')
 
 %% Problem 7
 % Part a: Angular momentum
@@ -90,7 +94,7 @@ L_sat = [Ix; Iy; Iz] .* wQuats;
 L_inertial = nan(size(L_sat));
 L_norm = nan(1, tLen);
 
-% Part b: perholde
+% Part b: herpolhode
 w_inertial = nan(size(wQuats));
 
 for n = 1:tLen
