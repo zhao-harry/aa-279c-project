@@ -1,3 +1,5 @@
+clear; close all; clc
+
 %% Problem 1
 IPrincipal = [7707.07451493673 0 0; ...
     0 7707.0745149367 0; ...
@@ -90,30 +92,30 @@ saveas(3,'Images/ps3_problem6_euler.png')
 %% Problem 7
 % Part a: Angular momentum
 tLen = length(t);
-L_sat = [Ix; Iy; Iz] .* wQuats;
+L_sat = [Ix Iy Iz] .* w;
 L_inertial = nan(size(L_sat));
 L_norm = nan(1, tLen);
 
 % Part b: herpolhode
-w_inertial = nan(size(wQuats));
+w_inertial = nan(size(w));
 
 for n = 1:tLen
     % Get rotation matrix
-    qT = quats(:,n);
-    q = qT(1:3);
+    qT = q(n,:);
+    quat = qT(1:3);
     q4 = qT(4);
-    qx = [0, -q(3), q(2);
-            q(3), 0, -q(1);
-            -q(2), q(1), 0];
-    A = (q4^2 - norm(q))*eye(3) + 2*(q*q') - 2*q4*qx;
-    A = quat2rotm(qT');
+    qx = [0, -quat(3), quat(2);
+            quat(3), 0, -quat(1);
+            -quat(2), quat(1), 0];
+    A = (q4^2 - norm(quat))*eye(3) + 2*(quat*quat') - 2*q4*qx;
+    A = quat2rotm(qT);
 
     % angular momentum
-    L_inertial(:,n) = A' * L_sat(:,n);
-    L_norm(n) = norm(L_inertial(:,n));
+    L_inertial(n,:) = A' * L_sat(n,:)';
+    L_norm(n) = norm(L_inertial(n,:));
 
     % angular velocity
-    w_inertial(:,n) = A.' * wQuats(:,n);
+    w_inertial(n,:) = A' * w(n,:)';
 end
 
 fprintf("FIX THE A MATRIX!\n")
@@ -126,6 +128,10 @@ legend("L_{1}", "L_{2}", "L_{3}", "||L||")
 hold off
 saveas(4, 'Images/ps3_problem7a.png')
 
+%%
+zeroMat = zeros(size(L_norm));
+
 figure(5)
+plot3(w_inertial(:,1), w_inertial(:,2), w_inertial(:,3), 'r')
 hold on
-plot3(w_inertial)
+quiver3(zeroMat, zeroMat, zeroMat, L_inertial(:,1)', L_inertial(:,2)', L_inertial(:,3)', 1e-4)
