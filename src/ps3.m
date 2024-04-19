@@ -45,7 +45,7 @@ q0 = axang2quat(axang0).';
 % state = [w0; q0];
 
 tf = 60;
-dt = 0.0001;
+dt = 0.1;
 [quats, wQuats] = kinQuaternionStepper(w0, q0, tf, dt, Ix, Iy, Iz);
 t = 0:dt:tf;
 
@@ -94,24 +94,43 @@ saveas(3, 'Images/ps3_problem6_euler.png')
 
 %% Problem 7
 % Part a: Angular momentum
-L_sat = [Ix Iy Iz] .* wAnalytical;
+tLen = length(t);
+L_sat = [Ix; Iy; Iz] .* wQuats;
+L_inertial = nan(size(L_sat));
+L_norm = nan(1, tLen);
 
-% Convert quats to reference fram rotation matrix
-for n = 1:length(t)
-    q = quats()
+% Part b: perholde
+w_inertial = nan(size(wQuats));
+
+for n = 1:tLen
+    % Get rotation matrix
+    qT = quats(:,n);
+    q = qT(1:3);
+    q4 = qT(4);
+    qx = [0, -q(3), q(2);
+            q(3), 0, -q(1);
+            -q(2), q(1), 0];
+    A = (q4^2 - norm(q))*eye(3) + 2*(q*q') - 2*q4*qx;
+    A = quat2rotm(qT');
+
+    % angular momentum
+    L_inertial(:,n) = A' * L_sat(:,n);
+    L_norm(n) = norm(L_inertial(:,n));
+
+    % angular velocity
+    w_inertial(:,n) = A.' * wQuats(:,n);
 end
 
-L_norm = nan(length(t), 1);
-for n = 1:length(t)
-    L_norm(n) = norm(L(n,:));
-end
+fprintf("FIX THE A MATRIX!\n")
 
 figure(4)
 hold on
-plot(t, L)
+plot(t, L_inertial)
 plot(t, L_norm, 'k--')
 legend("L_{1}", "L_{2}", "L_{3}", "||L||")
 hold off
 saveas(4, 'Images/ps3_problem7a.png')
 
-% Part b: hyerpolhode of angular velocity vector
+figure(5)
+hold on
+plot3(w_inertial)
