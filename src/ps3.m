@@ -50,7 +50,7 @@ t = 0:tStep:tFinal;
 % [q,w] = kinQuaternionForwardEuler(q0,w0,Ix,Iy,Iz,tFinal,tStep);
 
 % RK4
-[q,w] = kinQuarternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
+[q,w] = kinQuaternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
 
 figure(2)
 hold on
