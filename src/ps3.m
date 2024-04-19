@@ -37,36 +37,27 @@ xlabel('Time [s]')
 ylabel('Angular velocity (\omega) [rad/s]')
 saveas(gcf,'Images/ps3_problem3.png')
 
-%% Problem 6
-% Quaternions
-% Initial angles
+%% Problem 6 (Quaternions)
 axang0 = [sqrt(1/2) sqrt(1/2) 0 pi/4];
 q0 = axang2quat(axang0).';
-% state = [w0; q0];
+tFinal = 120;
+tStep = 0.1;
 
-tf = 60;
-dt = 0.1;
-[quats, wQuats] = kinQuaternionStepper(w0, q0, tf, dt, Ix, Iy, Iz);
-t = 0:dt:tf;
+% [q,w] = kinQuaternionForwardEuler(q0,w0,Ix,Iy,Iz,tFinal,tStep);
+[q,w] = kinQuarternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
 
-% ode113 section that doesn't work
-% % Numerically propogate quaternions
-% tspan = 0:60;
-% options = odeset('RelTol',1e-6,'AbsTol',1e-9);
-% [t,state] = ode113(@(t,w) kinQuaternion(t,state,Ix,Iy,Iz),tspan,state,options);
-
-% quats = state(:,4:end);
+t = 0:tStep:tFinal;
 figure(2)
 hold on
-plot(t, quats,'LineWidth',1)
+plot(t, q,'LineWidth',1)
 legend('q_{1}','q_{2}','q_{3}', 'q_{4}', ...
     'Location', 'Southeast')
 xlabel('Time [s]')
 ylabel('Quaternion')
 hold off
-saveas(2, 'Images/ps3_problem6_quats.png')
+saveas(2, 'Images/ps3_problem6_quaternions.png')
 
-% Euler Angles
+%% Problem 6 (Euler Angles)
 eul0 = rotm2eul(axang2rotm(axang0));
 
 phi0 = eul0(1);
