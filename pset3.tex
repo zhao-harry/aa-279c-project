@@ -35,9 +35,15 @@
 \subsection{PROBLEM 4}
 \textit{Program Kinematic equations of motion correspondent to a nominal attitude parameterization of your choice.}
 
+We choose a nominal attitude parameterization of quaternions, our choice being based on the absence of singularities. The following function computes the time derivative for a state consisting of quaternions (4 parameters) and angular velocity (3 parameters).
+
 \lstinputlisting{src/kinQuaternion.m}
 
+We can use the previous function to perform a forward Euler numerical integration. We call the previous function over a fixed time step to compute the evolution of the state.
+
 \lstinputlisting{src/kinQuaternionForwardEuler.m}
+
+For improved precision, we implement a 4th order Runge-Kutta method, which uses a weighted sum of slopes to obtain a better result. This also calls the time derivative function, but does so with different values of the state, which are weighted to obtain the next state for each step.
 
 \lstinputlisting{src/kinQuaternionRK4.m}
 
@@ -45,9 +51,15 @@
 \subsection{PROBLEM 5}
 \textit{Program Kinematic equations of motion correspondent to a different attitude parameterization from the previous step. This is used for comparison, to get familiar with different approaches, and as fall back solution in the case of singularities.}
 
+Similarly, we create a function which computes the time derivative of a state consisting of Euler angles and angular velocity.
+
 \lstinputlisting{src/kinEulerAngle.m}
 
+We can propagate this with forward Euler, as in the previous section.
+
 \lstinputlisting{src/kinEulerAngleForwardEuler.m}
+
+For our actual implementation, we choose to use the time derivative function with \texttt{ode113} for improved accuracy. Note that while this is possible with the Euler angle time derivative, it cannot be done as simply for quaternions, as they require normalization at each step, hence our decision to implement RK4.
 
 
 \subsection{PROBLEM 6}
@@ -55,5 +67,5 @@
 
 
 \subsection{PROBLEM 7}
-\textit{ISince inertial position, velocity, and attitude, are known at the same time throughout the simulation, it is now possible to express vectors in the reference systems of interest.}
+\textit{Since inertial position, velocity, and attitude, are known at the same time throughout the simulation, it is now possible to express vectors in the reference systems of interest.}
 
