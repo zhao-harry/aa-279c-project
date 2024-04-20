@@ -39,10 +39,22 @@ xlabel('Time [s]')
 ylabel('Angular velocity (\omega) [rad/s]')
 saveas(gcf,'Images/ps3_problem3.png')
 
+%% Non-Axisymmetric Satellite
+cm = computeCM('res/mass.csv');
+I = computeMOI('res/mass.csv',cm);
+
+[rot,IPrincipal] = eig(I);
+Ix = IPrincipal(1,1);
+Iy = IPrincipal(2,2);
+Iz = IPrincipal(3,3);
+xPrincipal = rot(:,1);
+yPrincipal = rot(:,2);
+zPrincipal = rot(:,3);
+
 %% Problem 6 (Quaternions)
 axang0 = [sqrt(1/2) sqrt(1/2) 0 pi/4];
 q0 = axang2quat(axang0).';
-tFinal = 120;
+tFinal = 600;
 tStep = 0.1;
 t = 0:tStep:tFinal;
 
@@ -66,7 +78,7 @@ saveas(2,'Images/ps3_problem6_quaternions.png')
 eulerAngle0 = rotm2eul(axang2rotm(axang0))';
 state0 = [eulerAngle0;w0];
 
-tFinal = 120;
+tFinal = 600;
 tStep = 0.1;
 t = 0:tStep:tFinal;
 
@@ -74,7 +86,7 @@ t = 0:tStep:tFinal;
 % state = kinEulerAngleForwardEuler(state0,Ix,Iy,Iz,tFinal,tStep);
 
 % ode113
-tspan = 0:0.1:120;
+tspan = 0:tStep:tFinal;
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
     tspan,state0,options);
@@ -84,81 +96,129 @@ eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
 figure(3)
 plot(t,eulerAngle,'LineWidth',1)
 legend('\phi','\theta','\psi', ...
-    'Location','Southwest')
+    'Location','southwest')
 xlabel('Time [s]')
 ylabel('Euler Angle [deg]')
 saveas(3,'Images/ps3_problem6_euler.png')
 
-%% Problem 7
+%% Problem 7(a)
 % Part a: Angular momentum
 tLen = length(t);
-L_sat = [Ix Iy Iz] .* w;
-L_inertial = nan(size(L_sat));
+L_principal = [Ix Iy Iz] .* w;
+L_inertial = nan(size(L_principal));
 L_norm = nan(1, tLen);
 
-% Part b: herpolhode
+% Part b: Herpolhode
 w_inertial = nan(size(w));
 
-for n = 1:tLen
+for i = 1:tLen
     % Get rotation matrix
-    qT = q(n,:);
-    quat = qT(1:3);
-    q4 = qT(4);
-    qx = [0, -quat(3), quat(2);
-            quat(3), 0, -quat(1);
-            -quat(2), quat(1), 0];
-    A = (q4^2 - norm(quat))*eye(3) + 2*(quat*quat') - 2*q4*qx;
-    qTAlt = [q4, quat];
-    A = quat2rotm(qTAlt);
+    qi = q(i,:);
+    A = q2A(qi);
 
-    % angular momentum
-    L_inertial(n,:) = A' * L_sat(n,:)';
-    L_norm(n) = norm(L_inertial(n,:));
+    % Angular momentum
+    L_inertial(i,:) = A' * L_principal(i,:)';
+    L_norm(i) = norm(L_inertial(i,:));
 
-    % angular velocity
-    w_inertial(n,:) = A * w(n,:)';
+    % Angular velocity
+    w_inertial(i,:) = A' * w(i,:)';
 end
-
-fprintf("FIX THE A MATRIX!\n")
 
 figure(4)
 hold on
 plot(t, L_inertial)
 plot(t, L_norm, 'k--')
+xlabel('Time [s]')
+ylabel('Angular momentum [kg m^{2}/s]')
 legend("L_{1}", "L_{2}", "L_{3}", "||L||")
 hold off
 saveas(4, 'Images/ps3_problem7a.png')
 
-%%
-zeroMat = zeros(size(L_norm));
-
+%% Problem 7(b)
 figure(5)
 plot3(w_inertial(:,1), w_inertial(:,2), w_inertial(:,3), 'r')
+grid on
 hold on
-quiver3(zeroMat, zeroMat, zeroMat, L_inertial(:,1)', L_inertial(:,2)', L_inertial(:,3)', 1e-4)
+quiver3(0, 0, 0, ...
+    L_inertial(1,1), L_inertial(1,2), L_inertial(1,3), ...
+    1e-4)
+quiver3(0, 0, 0, ...
+    w_inertial(1,1), w_inertial(1,2), w_inertial(1,3), ...
+    1)
+xlabel('\omega_{x} [rad/s]')
+ylabel('\omega_{y} [rad/s]')
+zlabel('\omega_{z} [rad/s]')
+legend('Herpolhode', ...
+    'Angular momentum (L)', ...
+    'Angular velocity (\omega)', ...
+    'Location','northwest')
+hold off
+saveas(5, 'Images/ps3_problem7b.png')
 
 %% For fun kinda thing
-saveGif = false;
+saveGif = true;
+tGif = 240 / tStep;
 
+L_unit = nan(size(L_inertial));
+w_unit = nan(size(w_inertial));
 if saveGif == true
     gif = figure;
+    for i = 1:tLen
+        w_unit(i,:) = w_inertial(i,:)./norm(w_inertial(i,:));
+        L_unit(i,:) = L_inertial(i,:)./norm(L_inertial(i,:));
+    end
 
-    for n = 1:2:tLen
-        w_inert = w_inertial(n,:)./norm(w_inertial(n,:));
-        L_inert = L_inertial(n,:)./norm(L_inertial(n,:));
-        
-        quiver3(0, 0, 0, w_inert(1), w_inert(2), w_inert(3))
+    for i = 1:20:tGif
+        plot3(w_unit(1:i,1), w_unit(1:i,2), w_unit(1:i,3), 'r')
+        grid on
         hold on
-        quiver3(0, 0, 0, L_inert(1), L_inert(2), L_inert(3))
+        quiver3(0, 0, 0, w_unit(i,1), w_unit(i,2), w_unit(i,3),1)
+        quiver3(0, 0, 0, L_unit(i,1), L_unit(i,2), L_unit(i,3),1)
         hold off
         xlim([-1 1])
         ylim([-1 1])
         zlim([-1 1])
-        xlabel("x")
-        ylabel("y")
-        zlabel("z")
-        title("NOTE: All vectors are normalized")
-        legend("\omega", "L", "Location", "northeast")
-        exportgraphics(gif, 'Images/ps3_problem7b.gif', 'Append', true);
+        xlabel('x')
+        ylabel('y')
+        zlabel('z')
+        title('Note: all vectors are normalized')
+        legend('Herpolhode','\omega','L','Location','northeast')
+        exportgraphics(gif,'Images/ps3_problem7b.gif','Append',true);
     end
 end
+
+%% Problem 7(c)
+% Generate orbit
+a = 7125.48662; % km
+e = 0.0011650;
+i = 98.40508; % degree
+O = -19.61601; % degree
+w = 89.99764; % degree
+nu = -89.99818; % degree
+
+days = 0.069;
+tFinal = days * 86400;
+tStep = 1;
+tspan = 0:tStep:tFinal;
+
+fig = figure(6);
+[t,y] = plotECI(fig,a,e,i,O,w,nu,tspan);
+hold on
+
+[q,w] = kinQuaternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
+
+tLen = length(t);
+for i = 1:500:tLen
+    % Get rotation matrix
+    qi = q(i,:);
+    A = q2A(qi);
+    % Body axes
+    B = rot * A * rot';
+    % Position
+    yi = y(i,:);
+    principalTriad = plotTriad(fig,yi,A,1e3,'r');
+    bodyTriad = plotTriad(fig,yi,B,1e3,'k');
+end
+legend('Orbit','Earth','Principal','','','Body','Location','northwest')
+hold off
+saveas(gcf,'Images/ps3_problem7c.png');
