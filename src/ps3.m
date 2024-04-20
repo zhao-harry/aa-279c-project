@@ -108,14 +108,15 @@ for n = 1:tLen
             quat(3), 0, -quat(1);
             -quat(2), quat(1), 0];
     A = (q4^2 - norm(quat))*eye(3) + 2*(quat*quat') - 2*q4*qx;
-    A = quat2rotm(qT);
+    qTAlt = [q4, quat];
+    A = quat2rotm(qTAlt);
 
     % angular momentum
     L_inertial(n,:) = A' * L_sat(n,:)';
     L_norm(n) = norm(L_inertial(n,:));
 
     % angular velocity
-    w_inertial(n,:) = A' * w(n,:)';
+    w_inertial(n,:) = A * w(n,:)';
 end
 
 fprintf("FIX THE A MATRIX!\n")
@@ -135,3 +136,29 @@ figure(5)
 plot3(w_inertial(:,1), w_inertial(:,2), w_inertial(:,3), 'r')
 hold on
 quiver3(zeroMat, zeroMat, zeroMat, L_inertial(:,1)', L_inertial(:,2)', L_inertial(:,3)', 1e-4)
+
+%% For fun kinda thing
+saveGif = false;
+
+if saveGif == true
+    gif = figure;
+
+    for n = 1:2:tLen
+        w_inert = w_inertial(n,:)./norm(w_inertial(n,:));
+        L_inert = L_inertial(n,:)./norm(L_inertial(n,:));
+        
+        quiver3(0, 0, 0, w_inert(1), w_inert(2), w_inert(3))
+        hold on
+        quiver3(0, 0, 0, L_inert(1), L_inert(2), L_inert(3))
+        hold off
+        xlim([-1 1])
+        ylim([-1 1])
+        zlim([-1 1])
+        xlabel("x")
+        ylabel("y")
+        zlabel("z")
+        title("NOTE: All vectors are normalized")
+        legend("\omega", "L", "Location", "northeast")
+        exportgraphics(gif, 'Images/ps3_problem7b.gif', 'Append', true);
+    end
+end
