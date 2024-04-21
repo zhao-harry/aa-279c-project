@@ -201,8 +201,14 @@ tFinal = days * 86400;
 tStep = 1;
 tspan = 0:tStep:tFinal;
 
-fig = figure(6);
-[t,y] = plotECI(fig,a,e,i,O,w,nu,tspan);
+figure(6)
+[t,y] = plotECI(a,e,i,O,w,nu,tspan);
+hold on
+figure(7)
+plotECI(a,e,i,O,w,nu,tspan);
+hold on
+figure(8)
+plotECI(a,e,i,O,w,nu,tspan);
 hold on
 
 [q,w] = kinQuaternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
@@ -215,10 +221,27 @@ for i = 1:500:tLen
     % Body axes
     B = rot * A * rot';
     % Position
-    yi = y(i,:);
-    principalTriad = plotTriad(fig,yi,A,1e3,'r');
-    bodyTriad = plotTriad(fig,yi,B,1e3,'k');
+    pos = y(i,1:3);
+    radial = pos / norm(pos);
+    tangential = y(i,4:6) / norm(y(i,4:6));
+    normal = cross(radial,tangential);
+    RTN = [radial' tangential' normal'];
+    figure(6);
+    plotTriad(gca,pos,A,1e3,'r');
+    figure(7);
+    plotTriad(gca,pos,B,1e3,'m');
+    figure(8);
+    plotTriad(gca,pos,RTN,1e3,'b');
 end
-legend('Orbit','Earth','Principal','','','Body','Location','northwest')
+figure(6);
+legend('Orbit','Earth','Principal (x-axis)','Location','northwest')
 hold off
-saveas(gcf,'Images/ps3_problem7c.png');
+saveas(gcf,'Images/ps3_problem7c_principal.png');
+figure(7);
+legend('Orbit','Earth','Body (x-axis)','Location','northwest')
+hold off
+saveas(gcf,'Images/ps3_problem7c_body.png');
+figure(8);
+legend('Orbit','Earth','RTN (radial axis)','Location','northwest')
+hold off
+saveas(gcf,'Images/ps3_problem7c_rtn.png');
