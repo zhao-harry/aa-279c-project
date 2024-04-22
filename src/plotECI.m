@@ -10,6 +10,9 @@ function [t,y] = plotECI(a,e,i,O,w,nu,tspan)
     grid on
     hold on
     [xE,yE,zE] = ellipsoid(0,0,0,6378.1,6378.1,6378.1,20);
-    surface(xE,yE,zE,'FaceColor','blue','EdgeColor','black','FaceAlpha',0.1);
+    surface(xE,yE,zE, ...
+        'FaceColor','blue', ...
+        'EdgeColor','black', ...
+        'FaceAlpha',0.1);
     hold off
 end
