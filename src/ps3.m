@@ -42,7 +42,7 @@ saveas(gcf,'Images/ps3_problem3.png')
 
 % Verify L and omega
 L_principal = [Ix Iy Iz] .* w;
-keyTimes = [1, 60, 120, 180, 240, 360];
+keyTimes = [1, 61, 121, 181, 241, 361];
 for n = keyTimes
     figure(1)
     L_unit = L_principal(n,:)/norm(L_principal(n,:));
@@ -57,7 +57,7 @@ for n = keyTimes
     title(sprintf('Unit vectors at t = %.2f s', tspan(n)))
     hold off
 
-    saveas(1, sprintf('Images/ps3_problem3Vectors_%3f.png', n))
+    saveas(1, sprintf('Images/ps3_problem3Vectors_%i.png', n))
 end
 
 %% Non-Axisymmetric Satellite
