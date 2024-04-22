@@ -1,6 +1,5 @@
 function stateDot = kinEulerAngle(t,state,Ix,Iy,Iz)
     % Computes state derivative for Euler angles, angular velocity
-
     % Assign variables
     theta = state(2);
     psi = state(3);

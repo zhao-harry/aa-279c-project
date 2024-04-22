@@ -1,6 +1,5 @@
 function stateDot = kinQuaternion(t,state,Ix,Iy,Iz)
     % Computes state derivatives for quaternions, angular velocity
-
     % Assign variables
     q = state(1:4);
     wx = state(5);
