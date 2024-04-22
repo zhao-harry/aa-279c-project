@@ -47,17 +47,16 @@ for n = keyTimes
     figure(1)
     L_unit = L_principal(n,:)/norm(L_principal(n,:));
     w_unit = w(n,:)/norm(w(n,:));
-    quiver3(0, 0, 0, w_unit(1), w_unit(2), w_unit(3),1, 'r')
+    quiver3(0,0,0,w_unit(1),w_unit(2),w_unit(3),1,'r')
     hold on
-    quiver3(0, 0, 0, L_unit(1), L_unit(2), L_unit(3),1, 'b')
-    quiver3(0, 0, 0, 0, 0, 1, 'k')
+    quiver3(0,0,0,L_unit(1),L_unit(2),L_unit(3),1,'b')
+    quiver3(0,0,0,0,0,1,'k')
     xlim([-1 1]); ylim([-1 1]); zlim([-1 1]);
-    xlabel('x'); ylabel('y'), zlabel('z')
+    xlabel('x'); ylabel('y'); zlabel('z');
     legend('\omega','L','z-axis','Location','northeast')
     title(sprintf('Unit vectors at t = %.2f s', tspan(n)))
     hold off
-
-    saveas(1, sprintf('Images/ps3_problem3Vectors_%i.png', n))
+    saveas(1, sprintf('Images/ps3_problem3_vectors_%i.png', n))
 end
 
 %% Non-Axisymmetric Satellite
