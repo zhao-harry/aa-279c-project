@@ -2,6 +2,8 @@
 \subsection{PROBLEM 1}
 \textit{Impose that satellite is axial-symmetric (Ix$=$Iy$\neq$Iz). Repeat numerical simulation from previous pset using initial condition 4) from previous pset.}
 
+Problem 1 was solved by setting $I_x = I_y = \qty{7707.07}{kg \cdot m^2}$ and using the same Euler equation solver from PSET 2, Problem 5 with the same initial conditions ($\omega_{x} = \qty{8}{\degree\per\second}$, $\omega_{y} = \qty{4}{\degree\per\second}$).
+
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps3_problem1.png}
@@ -13,6 +15,22 @@
 \subsection{PROBLEM 2}
 \textit{Program analytical solution for axial-symmetric satellite. Compute it at same time steps and from same initial conditions.}
 
+The analytical solution to the Euler equations for an axial-symmetric satellite is based on two variables ($\lambda$ and $\omega_{xy}$ defined below.
+
+\begin{align*}
+    \lambda = \frac{I_z - I_x}{I_x} \omega_{z0} \\
+    \omega_{xy} = (\omega_{x0} + i \omega_{y0}) e^{i \lambda t}
+\end{align*}
+
+Based on these values, the analytical solution is below.
+
+\begin{align*}
+    \omega_x = Real(\omega_{xy}) \\
+    \omega_y = Imag(\omega_{xy}) \\ 
+    \omega_z = \omega_{z0}
+\end{align*}
+
+
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps3_problem2.png}
@@ -23,6 +41,8 @@
 
 \subsection{PROBLEM 3}
 \textit{Compare numerical and analytical solutions. Plot differences (errors), do not only superimpose absolute values. Tune numerical integrator for large discrepancies. Are angular velocity vector and angular momentum vector changing according to theory in principal axes?}
+
+Below is the error between the numerical and analytical solutions. The angular velocity vector and angular momentum vectors rotate at a constant angle from the z-axis along a rotating plane, as can be observed in Figure \textbf{TAKE SNAPSHOTS OF PLANE}
 
 \begin{figure}[H]
 \centering
