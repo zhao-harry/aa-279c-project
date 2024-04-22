@@ -42,7 +42,7 @@ Based on these values, the analytical solution is below.
 \subsection{PROBLEM 3}
 \textit{Compare numerical and analytical solutions. Plot differences (errors), do not only superimpose absolute values. Tune numerical integrator for large discrepancies. Are angular velocity vector and angular momentum vector changing according to theory in principal axes?}
 
-Below is the error between the numerical and analytical solutions. The angular velocity vector and angular momentum vectors rotate at a constant angle from the z-axis along a rotating plane, as can be observed in Figure \textbf{TAKE SNAPSHOTS OF PLANE}
+Figure \ref{fig:ps3_problem3} is the error between the numerical and analytical solutions. The angular velocity vector and angular momentum vectors rotate at a constant angle from the z-axis along a rotating plane, as observed in Figure \ref{fig:Body Axis Momentum Snapshots}.
 
 \begin{figure}[H]
 \centering
@@ -51,11 +51,42 @@ Below is the error between the numerical and analytical solutions. The angular v
 \label{fig:ps3_problem3}
 \end{figure}
 
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{@{}c@{}}
+  \includegraphics[width=.47\linewidth]{Images/ps3_problem3Vectors_1.000000.png}
+  \end{tabular}
+  \begin{tabular}{@{}c@{}}
+  \includegraphics[width=.47\linewidth]{Images/ps3_problem3Vectors_120.000000.png}
+  \end{tabular}
+  \begin{tabular}{@{}c@{}}
+  \includegraphics[width=.47\linewidth]{Images/ps3_problem3Vectors_240.000000.png}
+  \end{tabular}
+  \begin{tabular}{@{}c@{}}
+  \includegraphics[width=.47\linewidth]{Images/ps3_problem3Vectors_360.000000.png}
+  \end{tabular}
+  \caption{Unit vectors for angular velocity (red) and angular momentum (blue) at t = 0s, 11.9s, 23.9s, 35.9s.}
+  \label{fig:Body Axis Momentum Snapshots}
+\end{figure}
+
 
 \subsection{PROBLEM 4}
 \textit{Program Kinematic equations of motion correspondent to a nominal attitude parameterization of your choice.}
 
 We choose a nominal attitude parameterization of quaternions, our choice being based on the absence of singularities. The following function computes the time derivative for a state consisting of quaternions (4 parameters) and angular velocity (3 parameters).
+
+The equations below include the propagation of kinematics for quaternions.
+
+\begin{align*}
+\Vec{\Omega} &= 
+    \begin{bmatrix}
+    0 & \omega_{z} & -\omega_{y} & \omega_{x}\\
+    -\omega_{z} & 0 & \omega_{x} & \omega_{y}\\
+    \omega_{y} & -\omega_{x} & 0 & \omega_{z}\\
+    -\omega_{x} & -\omega_{y} & -\omega_{z} & 0
+    \end{bmatrix}\\
+\frac{d \Vec{q}}{dt} &= \frac{1}{2} \Vec{\Omega} \Vec{q}(t)
+\end{align*}
 
 \lstinputlisting{src/kinQuaternion.m}
 
@@ -71,7 +102,15 @@ For improved precision, we implement a 4th order Runge-Kutta method, which uses 
 \subsection{PROBLEM 5}
 \textit{Program Kinematic equations of motion correspondent to a different attitude parameterization from the previous step. This is used for comparison, to get familiar with different approaches, and as fall back solution in the case of singularities.}
 
-Similarly, we create a function which computes the time derivative of a state consisting of Euler angles and angular velocity.
+Similarly, we create a function that computes the time derivative of a state consisting of Euler angles and angular velocity.
+
+The equations for the propagation of kinematics for Euler angles is below.
+
+\begin{align*}
+\frac{d \phi}{dt} = \frac{\omega_{x} sin(\psi) + \omega_{y} cos(\psi)}{sin(\theta)}\\
+\frac{d \theta}{dt} = \omega_{x} cos(\psi) - \omega_{y} sin(\psi)\\
+\frac{d \psi}{dt} = \omega_{z} - (\omega_{x} sin(\psi) + \omega_{y} cos(\psi)) cot(\theta)
+\end{align*}
 
 \lstinputlisting{src/kinEulerAngle.m}
 
@@ -84,6 +123,8 @@ For our actual implementation, we choose to use the time derivative function wit
 
 \subsection{PROBLEM 6}
 \textit{Numerically integrate Euler AND Kinematic equations from arbitrary initial conditions (warning: stay far from singularity of adopted parameterization). Multiple revolutions. The output is the evolution of the attitude parameters over time. These attitude parameters describe orientation of principal axes relative to inertial axes.}
+
+\textbf{NOTE: SHRINK TIME INTERVALS HERE}
 
 \begin{figure}[H]
 \centering
@@ -100,7 +141,12 @@ For our actual implementation, we choose to use the time derivative function wit
 \end{figure}
 
 \subsection{PROBLEM 7}
-\textit{Since inertial position, velocity, and attitude, are known at the same time throughout the simulation, it is now possible to express vectors in the reference systems of interest.}
+\textit{Since inertial position, velocity, and attitude, are known at the same time throughout the simulation, it is now possible to express vectors in the reference systems of interest.
+a. Compute angular momentum vector in inertial coordinates and verify that it is constant (not only its magnitude as in PS2) by plotting its components.
+c. Compute and plots unit vectors of orbital frame, body axes, and principal axes in 3D as a function of time in inertial coordinates. (Be creative on how to show moving vectors in 3D).
+}
+
+Figure \ref{fig:ps3_problem7a} plots the components of the angular momentum vector over time, and shows that the values of the vector are all constant over time.
 
 \begin{figure}[H]
 \centering
@@ -108,6 +154,10 @@ For our actual implementation, we choose to use the time derivative function wit
 \caption{Angular momentum in inertial coordinates is constant}
 \label{fig:ps3_problem7a}
 \end{figure}
+
+\textit{b. Compute angular velocity vector in inertial coordinates and plot the herpolhode in 3D (line drawn in inertial space by angular velocity). Is the herpolhode contained in a plane perpendicular to the angular momentum vector? Show it.}
+
+Figure \ref{fig:ps3_problem7b} shows the angular momentum and angular velocity vectors overlayed with the herpolhode. However, 
 
 \begin{figure}[H]
 \centering
@@ -120,19 +170,19 @@ For our actual implementation, we choose to use the time derivative function wit
 \centering
 \includegraphics[scale=0.6]{Images/ps3_problem7c_principal.png}
 \caption{Propagation of principal axes}
-\label{fig:ps3_problem7c}
+\label{fig:ps3_problem7c_principal}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps3_problem7c_body.png}
 \caption{Propagation of body axes}
-\label{fig:ps3_problem7c}
+\label{fig:ps3_problem7c_body}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps3_problem7c_rtn.png}
 \caption{Propagation of RTN frame}
-\label{fig:ps3_problem7c}
+\label{fig:ps3_problem7c_rtn}
 \end{figure}
