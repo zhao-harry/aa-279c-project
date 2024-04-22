@@ -2,7 +2,7 @@
 \subsection{PROBLEM 1}
 \textit{Impose that satellite is axial-symmetric (Ix$=$Iy$\neq$Iz). Repeat numerical simulation from previous pset using initial condition 4) from previous pset.}
 
-Problem 1 was solved by setting $I_x = I_y = \qty{7707.07}{kg \cdot m^2}$ and using the same Euler equation solver from PSET 2, Problem 5 with the same initial conditions ($\omega_{x} = \qty{8}{\degree\per\second}$, $\omega_{y} = \qty{4}{\degree\per\second}$).
+Problem 1 was solved by setting $I_{x} = I_{y} = \qty{7707.07}{kg \cdot m^2}$ and using the same Euler equation solver from Problem Set 2, Problem 5 with the same initial conditions ($\omega_{x} = \qty{8}{\degree\per\second}$, $\omega_{y} = \qty{4}{\degree\per\second}$).
 
 \begin{figure}[H]
 \centering
@@ -15,19 +15,17 @@ Problem 1 was solved by setting $I_x = I_y = \qty{7707.07}{kg \cdot m^2}$ and us
 \subsection{PROBLEM 2}
 \textit{Program analytical solution for axial-symmetric satellite. Compute it at same time steps and from same initial conditions.}
 
-The analytical solution to the Euler equations for an axial-symmetric satellite is based on two variables ($\lambda$ and $\omega_{xy}$ defined below.
-
+The analytical solution to the Euler equations for an axial-symmetric satellite is based on variables $\lambda$ and $\omega_{xy}$, as defined below.
 \begin{align*}
-    \lambda = \frac{I_z - I_x}{I_x} \omega_{z0} \\
-    \omega_{xy} = (\omega_{x0} + i \omega_{y0}) e^{i \lambda t}
+    \lambda = \frac{I_{z} - I_{x}}{I_{x}} \omega_{z_{0}} \\
+    \omega_{xy} = (\omega_{x_{0}} + i \omega_{y_{0}}) e^{i \lambda t}
 \end{align*}
 
-Based on these values, the analytical solution is below.
-
+We take the real and imaginary parts of this result to obtain an analytical solution.
 \begin{align*}
-    \omega_x = Real(\omega_{xy}) \\
-    \omega_y = Imag(\omega_{xy}) \\ 
-    \omega_z = \omega_{z0}
+    \omega_x = \text{Re}(\omega_{xy}) \\
+    \omega_y = \text{Im}(\omega_{xy}) \\ 
+    \omega_z = \omega_{z_{0}}
 \end{align*}
 
 
@@ -42,7 +40,7 @@ Based on these values, the analytical solution is below.
 \subsection{PROBLEM 3}
 \textit{Compare numerical and analytical solutions. Plot differences (errors), do not only superimpose absolute values. Tune numerical integrator for large discrepancies. Are angular velocity vector and angular momentum vector changing according to theory in principal axes?}
 
-Figure \ref{fig:ps3_problem3} is the error between the numerical and analytical solutions. The angular velocity vector and angular momentum vectors rotate at a constant angle from the z-axis along a rotating plane, as observed in Figure \ref{fig:Body Axis Momentum Snapshots}.
+Figure \ref{fig:ps3_problem3} is the error between the numerical and analytical solutions. The angular velocity vector and angular momentum vectors rotate at a constant angle from the z-axis along a rotating plane, as observed in Figure \ref{fig:Body Axis Momentum Snapshots}. This matches the expected theoretical behavior.
 
 \begin{figure}[H]
 \centering
@@ -54,18 +52,18 @@ Figure \ref{fig:ps3_problem3} is the error between the numerical and analytical 
 \begin{figure}[H]
   \centering
   \begin{tabular}{@{}c@{}}
-  \includegraphics[width=.47\linewidth]{Images/ps3_problem3Vectors_1.000000.png}
+  \includegraphics[width=.47\linewidth]{Images/ps3_problem3_vectors_1.png}
   \end{tabular}
   \begin{tabular}{@{}c@{}}
-  \includegraphics[width=.47\linewidth]{Images/ps3_problem3Vectors_120.000000.png}
+  \includegraphics[width=.47\linewidth]{Images/ps3_problem3_vectors_121.png}
   \end{tabular}
   \begin{tabular}{@{}c@{}}
-  \includegraphics[width=.47\linewidth]{Images/ps3_problem3Vectors_240.000000.png}
+  \includegraphics[width=.47\linewidth]{Images/ps3_problem3_vectors_241.png}
   \end{tabular}
   \begin{tabular}{@{}c@{}}
-  \includegraphics[width=.47\linewidth]{Images/ps3_problem3Vectors_360.000000.png}
+  \includegraphics[width=.47\linewidth]{Images/ps3_problem3_vectors_361.png}
   \end{tabular}
-  \caption{Unit vectors for angular velocity (red) and angular momentum (blue) at t = 0s, 11.9s, 23.9s, 35.9s.}
+  \caption{Unit vectors for angular velocity (red) and angular momentum (blue) at t = 0s, 12s, 24s, 36s.}
   \label{fig:Body Axis Momentum Snapshots}
 \end{figure}
 
@@ -75,7 +73,7 @@ Figure \ref{fig:ps3_problem3} is the error between the numerical and analytical 
 
 We choose a nominal attitude parameterization of quaternions, our choice being based on the absence of singularities. The following function computes the time derivative for a state consisting of quaternions (4 parameters) and angular velocity (3 parameters).
 
-The equations below include the propagation of kinematics for quaternions.
+The equations below describe the propagation of kinematics using quaternions.
 
 \begin{align*}
 \Vec{\Omega} &= 
@@ -107,9 +105,9 @@ Similarly, we create a function that computes the time derivative of a state con
 The equations for the propagation of kinematics for Euler angles is below.
 
 \begin{align*}
-\frac{d \phi}{dt} = \frac{\omega_{x} sin(\psi) + \omega_{y} cos(\psi)}{sin(\theta)}\\
-\frac{d \theta}{dt} = \omega_{x} cos(\psi) - \omega_{y} sin(\psi)\\
-\frac{d \psi}{dt} = \omega_{z} - (\omega_{x} sin(\psi) + \omega_{y} cos(\psi)) cot(\theta)
+\frac{d \phi}{dt} &= \frac{\omega_{x} \sin(\psi) + \omega_{y} \cos(\psi)}{\sin(\theta)}\\
+\frac{d \theta}{dt} &= \omega_{x} \cos(\psi) - \omega_{y} \sin(\psi)\\
+\frac{d \psi}{dt} &= \omega_{z} - (\omega_{x} \sin(\psi) + \omega_{y} \cos(\psi)) cot(\theta)
 \end{align*}
 
 \lstinputlisting{src/kinEulerAngle.m}
@@ -124,7 +122,7 @@ For our actual implementation, we choose to use the time derivative function wit
 \subsection{PROBLEM 6}
 \textit{Numerically integrate Euler AND Kinematic equations from arbitrary initial conditions (warning: stay far from singularity of adopted parameterization). Multiple revolutions. The output is the evolution of the attitude parameters over time. These attitude parameters describe orientation of principal axes relative to inertial axes.}
 
-\textbf{NOTE: SHRINK TIME INTERVALS HERE}
+We integrate our attitude parameterizations (including angular velocity using Euler equations–see previous section for numerical integration state) over 600 seconds. Notice that since we have no external torques, our attitude parameters vary periodically.
 
 \begin{figure}[H]
 \centering
@@ -141,12 +139,11 @@ For our actual implementation, we choose to use the time derivative function wit
 \end{figure}
 
 \subsection{PROBLEM 7}
-\textit{Since inertial position, velocity, and attitude, are known at the same time throughout the simulation, it is now possible to express vectors in the reference systems of interest.
-a. Compute angular momentum vector in inertial coordinates and verify that it is constant (not only its magnitude as in PS2) by plotting its components.
-c. Compute and plots unit vectors of orbital frame, body axes, and principal axes in 3D as a function of time in inertial coordinates. (Be creative on how to show moving vectors in 3D).
-}
+\textit{Since inertial position, velocity, and attitude, are known at the same time throughout the simulation, it is now possible to express vectors in the reference systems of interest.}
 
-Figure \ref{fig:ps3_problem7a} plots the components of the angular momentum vector over time, and shows that the values of the vector are all constant over time.
+\textit{a. Compute angular momentum vector in inertial coordinates and verify that it is constant (not only its magnitude as in PS2) by plotting its components.}
+
+Figure \ref{fig:ps3_problem7a} shows the components of the angular momentum vector over time. As expected, the angular momentum vector (and its individual components) all remain constant in the absence of external torques.
 
 \begin{figure}[H]
 \centering
@@ -157,7 +154,7 @@ Figure \ref{fig:ps3_problem7a} plots the components of the angular momentum vect
 
 \textit{b. Compute angular velocity vector in inertial coordinates and plot the herpolhode in 3D (line drawn in inertial space by angular velocity). Is the herpolhode contained in a plane perpendicular to the angular momentum vector? Show it.}
 
-Figure \ref{fig:ps3_problem7b} shows the angular momentum and angular velocity vectors overlayed with the herpolhode. However, 
+Figure \ref{fig:ps3_problem7b} shows the angular momentum and angular velocity vectors overlaid with the herpolhode. The animation (see caption) shows the evolution of the herpolhode and provides a better visualization of the herpolhode's orientation in a plane perpendicular to the angular momentum vector. 
 
 \begin{figure}[H]
 \centering
@@ -166,11 +163,15 @@ Figure \ref{fig:ps3_problem7b} shows the angular momentum and angular velocity v
 \label{fig:ps3_problem7b}
 \end{figure}
 
+\textit{c. Compute and plots unit vectors of orbital frame, body axes, and principal axes in 3D as a function of time in inertial coordinates. (Be creative on how to show moving vectors in 3D).}
+
+Figures \ref{fig:ps3_problem7c_rtn}, \ref{fig:ps3_problem7c_body}, and \ref{fig:ps3_problem7c_principal} include the plots of the orbital, body, and principal axes over the course of a single orbit.
+
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps3_problem7c_principal.png}
-\caption{Propagation of principal axes}
-\label{fig:ps3_problem7c_principal}
+\includegraphics[scale=0.6]{Images/ps3_problem7c_rtn.png}
+\caption{Propagation of RTN frame}
+\label{fig:ps3_problem7c_rtn}
 \end{figure}
 
 \begin{figure}[H]
@@ -182,7 +183,7 @@ Figure \ref{fig:ps3_problem7b} shows the angular momentum and angular velocity v
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps3_problem7c_rtn.png}
-\caption{Propagation of RTN frame}
-\label{fig:ps3_problem7c_rtn}
+\includegraphics[scale=0.6]{Images/ps3_problem7c_principal.png}
+\caption{Propagation of principal axes}
+\label{fig:ps3_problem7c_principal}
 \end{figure}
