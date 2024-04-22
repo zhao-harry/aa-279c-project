@@ -31,6 +31,7 @@ ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
 saveas(1,'Images/ps3_problem2.png')
 
 %% Problem 3
+% Error plots
 error = w - wAnalytical;
 plot(tspan,error,'LineWidth',2)
 legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
@@ -38,6 +39,26 @@ legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
 xlabel('Time [s]')
 ylabel('Angular velocity (\omega) [rad/s]')
 saveas(gcf,'Images/ps3_problem3.png')
+
+% Verify L and omega
+L_principal = [Ix Iy Iz] .* w;
+keyTimes = [1, 60, 120, 180, 240, 360];
+for n = keyTimes
+    figure(1)
+    L_unit = L_principal(n,:)/norm(L_principal(n,:));
+    w_unit = w(n,:)/norm(w(n,:));
+    quiver3(0, 0, 0, w_unit(1), w_unit(2), w_unit(3),1, 'r')
+    hold on
+    quiver3(0, 0, 0, L_unit(1), L_unit(2), L_unit(3),1, 'b')
+    quiver3(0, 0, 0, 0, 0, 1, 'k')
+    xlim([-1 1]); ylim([-1 1]); zlim([-1 1]);
+    xlabel('x'); ylabel('y'), zlabel('z')
+    legend('\omega','L','z-axis','Location','northeast')
+    title(sprintf('Unit vectors at t = %.2f s', tspan(n)))
+    hold off
+
+    saveas(1, sprintf('Images/ps3_problem3Vectors_%3f.png', n))
+end
 
 %% Non-Axisymmetric Satellite
 cm = computeCM('res/mass.csv');
