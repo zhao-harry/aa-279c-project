@@ -1,6 +1,6 @@
 close all; clear; clc
 
-%% Problem 1a
+%% Problem 1(a)
 % Recalculate moments of inertia
 cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
@@ -15,21 +15,35 @@ tFinal = 60;
 tStep = 0.01;
 t = 0:tStep:tFinal;
 
+eulerAngle0 = [0; 90; 0];
 w0 = [0; 0; 1];
-q0 = [0; 0; 0; 1];
+state0 = [eulerAngle0;w0];
 
-[q,w] = kinQuaternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
+tspan = 0:tStep:tFinal;
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
+    tspan,state0,options);
+
+state = wrapTo360(rad2deg(state(:,:)));
 
 % Plot
-figure(1)
-plot(t, q)
+figure()
+plot(t,state(:,4:6),'LineWidth',1)
+legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
+    'Location','southeast')
 xlabel('Time [s]')
-ylabel('Quaternion')
-legend('q_{1}','q_{2}','q_{3}','q_{4}', ...
-    'Location','Southeast')
-saveas(1,'Images/ps4_problem1a.png')
+ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
+saveas(1,'Images/ps4_problem1a_velocity.png')
 
-%% Problem 1b
+figure()
+plot(t,state(:,1:3),'LineWidth',1)
+legend('\phi','\theta','\psi', ...
+    'Location','southwest')
+xlabel('Time [s]')
+ylabel(['Euler Angle [' char(176) ']'])
+saveas(1,'Images/ps4_problem1a_angle.png')
+
+%% Problem 1(b)
 a = 7125.48662; % km
 e = 0.0011650;
 i = 98.40508; % degree
@@ -71,7 +85,7 @@ for n = 1:3
     
     [q,w] = kinQuaternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
 
-    figure(2)
+    figure(3)
     subplot(2,1,1)
     plot(t, w)
     xlabel('Time [s]')
@@ -88,3 +102,110 @@ for n = 1:3
     saveas(2, ['Images/ps4_problem2a_', sprintf('%i',n), '.png'])
 end
 
+%% Problem 3(c)
+eulerAngle0 = [0; 360; 0];
+w0 = [0.1; 0.1; 0.1; 100];
+state0 = [eulerAngle0;w0];
+
+tFinal = 60;
+tStep = 0.1;
+t = 0:tStep:tFinal;
+
+M = [0; 0; 0; 0];
+r = [0; 0; 1];
+Ir = 100;
+
+tspan = 0:tStep:tFinal;
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t,state] = ode113(@(t,state) kinWheel(t,state,M,r,Ix,Iy,Iz,Ir), ...
+    tspan,state0,options);
+
+eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
+
+figure()
+plot(t,state(:,4:6),'LineWidth',1)
+legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
+    'Location','southeast')
+xlabel('Time [s]')
+ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
+saveas(1,'Images/ps4_problem3c_velocity.png')
+
+figure()
+plot(t,state(:,1:3),'LineWidth',1)
+legend('\phi','\theta','\psi', ...
+    'Location','southwest')
+xlabel('Time [s]')
+ylabel(['Euler Angle [' char(176) ']'])
+saveas(1,'Images/ps4_problem3c_angle.png')
+
+%% Problem 3(d)
+eulerAngle0 = [0; 360; 0];
+w0 = [0.1; 0.1; 0.1; 100];
+state0 = [eulerAngle0;w0];
+
+tFinal = 120;
+tStep = 0.1;
+t = 0:tStep:tFinal;
+
+M = [0; 0; 0; 0];
+r = [0; 1; 0];
+Ir = 100;
+
+tspan = 0:tStep:tFinal;
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t,state] = ode113(@(t,state) kinWheel(t,state,M,r,Ix,Iy,Iz,Ir), ...
+    tspan,state0,options);
+
+eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
+
+figure()
+plot(t,state(:,4:6),'LineWidth',1)
+legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
+    'Location','southeast')
+xlabel('Time [s]')
+ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
+saveas(1,'Images/ps4_problem3d_velocity.png')
+
+figure()
+plot(t,state(:,1:3),'LineWidth',1)
+legend('\phi','\theta','\psi', ...
+    'Location','southwest')
+xlabel('Time [s]')
+ylabel(['Euler Angle [' char(176) ']'])
+saveas(1,'Images/ps4_problem3d_angle.png')
+
+%% Problem 3(e)
+eulerAngle0 = [0; 360; 0];
+w0 = [0.1; 0.1; 0.1; 100];
+state0 = [eulerAngle0;w0];
+
+tFinal = 120;
+tStep = 0.1;
+t = 0:tStep:tFinal;
+
+M = [0; 0; 0; 0];
+r = [sqrt(2)/2; sqrt(2)/2; 0];
+Ir = 100;
+
+tspan = 0:tStep:tFinal;
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t,state] = ode113(@(t,state) kinWheel(t,state,M,r,Ix,Iy,Iz,Ir), ...
+    tspan,state0,options);
+
+eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
+
+figure()
+plot(t,state(:,4:6),'LineWidth',1)
+legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
+    'Location','southeast')
+xlabel('Time [s]')
+ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
+saveas(1,'Images/ps4_problem3e_velocity.png')
+
+figure()
+plot(t,state(:,1:3),'LineWidth',1)
+legend('\phi','\theta','\psi', ...
+    'Location','southwest')
+xlabel('Time [s]')
+ylabel(['Euler Angle [' char(176) ']'])
+saveas(1,'Images/ps4_problem3e_angle.png')
