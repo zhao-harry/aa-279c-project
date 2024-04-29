@@ -58,18 +58,23 @@ close all
 w_RTN = zeros(size(w));
 
 for n = 1:length(t)
-    % Get rotation matrix
-    qn = q(n,:);
-    A = q2A(qn);
-    % Body axes
-    B = rot * A * rot';
-    % Position
+    % Get rotation matrixes (to ECI)
+    euler = state(n,1:3);
+    w_principal = state(n,4:6)';
+    A_principal = euler2A(euler);
+
     pos = y(n,1:3);
     radial = pos / norm(pos);
     tangential = y(n,4:6) / norm(y(n,4:6));
     normal = cross(radial,tangential);
-    RTN = [radial' tangential' normal'];
+    A_RTN = [radial' tangential' normal'];
+
+    A = A_RTN' * A_principal;
+    w_RTN(n,:) = A*w_principal;
 end
+
+figure(2)
+plot(t, w_RTN)
 
 %% Problem 2
 % Initial conditions
