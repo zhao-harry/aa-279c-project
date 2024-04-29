@@ -15,7 +15,7 @@ tFinal = 60;
 tStep = 0.01;
 t = 0:tStep:tFinal;
 
-eulerAngle0 = [0; 90; 0];
+eulerAngle0 = [0; 2*pi; 0];
 w0 = [0; 0; 1];
 state0 = [eulerAngle0;w0];
 
@@ -80,6 +80,8 @@ w0z = [perturbation; perturbation; 1];
 
 w0Mat = {w0x, w0y, w0z};
 eulerAngle0 = [0; 90; 0];
+tStep = 0.01;
+tFinal = 30;
 
 for n = 1:3
     w0 = w0Mat{n};
@@ -90,7 +92,7 @@ for n = 1:3
     [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
         tspan,state0,options);
 
-    eulerAngle = state(:,1:3);
+    eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
     w = state(:,4:6);
 
     figure(3)
