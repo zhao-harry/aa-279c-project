@@ -79,12 +79,19 @@ w0y = [perturbation; 1; perturbation];
 w0z = [perturbation; perturbation; 1];
 
 w0Mat = {w0x, w0y, w0z};
-q0 = [0; 0; 0; 1];
+eulerAngle0 = [0; 90; 0];
 
 for n = 1:3
     w0 = w0Mat{n};
+    state0 = [eulerAngle0;w0];
     
-    [q,w] = kinQuaternionRK4(q0,w0,Ix,Iy,Iz,tFinal,tStep);
+    tspan = 0:tStep:tFinal;
+    options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+    [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
+        tspan,state0,options);
+
+    eulerAngle = state(:,1:3);
+    w = state(:,4:6);
 
     figure(3)
     subplot(2,1,1)
@@ -95,11 +102,10 @@ for n = 1:3
         'Location','Southeast')
 
     subplot(2,1,2)
-    plot(t, q)
+    plot(t, eulerAngle)
     xlabel('Time [s]')
-    ylabel('Quaternion')
-    legend('q_{1}','q_{2}','q_{3}','q_{4}', ...
-        'Location','Southeast')
+    ylabel('Euler Angles')
+    legend('\phi','\theta','\psi', 'Location','Southeast')
     saveas(3, ['Images/ps4_problem2a_', sprintf('%i',n), '.png'])
 end
 
