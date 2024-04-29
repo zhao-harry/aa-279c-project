@@ -15,7 +15,7 @@ tFinal = 60;
 tStep = 0.01;
 t = 0:tStep:tFinal;
 
-eulerAngle0 = [0; 2*pi; 0];
+eulerAngle0 = [0; 1e-9; 0];
 w0 = [0; 0; 1];
 state0 = [eulerAngle0;w0];
 
@@ -79,7 +79,7 @@ w0y = [perturbation; 1; perturbation];
 w0z = [perturbation; perturbation; 1];
 
 w0Mat = {w0x, w0y, w0z};
-eulerAngle0 = [0; 90; 0];
+eulerAngle0 = [0; 1e-9; 0];
 tStep = 0.01;
 tFinal = 30;
 
