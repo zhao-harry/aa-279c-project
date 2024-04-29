@@ -209,3 +209,7 @@ legend('\phi','\theta','\psi', ...
 xlabel('Time [s]')
 ylabel(['Euler Angle [' char(176) ']'])
 saveas(1,'Images/ps4_problem3e_angle.png')
+
+%% Problem 4
+% Get r 
+r = y(:,1:3);
