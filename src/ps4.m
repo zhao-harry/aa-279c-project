@@ -25,6 +25,7 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
     tspan,state0,options);
 
 state = wrapTo360(rad2deg(state(:,:)));
+w = state(:,4:6);
 
 % Plot
 figure()
@@ -90,7 +91,7 @@ for n = 1:3
     plot(t, w)
     xlabel('Time [s]')
     ylabel('Angular velocity (rad/s)')
-    legend('w_{x}','w_{y}','w_{z}', ...
+    legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
         'Location','Southeast')
 
     subplot(2,1,2)
@@ -99,7 +100,7 @@ for n = 1:3
     ylabel('Quaternion')
     legend('q_{1}','q_{2}','q_{3}','q_{4}', ...
         'Location','Southeast')
-    saveas(2, ['Images/ps4_problem2a_', sprintf('%i',n), '.png'])
+    saveas(3, ['Images/ps4_problem2a_', sprintf('%i',n), '.png'])
 end
 
 %% Problem 3(c)
@@ -211,5 +212,9 @@ ylabel(['Euler Angle [' char(176) ']'])
 saveas(1,'Images/ps4_problem3e_angle.png')
 
 %% Problem 4
-% Get r 
+% Get key orbital parameters
+mu_E = 3.986e5; %km^3/s^2
+P = 2*pi*sqrt(a^3/mu_E); %s
+n_mm = 2*pi/P; %rad/s
+
 r = y(:,1:3);
