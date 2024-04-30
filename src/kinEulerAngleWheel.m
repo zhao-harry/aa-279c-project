@@ -19,7 +19,7 @@ function stateDot = kinEulerAngleWheel(t,state,M,r,Ix,Iy,Iz,Ir)
     stateDot(6) = wDot(3);
     stateDot(7) = wDot(4);
     % Euler angle time derivatives
-    stateDot(1) = (wx*sin(psi) + wy*cos(psi))/sin(theta);
-    stateDot(2) = wx*cos(psi) - wy*sin(psi);
-    stateDot(3) = wz - (wx*sin(psi) + wy*cos(psi))*cot(theta);
+    stateDot(1) = (wx*sin(psi) - wy*cos(psi))/sin(theta);
+    stateDot(2) = wx*cos(psi) + wy*sin(psi);
+    stateDot(3) = wz + (-wx*sin(psi) + wy*cos(psi))*cot(theta);
 end

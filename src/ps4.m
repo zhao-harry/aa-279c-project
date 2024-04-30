@@ -51,7 +51,7 @@ end
 
 %% Problem 1(b)
 a = 7125.48662; % km
-e = 0.0011650;
+e = 0;
 i = 98.40508; % degree
 O = -19.61601; % degree
 w_deg = 89.99764; % degree
@@ -59,7 +59,7 @@ nu = -89.99818; % degree
 
 [~,y] = plotECI(a,e,i,O,w_deg,nu,t);
 close all
-
+format long
 % Initialize w0 to be aligned with normal
 r0 = y(1,1:3);
 v0 = y(1,4:6);
@@ -67,39 +67,38 @@ radial = r0 / norm(r0);
 tangential = v0 / norm(v0);
 normal = cross(radial,tangential);
 A_RTN = [radial' tangential' normal'];
-euler0 = A2Euler(A_RTN);
 w0 = [0; 0; 1];
 state0 = [euler0; w0];
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
     tspan,state0,options);
 
-w_RTN = nan(size(w));
+% w_RTN = nan(size(w));
+% 
+% for n = 1:length(t)
+%     pos = y(n,1:3);
+%     radial = pos / norm(pos);
+%     tangential = y(n,4:6) / norm(y(n,4:6));
+%     normal = cross(radial,tangential);
+%     A_RTN = [radial' tangential' normal'];
+% 
+%     % Get rotation matrixes (to ECI)
+%     euler = state(n,1:3);
+%     w_principal = state(n,4:6)';
+%     A_principal = euler2A(euler);
+% 
+%     A = A_RTN' * A_principal;
+% 
+%     w_RTN(n,:) = A*w_principal;
+% end
 
-for n = 1:length(t)
-    pos = y(n,1:3);
-    radial = pos / norm(pos);
-    tangential = y(n,4:6) / norm(y(n,4:6));
-    normal = cross(radial,tangential);
-    A_RTN = [radial' tangential' normal'];
-
-    % Get rotation matrixes (to ECI)
-    euler = state(n,1:3);
-    w_principal = state(n,4:6)';
-    A_principal = euler2A(euler);
-
-    A = A_RTN' * A_principal;
-
-    w_RTN(n,:) = A*w_principal;
-end
-
-figure(2)
-plot(t, w_RTN)
-legend("Radial", "Tangential", "Normal")
+% figure(2)
+% plot(t, w_RTN)
+% legend("Radial", "Tangential", "Normal")
 
 %% Problem 2
 % Initial conditions
-perturbation = 0.01;
+perturbation = 0.001;
 w0x = [1; perturbation; perturbation];
 w0y = [perturbation; 1; perturbation];
 w0z = [perturbation; perturbation; 1];
