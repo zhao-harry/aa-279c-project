@@ -60,21 +60,33 @@ nu = -89.99818; % degree
 [~,y] = plotECI(a,e,i,O,w_deg,nu,t);
 close all
 
-w_RTN = zeros(size(w));
-A_vals = cell(size(w(:,1)));
+% Initialize w0 to be aligned with normal
+r0 = y(1,1:3);
+v0 = y(1,4:6);
+radial = r0 / norm(r0);
+tangential = v0 / norm(v0);
+normal = cross(radial,tangential);
+A_RTN = [radial' tangential' normal'];
+euler0 = A2Euler(A_RTN);
+w0 = [0; 0; 1];
+state0 = [euler0; w0];
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
+    tspan,state0,options);
+
+w_RTN = nan(size(w));
 
 for n = 1:length(t)
-    % Get rotation matrixes (to ECI)
-    euler = state(n,1:3);
-    w_principal = state(n,4:6)';
-    A_principal = euler2A(euler);
-
     pos = y(n,1:3);
     radial = pos / norm(pos);
     tangential = y(n,4:6) / norm(y(n,4:6));
     normal = cross(radial,tangential);
     A_RTN = [radial' tangential' normal'];
 
+    % Get rotation matrixes (to ECI)
+    euler = state(n,1:3);
+    w_principal = state(n,4:6)';
+    A_principal = euler2A(euler);
 
     A = A_RTN' * A_principal;
 
