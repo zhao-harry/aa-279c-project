@@ -56,6 +56,7 @@ nu = -89.99818; % degree
 close all
 
 w_RTN = zeros(size(w));
+A_vals = cell(size(w(:,1)));
 
 for n = 1:length(t)
     % Get rotation matrixes (to ECI)
@@ -69,12 +70,15 @@ for n = 1:length(t)
     normal = cross(radial,tangential);
     A_RTN = [radial' tangential' normal'];
 
+
     A = A_RTN' * A_principal;
+
     w_RTN(n,:) = A*w_principal;
 end
 
 figure(2)
 plot(t, w_RTN)
+legend("Radial", "Tangential", "Normal")
 
 %% Problem 2
 % Initial conditions
