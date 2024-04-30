@@ -1,7 +1,7 @@
 close all; clear; clc
+savePlot = false;
 
-%% Problem 1(a)
-% Recalculate moments of inertia
+%% Import mass properties
 cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
 
@@ -10,6 +10,7 @@ Ix = IPrincipal(1,1);
 Iy = IPrincipal(2,2);
 Iz = IPrincipal(3,3);
 
+%% Problem 1(a)
 % Find Euler kinematics
 tFinal = 60;
 tStep = 0.01;
@@ -34,7 +35,9 @@ legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
     'Location','southeast')
 xlabel('Time [s]')
 ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
-saveas(1,'Images/ps4_problem1a_velocity.png')
+if savePlot
+    saveas(gcf,'Images/ps4_problem1a_velocity.png')
+end
 
 figure()
 plot(t,state(:,1:3),'LineWidth',1)
@@ -42,7 +45,9 @@ legend('\phi','\theta','\psi', ...
     'Location','southwest')
 xlabel('Time [s]')
 ylabel(['Euler Angle [' char(176) ']'])
-saveas(1,'Images/ps4_problem1a_angle.png')
+if savePlot
+    saveas(gcf,'Images/ps4_problem1a_angle.png')
+end
 
 %% Problem 1(b)
 a = 7125.48662; % km
@@ -86,7 +91,7 @@ tFinal = 30;
 for n = 1:3
     w0 = w0Mat{n};
     state0 = [eulerAngle0;w0];
-    
+
     tspan = 0:tStep:tFinal;
     options = odeset('RelTol',1e-6,'AbsTol',1e-9);
     [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
@@ -95,7 +100,7 @@ for n = 1:3
     eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
     w = state(:,4:6);
 
-    figure(3)
+    figure()
     subplot(2,1,1)
     plot(t, w)
     xlabel('Time [s]')
@@ -108,99 +113,50 @@ for n = 1:3
     xlabel('Time [s]')
     ylabel('Euler Angles')
     legend('\phi','\theta','\psi', 'Location','Southeast')
-    saveas(3, ['Images/ps4_problem2a_', sprintf('%i',n), '.png'])
+    if savePlot
+        saveas(gcf, ['Images/ps4_problem2a_', sprintf('%i',n), '.png'])
+    end
 end
 
 %% Problem 3(c)
 eulerAngle0 = [0; 360; 0];
 w0 = [0.1; 0.1; 0.1; 100];
-state0 = [eulerAngle0;w0];
-
-tFinal = 60;
-tStep = 0.1;
-t = 0:tStep:tFinal;
-
 M = [0; 0; 0; 0];
 r = [0; 0; 1];
 Ir = 100;
-
-tspan = 0:tStep:tFinal;
-options = odeset('RelTol',1e-6,'AbsTol',1e-9);
-[t,state] = ode113(@(t,state) kinEulerAngleWheel(t,state,M,r,Ix,Iy,Iz,Ir), ...
-    tspan,state0,options);
-
-eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
-
-figure()
-plot(t,state(:,4:6),'LineWidth',1)
-legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
-    'Location','southeast')
-xlabel('Time [s]')
-ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
-saveas(gcf,'Images/ps4_problem3c_velocity.png')
-
-figure()
-plot(t,state(:,1:3),'LineWidth',1)
-legend('\phi','\theta','\psi', ...
-    'Location','southwest')
-xlabel('Time [s]')
-ylabel(['Euler Angle [' char(176) ']'])
-saveas(gcf,'Images/ps4_problem3c_angle.png')
+tFinal = 60;
+tStep = 0.1;
+velocityPlot = 'Images/ps4_problem3c_velocity.png';
+anglePlot = 'Images/ps4_problem3c_angle.png';
 
 %% Problem 3(d)
 eulerAngle0 = [0; 360; 0];
 w0 = [0.1; 0.1; 0.1; 100];
-state0 = [eulerAngle0;w0];
-
-tFinal = 120;
-tStep = 0.1;
-t = 0:tStep:tFinal;
-
 M = [0; 0; 0; 0];
 r = [0; 1; 0];
 Ir = 100;
-
-tspan = 0:tStep:tFinal;
-options = odeset('RelTol',1e-6,'AbsTol',1e-9);
-[t,state] = ode113(@(t,state) kinEulerAngleWheel(t,state,M,r,Ix,Iy,Iz,Ir), ...
-    tspan,state0,options);
-
-eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
-
-figure()
-plot(t,state(:,4:6),'LineWidth',1)
-legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
-    'Location','southeast')
-xlabel('Time [s]')
-ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
-saveas(gcf,'Images/ps4_problem3d_velocity.png')
-
-figure()
-plot(t,state(:,1:3),'LineWidth',1)
-legend('\phi','\theta','\psi', ...
-    'Location','southwest')
-xlabel('Time [s]')
-ylabel(['Euler Angle [' char(176) ']'])
-saveas(gcf,'Images/ps4_problem3d_angle.png')
+tFinal = 120;
+tStep = 0.1;
+velocityPlot = 'Images/ps4_problem3d_velocity.png';
+anglePlot = 'Images/ps4_problem3d_angle.png';
 
 %% Problem 3(e)
 eulerAngle0 = [0; 360; 0];
 w0 = [0.1; 0.1; 0.1; 100];
-state0 = [eulerAngle0;w0];
-
-tFinal = 120;
-tStep = 0.1;
-t = 0:tStep:tFinal;
-
 M = [0; 0; 0; 0];
 r = [sqrt(2)/2; sqrt(2)/2; 0];
 Ir = 100;
+tFinal = 120;
+tStep = 0.1;
+velocityPlot = 'Images/ps4_problem3e_velocity.png';
+anglePlot = 'Images/ps4_problem3e_angle.png';
 
+%% Problem 3
+state0 = [eulerAngle0;w0];
 tspan = 0:tStep:tFinal;
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) kinEulerAngleWheel(t,state,M,r,Ix,Iy,Iz,Ir), ...
     tspan,state0,options);
-
 eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
 
 figure()
@@ -209,7 +165,9 @@ legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
     'Location','southeast')
 xlabel('Time [s]')
 ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
-saveas(gcf,'Images/ps4_problem3e_velocity.png')
+if savePlot
+    saveas(gcf,velocityPlot)
+end
 
 figure()
 plot(t,state(:,1:3),'LineWidth',1)
@@ -217,7 +175,9 @@ legend('\phi','\theta','\psi', ...
     'Location','southwest')
 xlabel('Time [s]')
 ylabel(['Euler Angle [' char(176) ']'])
-saveas(gcf,'Images/ps4_problem3e_angle.png')
+if savePlot
+    saveas(gcf,anglePlot)
+end
 
 %% Problem 4
 % Get key orbital parameters

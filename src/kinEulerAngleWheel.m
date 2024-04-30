@@ -1,4 +1,4 @@
-function stateDot = kinWheel(t,state,M,r,Ix,Iy,Iz,Ir)
+function stateDot = kinEulerAngleWheel(t,state,M,r,Ix,Iy,Iz,Ir)
     % Computes state derivative for Euler angles, angular velocity
     % Adds momentum wheel
     % Assign variables
