@@ -23,7 +23,7 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
     tspan,state0,options);
 
-state = wrapTo360(rad2deg(state(:,:)));
+state = rad2deg(state);
 
 % Plot
 figure()
@@ -37,7 +37,7 @@ if savePlot
 end
 
 figure()
-plot(t,state(:,1:3),'LineWidth',1)
+plot(t,wrapTo180(state(:,1:3)),'LineWidth',1)
 legend('\phi','\theta','\psi', ...
     'Location','southwest')
 xlabel('Time [s]')
@@ -145,7 +145,7 @@ for n = 1:3
         tspan,state0,options);
 
     eulerAngle = wrapTo180(rad2deg(state(:,1:3)));
-    w = wrapTo180(rad2deg(state(:,4:6)));
+    w = rad2deg(state(:,4:6));
 
     figure()
     subplot(2,1,1)
@@ -173,60 +173,64 @@ Ir = mr * r^2;
 wrRPM = 2500; % RPM
 wr = wrRPM * 0.1047198;
 
+% Initial Euler angle
+eulerAngle0 = [0; 0; 0];
+
 % No external torques
 M = [0; 0; 0; 0];
 
 % Time
-tFinal = 600;
+tFinal = 300;
 tStep = 0.1;
 
 %% Problem 3(b)
-eulerAngle0 = [0; 0; 0];
-w0 = [0; 0; 0; wr];
-r = [0; 0; 1];
-
-momentumPlot = 'Images/ps4_problem3b_angmom.png';
-velocityPlot = 'Images/ps4_problem3b_angvel.png';
-anglePlot = 'Images/ps4_problem3b_angle.png';
-plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
-                M,r,Ix,Iy,Iz,Ir, ...    
-                momentumPlot,velocityPlot,anglePlot,savePlot);
-
-%% Problem 3(c)
-eulerAngle0 = [0; 0; 0];
 w0 = [0.01; 0.01; 0.01; wr];
 r = [0; 0; 1];
 
-momentumPlot = 'Images/ps4_problem3c_angmom.png';
-velocityPlot = 'Images/ps4_problem3c_angvel.png';
-anglePlot = 'Images/ps4_problem3c_angle.png';
+namePlot = 'Images/ps4_problem3b.png';
 plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
-                M,r,Ix,Iy,Iz,Ir, ...    
-                momentumPlot,velocityPlot,anglePlot,savePlot);
+                M,r,Ix,Iy,Iz,Ir,namePlot,savePlot);
+
+%% Problem 3(c)
+w0 = [0.1; 0.001; 0.001; wr + 0.001 * rand()];
+r = [1; 0; 0];
+namePlot = 'Images/ps4_problem3c_x.png';
+plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
+                M,r,Ix,Iy,Iz,Ir,namePlot,savePlot);
+
+w0 = [0.001; 0.1; 0.001; wr + 0.001 * rand()];
+r = [0; 1; 0];
+namePlot = 'Images/ps4_problem3c_y.png';
+plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
+                M,r,Ix,Iy,Iz,Ir,namePlot,savePlot);
+
+w0 = [0.001; 0.001; 0.1; wr + 0.001 * rand()];
+r = [0; 0; 1];
+namePlot = 'Images/ps4_problem3c_z.png';
+plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
+                M,r,Ix,Iy,Iz,Ir,namePlot,savePlot);
 
 %% Problem 3(d)
-eulerAngle0 = [0; 0; 0];
-w0 = [0.01; 0.25; 0.01; wr];
+w0 = [0.001; 0.1; 0.001; wr * 10];
 r = [0; 1; 0];
 
-momentumPlot = 'Images/ps4_problem3d_angmom.png';
-velocityPlot = 'Images/ps4_problem3d_angvel.png';
-anglePlot = 'Images/ps4_problem3d_angle.png';
+namePlot = 'Images/ps4_problem3d.png';
 plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
-                M,r,Ix,Iy,Iz,Ir, ...    
-                momentumPlot,velocityPlot,anglePlot,savePlot);
+                M,r,Ix,Iy,Iz,Ir,namePlot,savePlot);
 
 %% Problem 3(e)
-eulerAngle0 = [0; 0; 0];
-w0 = [0.1; 0.1; 0.1; wr];
-r = [sqrt(2)/2; sqrt(2)/2; 0];
+w0 = [rot' * [0.1; 0.001; 0.001]; 0];
+r = rot' * [1; 0; 0];
 
-momentumPlot = 'Images/ps4_problem3e_angmom.png';
-velocityPlot = 'Images/ps4_problem3e_angvel.png';
-anglePlot = 'Images/ps4_problem3e_angle.png';
+namePlot = 'Images/ps4_problem3e_unstable.png';
 plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
-                M,r,Ix,Iy,Iz,Ir, ...    
-                momentumPlot,velocityPlot,anglePlot,savePlot);
+                M,r,Ix,Iy,Iz,Ir,namePlot,savePlot);
+
+w0 = [rot' * [0.1; 0.001; 0.001]; wr * 10];
+
+namePlot = 'Images/ps4_problem3e_stable.png';
+plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
+                M,r,Ix,Iy,Iz,Ir,namePlot,savePlot);
 
 %% Problem 4
 tFinal = 6000;

@@ -1,10 +1,7 @@
 function [t,eulerAngle,w] = plotPS4Problem3(eulerAngle0,w0, ...
                                             tStep,tFinal, ...
                                             M,r,Ix,Iy,Iz,Ir, ...
-                                            momentumPlot, ...
-                                            velocityPlot, ...
-                                            anglePlot, ...
-                                            savePlot)
+                                            namePlot,savePlot)
 
     state0 = [eulerAngle0;w0];
     tspan = 0:tStep:tFinal;
@@ -31,37 +28,32 @@ function [t,eulerAngle,w] = plotPS4Problem3(eulerAngle0,w0, ...
     
     % Plot angular momentum
     figure()
+    subplot(3,1,1)
     hold on
     plot(t,L_inertial)
     plot(t,L_norm,'k--')
     xlabel('Time [s]')
-    ylabel('Angular momentum [kg m^{2}/s]')
+    ylabel('L [kg m^{2}/s]')
     legend("L_{1}", "L_{2}", "L_{3}", "||L||")
     hold off
-    if savePlot && ~isempty(momentumPlot)
-        saveas(gcf,momentumPlot)
-    end
     
     % Plot angular velocity
-    figure()
+    subplot(3,1,2)
     plot(t,rad2deg(w),'LineWidth',1)
     legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
         'Location','southeast')
     xlabel('Time [s]')
     ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
-    if savePlot && ~isempty(velocityPlot)
-        saveas(gcf,velocityPlot)
-    end
     
     % Plot Euler angles
-    figure()
+    subplot(3,1,3)
     plot(t,eulerAngleDeg,'LineWidth',1)
     legend('\phi','\theta','\psi', ...
         'Location','southwest')
     xlabel('Time [s]')
     ylabel(['Euler Angle [' char(176) ']'])
-    if savePlot && ~isempty(anglePlot)
-        saveas(gcf,anglePlot)
+    if savePlot
+        saveas(gcf,namePlot)
     end
 
 end
