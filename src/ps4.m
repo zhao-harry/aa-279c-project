@@ -35,7 +35,7 @@ legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
 xlabel('Time [s]')
 ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
 if savePlot
-    saveas(gcf,'Images/ps4_problem1a_velocity.png')
+    saveas(gcf,'Images/ps4_problem1a_angvel.png')
 end
 
 figure()
@@ -171,8 +171,8 @@ r = [0; 0; 1];
 Ir = 100;
 tFinal = 60;
 tStep = 0.1;
-momentumPlot = 'Images/ps4_problem3c_momentum.png';
-velocityPlot = 'Images/ps4_problem3c_velocity.png';
+momentumPlot = 'Images/ps4_problem3c_angmom.png';
+velocityPlot = 'Images/ps4_problem3c_angvel.png';
 anglePlot = 'Images/ps4_problem3c_angle.png';
 plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
                 M,r,Ix,Iy,Iz,Ir, ...    
@@ -186,8 +186,8 @@ r = [0; 1; 0];
 Ir = 100;
 tFinal = 120;
 tStep = 0.1;
-momentumPlot = 'Images/ps4_problem3d_momentum.png';
-velocityPlot = 'Images/ps4_problem3d_velocity.png';
+momentumPlot = 'Images/ps4_problem3d_angmom.png';
+velocityPlot = 'Images/ps4_problem3d_angvel.png';
 anglePlot = 'Images/ps4_problem3d_angle.png';
 plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
                 M,r,Ix,Iy,Iz,Ir, ...    
@@ -201,33 +201,89 @@ r = [sqrt(2)/2; sqrt(2)/2; 0];
 Ir = 100;
 tFinal = 120;
 tStep = 0.1;
-momentumPlot = 'Images/ps4_problem3e_momentum.png';
-velocityPlot = 'Images/ps4_problem3e_velocity.png';
+momentumPlot = 'Images/ps4_problem3e_angmom.png';
+velocityPlot = 'Images/ps4_problem3e_angvel.png';
 anglePlot = 'Images/ps4_problem3e_angle.png';
 plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
                 M,r,Ix,Iy,Iz,Ir, ...    
                 momentumPlot,velocityPlot,anglePlot,savePlot);
 
 %% Problem 4
-% Get key orbital parameters
-orbitParams.a = 7125.48662; % km
-orbitParams.e = 0.0011650;
-orbitParams.i = 98.40508; % degree
-orbitParams.O = -19.61601; % degree
-orbitParams.w = 89.99764; % degree
-orbitParams.nu = -89.99818; % degree
+tFinal = 60;
+tStep = 0.1;
+tspan = 0:tStep:tFinal;
 
-% Get data
-tFinal = 600;
-tStep = 1;
-t = 0:tStep:tFinal;
-w0 = w0_RTN; %from 1b
-eulerAng0 = euler0_RTN; % from 1b
+a = 7125.48662; % km
+e = 0;
+i = 98.40508; % degree
+O = -19.61601; % degree
+w = 89.99764; % degree
+nu = -89.99818; % degree
+muE = 3.986e5;
 
-[w, eulerAngs, M_gg, y] = eulerEquationGravGradRK4(w0,eulerAng0,Ix,Iy,Iz,orbitParams,tFinal,tStep);
-eulerAngs = wrapTo360(rad2deg(eulerAngs));
+n = sqrt(muE / a^3);
 
-L_principal = [Ix Iy Iz] .* w;
+y = oe2eci(a,e,i,O,w,nu);
+r0 = y(1:3);
+v0 = y(4:6);
+h = cross(r0,v0);
+radial = r0 / norm(r0);
+normal = h / norm(h);
+tangential = cross(normal,radial);
+A_RTN = [radial tangential normal];
 
-figure(6)
-plot(t, w)
+state0 = zeros(12,1);
+state0(1:6) = y;
+state0(7:9) = [0; 0; n];
+state0(10:12) = A2e(A_RTN);
+
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t,state] = ode113(@(t,state) gravGrad(t,state,Ix,Iy,Iz,n), ...
+        tspan,state0,options);
+
+c = zeros(size(state(:,1:3)));
+M = zeros(size(state(:,1:3)));
+for i = 1:length(t)
+    r = state(i,1:3);
+    v = state(i,4:6);
+    h = cross(r,v);
+    radial = r / norm(r);
+    normal = h / norm(h);
+    tangential = cross(normal,radial);
+    A_RTN = [radial' tangential' normal'];
+    A_ECI2P = e2A(state(i,10:12));
+    A = A_ECI2P * A_RTN';
+    c(i,1:3) = A(:,1);
+    M(i,1:3) = gravGradTorque(Ix,Iy,Iz,n,c(i,1:3));
+end
+
+% plot(t,c)
+
+% plot(t,M)
+
+% plot(t,state(:,7:9))
+% xlabel('Time [s]')
+% ylabel('Angular Velocity in Principal Axes [rad/s]')
+% legend('\omega_{x}','\omega_{y}','\omega_{z}')
+
+%%
+stateT = state(end,:);
+r = stateT(1:3);
+v = stateT(4:6);
+h = cross(r,v);
+radial = r / norm(r);
+normal = h / norm(h);
+tangential = cross(normal,radial);
+A_RTN = [radial' tangential' normal']
+A_ECI2P = e2A(stateT(10:12))
+
+%% Problem 4(c)
+yECI = oe2eci(orbitParams.a,orbitParams.e,orbitParams.i,orbitParams.O,orbitParams.w,orbitParams.nu);
+muE = 3.986e5; %km^3/s^2
+R_ECI = yECI(1:3);
+A_E2P = e2A(eulerAngs(1,1:3));
+R_principal = A_E2P * R_ECI;
+c = R_principal / norm(R_principal);
+M = 3 * muE / a^3 * [(Iz - Iy) * c(2) * c(3); ...
+                    (Ix - Iz) * c(3) * c(1); ...
+                    (Iy - Ix) * c(1) * c(2)]
