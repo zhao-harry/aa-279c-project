@@ -211,7 +211,6 @@ plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
                 M,r,Ix,Iy,Iz,Ir, ...    
                 momentumPlot,velocityPlot,anglePlot,savePlot);
 
-<<<<<<< HEAD
 %% Problem 4
 tFinal = 6000;
 tStep = 1;
@@ -224,11 +223,6 @@ O = -19.61601; % degree
 w = 89.99764; % degree
 nu = -89.99818; % degree
 muE = 3.986 * 10^5;
-
-=======
-%% Problem 4(d)
-muE = 3.986e5;
->>>>>>> 45d1e748d1ee4a5ba7be03aa4749879b240166b0
 n = sqrt(muE / a^3);
 
 y = oe2eci(a,e,i,O,w,nu);
@@ -259,8 +253,6 @@ for i = 1:length(t)
     M(i,1:3) = gravGradTorque(Ix,Iy,Iz,n,c(i,1:3));
 end
 
-<<<<<<< HEAD
-%%
 % plot(t,M)
 % xlabel('Time [s]')
 % ylabel('Torque in Principal Axes [rad/s]')
@@ -297,19 +289,6 @@ for i = 1:50:tLen
     plotTriad(gca,r,A_P,500,'b');
 end
 hold off
-=======
-figure()
-plot(t,state(:,7:9))
-xlabel('Time [s]')
-ylabel('Angular Velocity in Principal Axes [rad/s]')
-legend('\omega_{x}','\omega_{y}','\omega_{z}')
-
-figure()
-plot(t,state(:,10:12))
-xlabel('Time [s]')
-ylabel('Angular Velocity in Principal Axes [rad/s]')
-legend('\phi','\theta','\psi')
->>>>>>> 45d1e748d1ee4a5ba7be03aa4749879b240166b0
 
 %% Problem 4(c)
 % M = 3 * muE / a^3 * [(Iz - Iy) * c(2) * c(3); ...
