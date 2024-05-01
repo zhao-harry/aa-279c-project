@@ -1,5 +1,5 @@
 function [t,y] = plotECI(a,e,i,O,w,nu,tspan)
-    yECI = oe2eci(a,e,i,O,w,nu)
+    yECI = oe2eci(a,e,i,O,w,nu);
     options = odeset('RelTol',1e-6,'AbsTol',1e-9);
     [t,y] = ode113(@propagator,tspan,yECI,options);
     plot3(y(:,1),y(:,2),y(:,3),'LineWidth',2,'Color','green')
