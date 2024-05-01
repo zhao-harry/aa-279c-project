@@ -16,7 +16,7 @@ function [stateDot] = gravGrad(t,state,Ix,Iy,Iz,n)
 
     radial = r / norm(r);
     A_ECI2P = e2A(state(10:12));
-    c = A_ECI2P' * radial;
+    c = A_ECI2P * radial;
     M = gravGradTorque(Ix,Iy,Iz,n,c);
     stateDot(7) = (M(1) - (Iz - Iy) * w(2) * w(3)) / Ix;
     stateDot(8) = (M(2) - (Ix - Iz) * w(3) * w(1)) / Iy;

@@ -50,11 +50,15 @@ end
 
 %% Problem 1(b)
 a = 7125.48662; % km
-e = 0.0011650;
+e = 0;
 i = 98.40508; % degree
 O = -19.61601; % degree
 w_deg = 89.99764; % degree
 nu = -89.99818; % degree
+
+muE = 3.986 * 10^5;
+
+n = sqrt(muE / a^3);
 
 tFinal = 6000;
 tStep = 0.1;
@@ -73,7 +77,7 @@ h = cross(r0,v0);
 radial = r0 / norm(r0);
 normal = h / norm(h);
 tangential = cross(normal,radial);
-A_RTN = [radial' tangential' normal'];
+A_RTN = [radial' tangential' normal']';
 w0_RTN = [0; 0; 0.1];
 euler0_RTN = A2e(A_RTN);
 state0 = [euler0_RTN; w0_RTN];
@@ -91,13 +95,13 @@ for n = 1:length(t)
     radial = pos / norm(pos);
     normal = h / norm(h);
     tangential = cross(normal,radial);
-    A_RTN = [radial' tangential' normal'];
+    tangential = tangential / norm(tangential);
+    A_RTN = [radial' tangential' normal']';
 
     % Get rotation matrixes (to ECI)
     euler = state(n,1:3);
     w_principal = state(n,4:6)';
     A_principal = e2A(euler);
-
     A_P2R = A_RTN * A_principal';
 
     w_RTN(n,:) = A_P2R*w_principal;
@@ -114,7 +118,7 @@ end
 
 
 figure(3)
-plot(t(1:nTrunc), euler_RTN(1:nTrunc,:))
+plot(t, euler_RTN)
 title("Euler Angles from principal to RTN frame")
 legend("\phi", "\theta", "\psi")
 if savePlot == true
@@ -129,7 +133,7 @@ w0y = [perturbation; 1; perturbation];
 w0z = [perturbation; perturbation; 1];
 
 w0Mat = {w0x, w0y, w0z};
-eulerAngle0 = [0; 1e-9; 0];
+eulerAngle0 = [0; 0; 0];
 tStep = 0.01;
 tFinal = 30;
 
@@ -209,8 +213,8 @@ plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
                 momentumPlot,velocityPlot,anglePlot,savePlot);
 
 %% Problem 4
-tFinal = 2;
-tStep = 0.1;
+tFinal = 6000;
+tStep = 1;
 tspan = 0:tStep:tFinal;
 
 a = 7125.48662; % km
@@ -218,8 +222,8 @@ e = 0;
 i = 98.40508; % degree
 O = -19.61601; % degree
 w = 89.99764; % degree
-nu = 0; % degree
-muE = 3.986e5;
+nu = -89.99818; % degree
+muE = 3.986 * 10^5;
 
 n = sqrt(muE / a^3);
 
@@ -235,7 +239,7 @@ A_RTN = [radial tangential normal];
 state0 = zeros(12,1);
 state0(1:6) = y;
 state0(7:9) = [0; 0; n];
-state0(10:12) = A2e(A_RTN);
+state0(10:12) = A2e(A_RTN');
 
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) gravGrad(t,state,Ix,Iy,Iz,n), ...
@@ -247,19 +251,47 @@ for i = 1:length(t)
     r = state(i,1:3);
     radial = r / norm(r);
     A_ECI2P = e2A(state(i,10:12));
-    c(i,1:3) = A_ECI2P' * radial';
+    c(i,1:3) = A_ECI2P * radial';
     M(i,1:3) = gravGradTorque(Ix,Iy,Iz,n,c(i,1:3));
 end
 
+%%
 % plot(t,M)
 % xlabel('Time [s]')
-% ylabel('Moment in Principal Axes [rad/s]')
+% ylabel('Torque in Principal Axes [rad/s]')
 % legend('M_{x}','M_{y}','M_{z}')
+% ylim([-1e-5 1e-5])
 
-% plot(t,state(:,7:9))
-% xlabel('Time [s]')
-% ylabel('Angular Velocity in Principal Axes [rad/s]')
-% legend('\omega_{x}','\omega_{y}','\omega_{z}')
+plot(t,state(:,7:9))
+xlabel('Time [s]')
+ylabel('Angular Velocity in Principal Axes [rad/s]')
+legend('\omega_{x}','\omega_{y}','\omega_{z}')
+
+%%
+figure()
+a = 7125.48662; % km
+e = 0;
+i = 98.40508; % degree
+O = -19.61601; % degree
+w = 89.99764; % degree
+nu = -89.99818; % degree
+muE = 3.986 * 10^5;
+y = state(:,1:6);
+plotECI(a,e,i,O,w,nu,tspan);
+hold on
+tLen = length(t);
+for i = 1:50:tLen
+    r = y(i,1:3);
+    v = y(i,4:6);
+    radial = r / norm(r);
+    h = cross(r,v);
+    normal = h / norm(h);
+    tangential = cross(normal,radial);
+    RTN = [radial' tangential' normal'];
+    A_P = e2A(state(i,10:12))';
+    plotTriad(gca,r,A_P,500,'b');
+end
+hold off
 
 %% Problem 4(c)
 % M = 3 * muE / a^3 * [(Iz - Iy) * c(2) * c(3); ...
