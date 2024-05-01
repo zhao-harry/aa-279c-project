@@ -278,12 +278,6 @@ A_RTN = [radial' tangential' normal']
 A_ECI2P = e2A(stateT(10:12))
 
 %% Problem 4(c)
-yECI = oe2eci(orbitParams.a,orbitParams.e,orbitParams.i,orbitParams.O,orbitParams.w,orbitParams.nu);
-muE = 3.986e5; %km^3/s^2
-R_ECI = yECI(1:3);
-A_E2P = e2A(eulerAngs(1,1:3));
-R_principal = A_E2P * R_ECI;
-c = R_principal / norm(R_principal);
-M = 3 * muE / a^3 * [(Iz - Iy) * c(2) * c(3); ...
-                    (Ix - Iz) * c(3) * c(1); ...
-                    (Iy - Ix) * c(1) * c(2)]
+% M = 3 * muE / a^3 * [(Iz - Iy) * c(2) * c(3); ...
+%                     (Ix - Iz) * c(3) * c(1); ...
+%                     (Iy - Ix) * c(1) * c(2)]
