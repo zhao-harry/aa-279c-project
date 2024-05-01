@@ -112,7 +112,6 @@ if savePlot == true
     saveas(2, 'Images/ps4_problem1b_angvel.png')
 end
 
-
 figure(3)
 plot(t(1:nTrunc), euler_RTN(1:nTrunc,:))
 title("Euler Angles from principal to RTN frame")
@@ -209,7 +208,7 @@ plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
                 momentumPlot,velocityPlot,anglePlot,savePlot);
 
 %% Problem 4(d)
-muE = 3.986e5;
+
 n = sqrt(muE / a^3);
 
 y = oe2eci(a,e,i,O,w,nu);
