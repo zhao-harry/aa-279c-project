@@ -227,5 +227,7 @@ eulerAng0 = euler0_RTN; % from 1b
 [w, eulerAngs, M_gg, y] = eulerEquationGravGradRK4(w0,eulerAng0,Ix,Iy,Iz,orbitParams,tFinal,tStep);
 eulerAngs = wrapTo360(rad2deg(eulerAngs));
 
-figure(5)
+L_principal = [Ix Iy Iz] .* w;
+
+figure(6)
 plot(t, w)
