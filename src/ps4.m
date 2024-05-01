@@ -1,5 +1,5 @@
 close all; clear; clc
-savePlot = false;
+savePlot = true;
 
 %% Import mass properties
 cm = computeCM('res/mass.csv');
@@ -11,7 +11,6 @@ Iy = IPrincipal(2,2);
 Iz = IPrincipal(3,3);
 
 %% Problem 1(a)
-% Find Euler kinematics
 tFinal = 60;
 tStep = 0.01;
 tspan = 0:tStep:tFinal;
@@ -25,7 +24,6 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
     tspan,state0,options);
 
 state = wrapTo360(rad2deg(state(:,:)));
-w = state(:,4:6);
 
 % Plot
 figure()
@@ -33,7 +31,7 @@ plot(t,state(:,4:6),'LineWidth',1)
 legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
     'Location','southeast')
 xlabel('Time [s]')
-ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
+ylabel(['Angular Velocity (\omega) [' char(176) '/s]'])
 if savePlot
     saveas(gcf,'Images/ps4_problem1a_angvel.png')
 end
@@ -70,7 +68,7 @@ nTrunc = find((tspan == tTrunc) == 1);
 close all
 format long
 
-% Initialize w0 to be aligned with normal
+% Initialize angular velocity aligned with normal
 r0 = y(1,1:3);
 v0 = y(1,4:6);
 h = cross(r0,v0);
@@ -107,21 +105,22 @@ for n = 1:length(t)
     euler_RTN(n,:) = A2e(A_P2R');
 end
 
-
-figure(2)
-plot(t, w_RTN)
-legend("\omega_{R}", "\omega_{T}", "\omega_{N}")
+figure()
+plot(t, rad2deg(w_RTN))
+xlabel('Time [s]')
+ylabel(['Angular Velocity, RTN Frame [' char(176) '/s]'])
+legend('\omega_{R}','\omega_{T}','\omega_{N}')
 if savePlot == true
-    saveas(2, 'Images/ps4_problem1b_angvel.png')
+    saveas(gcf,'Images/ps4_problem1b_angvel.png')
 end
 
-
-figure(3)
-plot(t, euler_RTN)
-title("Euler Angles from principal to RTN frame")
-legend("\phi", "\theta", "\psi")
+figure()
+plot(t(1:nTrunc), wrapTo180(rad2deg(euler_RTN(1:nTrunc,:))))
+xlabel('Time [s]')
+ylabel(['Euler Angle, RTN Frame [' char(176) ']'])
+legend('\phi','\theta','\psi')
 if savePlot == true
-    saveas(3, 'Images/ps4_problem1b_euler.png')
+    saveas(gcf,'Images/ps4_problem1b_euler.png')
 end
 
 %% Problem 2
@@ -134,7 +133,7 @@ w0z = [perturbation; perturbation; 1];
 w0Mat = {w0x, w0y, w0z};
 eulerAngle0 = [0; 0; 0];
 tStep = 0.01;
-tFinal = 30;
+tFinal = 60;
 
 for n = 1:3
     w0 = w0Mat{n};
@@ -145,35 +144,59 @@ for n = 1:3
     [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
         tspan,state0,options);
 
-    eulerAngle = wrapTo360(rad2deg(state(:,1:3)));
-    w = state(:,4:6);
+    eulerAngle = wrapTo180(rad2deg(state(:,1:3)));
+    w = wrapTo180(rad2deg(state(:,4:6)));
 
     figure()
     subplot(2,1,1)
-    plot(t, w)
+    plot(t,w)
     xlabel('Time [s]')
-    ylabel('Angular velocity (rad/s)')
+    ylabel(['Angular Velocity [' char(176) '/s]'])
     legend('\omega_{x}','\omega_{y}','\omega_{z}', ...
         'Location','Southeast')
 
     subplot(2,1,2)
-    plot(t, eulerAngle)
+    plot(t,eulerAngle)
     xlabel('Time [s]')
-    ylabel('Euler Angles')
+    ylabel(['Euler Angle [' char(176) ']'])
     legend('\phi','\theta','\psi', 'Location','Southeast')
     if savePlot
-        saveas(gcf, ['Images/ps4_problem2a_', sprintf('%i',n), '.png'])
+        saveas(gcf,['Images/ps4_problem2a_' sprintf('%i',n) '.png'])
     end
 end
 
+%% Momentum wheel setup
+% Based on RSI 68
+mr = 8.9; % kg
+r = 0.347 / 2; % m
+Ir = mr * r^2;
+wrRPM = 2500; % RPM
+wr = wrRPM * 0.1047198;
+
+% No external torques
+M = [0; 0; 0; 0];
+
+% Time
+tFinal = 600;
+tStep = 0.1;
+
+%% Problem 3(b)
+eulerAngle0 = [0; 0; 0];
+w0 = [0; 0; 0; wr];
+r = [0; 0; 1];
+
+momentumPlot = 'Images/ps4_problem3b_angmom.png';
+velocityPlot = 'Images/ps4_problem3b_angvel.png';
+anglePlot = 'Images/ps4_problem3b_angle.png';
+plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
+                M,r,Ix,Iy,Iz,Ir, ...    
+                momentumPlot,velocityPlot,anglePlot,savePlot);
+
 %% Problem 3(c)
 eulerAngle0 = [0; 0; 0];
-w0 = [0.01; 0.01; 0.01; 100];
-M = [0; 0; 0; 0];
+w0 = [0.01; 0.01; 0.01; wr];
 r = [0; 0; 1];
-Ir = 100;
-tFinal = 60;
-tStep = 0.1;
+
 momentumPlot = 'Images/ps4_problem3c_angmom.png';
 velocityPlot = 'Images/ps4_problem3c_angvel.png';
 anglePlot = 'Images/ps4_problem3c_angle.png';
@@ -183,12 +206,9 @@ plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
 
 %% Problem 3(d)
 eulerAngle0 = [0; 0; 0];
-w0 = [0.01; 0.25; 0.01; 100];
-M = [0; 0; 0; 0];
+w0 = [0.01; 0.25; 0.01; wr];
 r = [0; 1; 0];
-Ir = 100;
-tFinal = 120;
-tStep = 0.1;
+
 momentumPlot = 'Images/ps4_problem3d_angmom.png';
 velocityPlot = 'Images/ps4_problem3d_angvel.png';
 anglePlot = 'Images/ps4_problem3d_angle.png';
@@ -197,13 +217,10 @@ plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
                 momentumPlot,velocityPlot,anglePlot,savePlot);
 
 %% Problem 3(e)
-eulerAngle0 = [0; pi/2; 0];
-w0 = [0.1; 0.1; 0.1; 100];
-M = [0; 0; 0; 0];
+eulerAngle0 = [0; 0; 0];
+w0 = [0.1; 0.1; 0.1; wr];
 r = [sqrt(2)/2; sqrt(2)/2; 0];
-Ir = 100;
-tFinal = 120;
-tStep = 0.1;
+
 momentumPlot = 'Images/ps4_problem3e_angmom.png';
 velocityPlot = 'Images/ps4_problem3e_angvel.png';
 anglePlot = 'Images/ps4_problem3e_angle.png';
@@ -289,14 +306,3 @@ for i = 1:50:tLen
     plotTriad(gca,r,A_P,500,'b');
 end
 hold off
-
-%% Problem 4(c)
-% M = 3 * muE / a^3 * [(Iz - Iy) * c(2) * c(3); ...
-%                     (Ix - Iz) * c(3) * c(1); ...
-%                     (Iy - Ix) * c(1) * c(2)]
-
-figure()
-plot(t,M)
-xlabel('Time [s]')
-ylabel('Moment in Principal Axes [rad/s]')
-legend('M_{x}','M_{y}','M_{z}')

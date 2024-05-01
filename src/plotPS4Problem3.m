@@ -38,7 +38,7 @@ function [t,eulerAngle,w] = plotPS4Problem3(eulerAngle0,w0, ...
     ylabel('Angular momentum [kg m^{2}/s]')
     legend("L_{1}", "L_{2}", "L_{3}", "||L||")
     hold off
-    if savePlot
+    if savePlot && ~isempty(momentumPlot)
         saveas(gcf,momentumPlot)
     end
     
@@ -49,7 +49,7 @@ function [t,eulerAngle,w] = plotPS4Problem3(eulerAngle0,w0, ...
         'Location','southeast')
     xlabel('Time [s]')
     ylabel(['Angular velocity (\omega) [' char(176) '/s]'])
-    if savePlot
+    if savePlot && ~isempty(velocityPlot)
         saveas(gcf,velocityPlot)
     end
     
@@ -60,7 +60,7 @@ function [t,eulerAngle,w] = plotPS4Problem3(eulerAngle0,w0, ...
         'Location','southwest')
     xlabel('Time [s]')
     ylabel(['Euler Angle [' char(176) ']'])
-    if savePlot
+    if savePlot && ~isempty(anglePlot)
         saveas(gcf,anglePlot)
     end
 
