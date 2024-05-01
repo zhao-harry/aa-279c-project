@@ -1,4 +1,9 @@
-function stateDot = eulerEquationGravGrad(t,state,Ix,Iy,Iz,cx,cy,cz,n)
+function stateDot = eulerEquationGravGrad(t,state,Ix,Iy,Iz,c,n)
+    % Get c vector
+    cx = c(1);
+    cy = c(2);
+    cz = c(3);
+
     % Computes state derivatives for angular velocity with gravity gradient
     wx = state(1);
     wy = state(2);

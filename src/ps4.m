@@ -14,13 +14,12 @@ Iz = IPrincipal(3,3);
 % Find Euler kinematics
 tFinal = 60;
 tStep = 0.01;
-t = 0:tStep:tFinal;
+tspan = 0:tStep:tFinal;
 
-eulerAngle0 = [0; 1e-9; 0];
+eulerAngle0 = [0; 0; 0];
 w0 = [0; 0; 1];
 state0 = [eulerAngle0;w0];
 
-tspan = 0:tStep:tFinal;
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
     tspan,state0,options);
@@ -57,14 +56,15 @@ O = -19.61601; % degree
 w_deg = 89.99764; % degree
 nu = -89.99818; % degree
 
-[~,y] = plotECI(a,e,i,O,w_deg,nu,t);
+tFinal = 6000;
+tStep = 0.1;
+tspan = 0:tStep:tFinal;
+tTrunc = 300;
+nTrunc = find((tspan == tTrunc) == 1);
+
+[~,y] = plotECI(a,e,i,O,w_deg,nu,tspan);
 close all
 format long
-
-% Orbit parameters
-mu_E = 3.986e5; %km^3/s^2
-P = 2*pi*sqrt(a^3/mu_E); %s
-tspan = 0:1:P;
 
 % Initialize w0 to be aligned with normal
 r0 = y(1,1:3);
@@ -74,20 +74,23 @@ radial = r0 / norm(r0);
 normal = h / norm(h);
 tangential = cross(normal,radial);
 A_RTN = [radial' tangential' normal'];
-w0 = [0; 0; 1];
-euler0 = A2e(A_RTN);
-state0 = [euler0; w0];
+w0_RTN = [0; 0; 0.1];
+euler0_RTN = A2e(A_RTN);
+state0 = [euler0_RTN; w0_RTN];
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
     tspan,state0,options);
 
 w_RTN = nan(size(state(:,1:3)));
+euler_RTN = nan(size(state(:,1:3)));
 
 for n = 1:length(t)
     pos = y(n,1:3);
+    vel = y(n,4:6);
+    h = cross(pos,vel);
     radial = pos / norm(pos);
-    tangential = y(n,4:6) / norm(y(n,4:6));
-    normal = cross(radial,tangential);
+    normal = h / norm(h);
+    tangential = cross(normal,radial);
     A_RTN = [radial' tangential' normal'];
 
     % Get rotation matrixes (to ECI)
@@ -95,14 +98,28 @@ for n = 1:length(t)
     w_principal = state(n,4:6)';
     A_principal = e2A(euler);
 
-    A = A_RTN' * A_principal;
+    A_P2R = A_RTN * A_principal';
 
-    w_RTN(n,:) = A*w_principal;
+    w_RTN(n,:) = A_P2R*w_principal;
+    euler_RTN(n,:) = A2e(A_P2R');
 end
+
 
 figure(2)
 plot(t, w_RTN)
-legend("Radial", "Tangential", "Normal")
+legend("\omega_{R}", "\omega_{T}", "\omega_{N}")
+if savePlot == true
+    saveas(2, 'Images/ps4_problem1b_angvel.png')
+end
+
+
+figure(3)
+plot(t(1:nTrunc), euler_RTN(1:nTrunc,:))
+title("Euler Angles from principal to RTN frame")
+legend("\phi", "\theta", "\psi")
+if savePlot == true
+    saveas(3, 'Images/ps4_problem1b_euler.png')
+end
 
 %% Problem 2
 % Initial conditions
@@ -193,8 +210,22 @@ plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
 
 %% Problem 4
 % Get key orbital parameters
-mu_E = 3.986e5; %km^3/s^2
-P = 2*pi*sqrt(a^3/mu_E); %s
-n_mm = 2*pi/P; %rad/s
+orbitParams.a = 7125.48662; % km
+orbitParams.e = 0.0011650;
+orbitParams.i = 98.40508; % degree
+orbitParams.O = -19.61601; % degree
+orbitParams.w = 89.99764; % degree
+orbitParams.nu = -89.99818; % degree
 
-r = y(:,1:3);
+% Get data
+tFinal = 600;
+tStep = 1;
+t = 0:tStep:tFinal;
+w0 = w0_RTN; %from 1b
+eulerAng0 = euler0_RTN; % from 1b
+
+[w, eulerAngs, M_gg, y] = eulerEquationGravGradRK4(w0,eulerAng0,Ix,Iy,Iz,orbitParams,tFinal,tStep);
+eulerAngs = wrapTo360(rad2deg(eulerAngs));
+
+figure(5)
+plot(t, w)
