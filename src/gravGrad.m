@@ -14,14 +14,9 @@ function [stateDot] = gravGrad(t,state,Ix,Iy,Iz,n)
     stateDot(1:3) = v;
     stateDot(4:6) = (-3.986 * 10^5 / norm(r)^2) * r / norm(r); % km/s^2
 
-    h = cross(r,v);
     radial = r / norm(r);
-    normal = h / norm(h);
-    tangential = cross(normal,radial);
-    A_RTN = [radial tangential normal];
     A_ECI2P = e2A(state(10:12));
-    A = A_ECI2P * A_RTN';
-    c = A(:,1);
+    c = A_ECI2P' * radial;
     M = gravGradTorque(Ix,Iy,Iz,n,c);
     stateDot(7) = (M(1) - (Iz - Iy) * w(2) * w(3)) / Ix;
     stateDot(8) = (M(2) - (Ix - Iz) * w(3) * w(1)) / Iy;

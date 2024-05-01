@@ -209,7 +209,7 @@ plotPS4Problem3(eulerAngle0,w0,tStep,tFinal, ...
                 momentumPlot,velocityPlot,anglePlot,savePlot);
 
 %% Problem 4
-tFinal = 60;
+tFinal = 2;
 tStep = 0.1;
 tspan = 0:tStep:tFinal;
 
@@ -218,7 +218,7 @@ e = 0;
 i = 98.40508; % degree
 O = -19.61601; % degree
 w = 89.99764; % degree
-nu = -89.99818; % degree
+nu = 0; % degree
 muE = 3.986e5;
 
 n = sqrt(muE / a^3);
@@ -245,37 +245,21 @@ c = zeros(size(state(:,1:3)));
 M = zeros(size(state(:,1:3)));
 for i = 1:length(t)
     r = state(i,1:3);
-    v = state(i,4:6);
-    h = cross(r,v);
     radial = r / norm(r);
-    normal = h / norm(h);
-    tangential = cross(normal,radial);
-    A_RTN = [radial' tangential' normal'];
     A_ECI2P = e2A(state(i,10:12));
-    A = A_ECI2P * A_RTN';
-    c(i,1:3) = A(:,1);
+    c(i,1:3) = A_ECI2P' * radial';
     M(i,1:3) = gravGradTorque(Ix,Iy,Iz,n,c(i,1:3));
 end
 
-% plot(t,c)
-
 % plot(t,M)
+% xlabel('Time [s]')
+% ylabel('Moment in Principal Axes [rad/s]')
+% legend('M_{x}','M_{y}','M_{z}')
 
 % plot(t,state(:,7:9))
 % xlabel('Time [s]')
 % ylabel('Angular Velocity in Principal Axes [rad/s]')
 % legend('\omega_{x}','\omega_{y}','\omega_{z}')
-
-%%
-stateT = state(end,:);
-r = stateT(1:3);
-v = stateT(4:6);
-h = cross(r,v);
-radial = r / norm(r);
-normal = h / norm(h);
-tangential = cross(normal,radial);
-A_RTN = [radial' tangential' normal']
-A_ECI2P = e2A(stateT(10:12))
 
 %% Problem 4(c)
 % M = 3 * muE / a^3 * [(Iz - Iy) * c(2) * c(3); ...
