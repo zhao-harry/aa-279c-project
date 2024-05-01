@@ -157,10 +157,38 @@ The function gravGrad was developed to be used with ode113 to propagate the Eule
 
 The general trends we would expect in the gradient gravity torque is for the value to be zero if the satellite spins on its normal axis at the mean motion and for the magnitude to grow linearly with the inertia tensor. The first property is demonstrated in Figure \textbf{fig1} and the second is demonstrated in Figure \textbf{fig2}.
 
+Additionally, we can estimate the order of magnitude to expect our gravity gradient torques to be based on the below equation.
+
+\begin{align*}
+    \Vec{M} &= \frac{3 \mu}{a^3}
+    \begin{bmatrix}
+    (I_z - I_y) c_y c_z \\
+    (I_x - I_z) c_z c_x \\
+    (I_y - I_x) c_x c_y
+    \end{bmatrix}
+\end{align*}
+
+The parameters used were the known moments of inertia ($I_x = \qty{7707}{}$, $I_y = \qty{14563}{}$, $I_z = \qty{18050}{\kilogram\cdot\meter^2}$), known values for Earth ($a = \qty{7125.49}{km}$, $\mu = \qty{398600}{\km^3\per\second^2}$), and an arbitrary $\Vec{c} = [\frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}]$. With these values, we get:
+
+\begin{align*}
+    \Vec{M} &=
+\qty[parse-numbers = false]{
+    \begin{bmatrix}
+    0.384174 \\
+    1.13956 \\
+    -0.755387
+    \end{bmatrix}
+    \cdot
+    10^{-2}
+}{\newton\meter}
+\end{align*}
+
+These values are in line with what we see in Figure \textbf{fig}.
+
 \textit{d. Numerically integrate Euler and Kinematic equations including gravity gradient from initial conditions corresponding to body axes aligned with the orbital frame (RTN). Verify that gravity gradient torque is zero, besides numerical errors. Hint: you may need to simplify the orbit to unperturbed circular to achieve this. Check that initial angular velocity matches mean motion.}
 
 The constant gravity gradient was demonstrated in problem 4c in Figure \textbf{same fig as before}. Figure \textbf{fig3} demonstrated that the angular velocity in the normal direction matches the mean motion throughout the orbit.
 
 \textit{e. Numerically integrate Euler and Kinematic equations including gravity gradient from arbitrary initial conditions (e.g., relevant to your project). Plot external torque (3 components w.r.t. time) and resulting attitude motion (depends on attitude parameterization, add Euler angles for better geometrical interpretation) over multiple orbits. Comment on results.}
 
-fuck em with a shoe idk what to put here rn (will add later)
+fuck me with a shoe idk what to put here rn (will add later)
