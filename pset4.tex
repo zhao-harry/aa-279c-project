@@ -25,9 +25,9 @@ As can be seen in Figure \ref{fig:ps4_problem1a_velocity}, $\omega_x$ and $\omeg
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps4_problem1a_velocity.png}
+\includegraphics[scale=0.6]{Images/ps4_problem1a_angvel.png}
 \caption{Evolution of angular velocity}
-\label{fig:ps4_problem1a_velocity}
+\label{fig:ps4_problem1a_angvel}
 \end{figure}
 
 \begin{figure}[H]
@@ -39,13 +39,30 @@ As can be seen in Figure \ref{fig:ps4_problem1a_velocity}, $\omega_x$ and $\omeg
 
 \textit{b. Repeat a. by setting the initial attitude to match the RTN frame. Set the initial angular velocity to be non-zero only about N. Show the evolution of attitude motion in the RTN frame and give an interpretation of the results (recall that you might have J2 effects in orbit propagation, consider removing them for verification).}
 
+In the event that initial angular velocity is along only the normal, the angular velocity remains constant throughout the orbit, as seen in Figure \ref{fig:ps4_problem1b_angvel}. From Figure \ref{fig:ps4_problem1b_euler}, we see that the $\theta$ and $\psi$ Euler angles are constant while $\phi$ varies.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem1b_angvel.png}
+\caption{Evolution of angular velocity}
+\label{fig:ps4_problem1b_angvel}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem1b_euler.png}
+\caption{Evolution of Euler angles}
+\label{fig:ps4_problem1b_euler}
+\end{figure}
+
+
 \subsection{PROBLEM 2}
 \textit{Stability tests}
 
 \textit{a. Pretend you have a single-spin satellite. Set initial conditions to correspond alternatively to the 3 possible equilibrium configurations (rotation about principal axes of inertia). Slightly perturb initial condition. Is the attitude stable or unstable? In angles and velocities? If stable, periodically or asymptotically? Show it.}
 
 For a single spin satellite, the three possible equilibrium configurations are spinning on its minimum principal axis, spinning on its intermediate principal axis, and spinning on its
-maximum principal axis. Figures \ref{fig:ps4_problem2a_1}, \ref{fig:ps4_problem2a_2}, \ref{fig:ps4_problem2a_3}, all show that the Euler angles are relatively unstable in all of the cases. However, the angular velocities are periodically stable when spinning along the minimum and maximum axes and unstable when spinning on the intermediate axis.
+maximum principal axis. Figures \ref{fig:ps4_problem2a_1}, \ref{fig:ps4_problem2a_2}, \ref{fig:ps4_problem2a_3}, all show that the Euler angles are relatively unstable in for the intermediate and minimum axes, and is much more stable along the maximum axis. However, the angular velocities are periodically stable when spinning along the minimum and maximum axes and unstable when spinning on the intermediate axis.
 
 \begin{figure}[H]
 \centering
