@@ -4,7 +4,8 @@
 
 \textit{a. Assume that 2 components of the initial angular velocities are zero and that the principal axes are aligned with the inertial frame (e.g., zero Euler angles). Verify that during the simulation the 2 components of angular velocity remain zero and that the attitude represents a pure rotation about the rotation axis (e.g., linearly increasing Euler angle). Plot velocities and angles.}
 
-For this problem, we assumed that the initial angular velocity and Euler angles were what is shown below. The initial Euler angles were not initialized to be all 0 because we used 3-1-3 Euler angle representation, meaning that Euler angles at 0 would lead to a singularity. While this work-around is not ideal in the situation that the satellite operates around zero Euler angles, for the sake of this exercise this should be adequate.
+To test the equilibrium state, we choose the following initial angular velocity,
+
 \begin{align*}
 \Vec{\omega} &= 
 \qty[parse-numbers = false]{
@@ -13,15 +14,12 @@ For this problem, we assumed that the initial angular velocity and Euler angles 
     0 \\
     1 \\ 
     \end{bmatrix}
-}{\radian\per\s}
-\end{align*}
-\begin{align*}
-\phi = \qty[parse-numbers = false]{0}{\radian}, \;\;\;
-\theta = \qty[parse-numbers = false]{1e-9}{\radian}, \;\;\;
-\psi = \qty[parse-numbers = false]{0}{\radian}
+}{\radian\per\s},
 \end{align*}
 
-As can be seen in Figure \ref{fig:ps4_problem1a_velocity}, $\omega_x$ and $\omega_y$ remained 0, while $\omega_z$ was a constant value, as expected. Similarly, in Figure \ref{fig:ps4_problem1a_angle} the $\phi$ and $\theta$ Euler angles stayed zero while the $\psi$ Euler angle varied. 
+and we set all Euler angles to zero. We use a 312 convention for Euler angles, which avoids singularities for this configuration.
+
+Figure \ref{fig:ps4_problem1a_angvel} shows results of the simulation, where $\omega_x$ and $\omega_y$ remain zero and $\omega_z$ maintains a constant value.
 
 \begin{figure}[H]
 \centering
@@ -29,6 +27,8 @@ As can be seen in Figure \ref{fig:ps4_problem1a_velocity}, $\omega_x$ and $\omeg
 \caption{Evolution of angular velocity}
 \label{fig:ps4_problem1a_angvel}
 \end{figure}
+
+Similarly, in Figure \ref{fig:ps4_problem1a_angle}, $\phi$ and $\theta$ Euler angles remain at zero while the $\psi$ Euler angle increases linearly.
 
 \begin{figure}[H]
 \centering
@@ -39,7 +39,7 @@ As can be seen in Figure \ref{fig:ps4_problem1a_velocity}, $\omega_x$ and $\omeg
 
 \textit{b. Repeat a. by setting the initial attitude to match the RTN frame. Set the initial angular velocity to be non-zero only about N. Show the evolution of attitude motion in the RTN frame and give an interpretation of the results (recall that you might have J2 effects in orbit propagation, consider removing them for verification).}
 
-In the event that initial angular velocity is along only the normal, the angular velocity remains constant throughout the orbit, as seen in Figure \ref{fig:ps4_problem1b_angvel}. From Figure \ref{fig:ps4_problem1b_euler}, we see that the $\theta$ and $\psi$ Euler angles are constant while $\phi$ varies.
+We choose to align our principal axes with the RTN frame. For selected initial orbital conditions taken from the NISAR science users' handbook, we obtain the initial position and compute the RTN frame, which we then use to find initial aligned Euler angles.
 
 \begin{figure}[H]
 \centering
@@ -48,6 +48,8 @@ In the event that initial angular velocity is along only the normal, the angular
 \label{fig:ps4_problem1b_angvel}
 \end{figure}
 
+We set a nonzero $\omega_z$ angular velocity, which is aligned with the normal direction of the RTN frame, and we choose all other angular velocities to be zero. Propagating the orbit and attitude, we find that the angular velocity remains constant throughout the orbit, even relative to the RTN frame, as seen in Figure \ref{fig:ps4_problem1b_angvel}. From Figure \ref{fig:ps4_problem1b_euler}, we see that the $\theta$ and $\psi$ Euler angles related to the RTN frame are constant while $\phi$ varies.
+
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps4_problem1b_euler.png}
@@ -55,14 +57,14 @@ In the event that initial angular velocity is along only the normal, the angular
 \label{fig:ps4_problem1b_euler}
 \end{figure}
 
+This result shows our satellite's maximum inertia principal axis remains aligned with the normal direction of the orbit such that the maximum inertia principal axis remains normal to the plane of the orbit, given the initial condition that axes are aligned with the RTN frame and angular velocity along other axes is nonzero.
 
 \subsection{PROBLEM 2}
 \textit{Stability tests}
 
 \textit{a. Pretend you have a single-spin satellite. Set initial conditions to correspond alternatively to the 3 possible equilibrium configurations (rotation about principal axes of inertia). Slightly perturb initial condition. Is the attitude stable or unstable? In angles and velocities? If stable, periodically or asymptotically? Show it.}
 
-For a single spin satellite, the three possible equilibrium configurations are spinning on its minimum principal axis, spinning on its intermediate principal axis, and spinning on its
-maximum principal axis. Figures \ref{fig:ps4_problem2a_1}, \ref{fig:ps4_problem2a_2}, \ref{fig:ps4_problem2a_3}, all show that the Euler angles are relatively unstable in for the intermediate and minimum axes, and is much more stable along the maximum axis. However, the angular velocities are periodically stable when spinning along the minimum and maximum axes and unstable when spinning on the intermediate axis.
+For a single spin satellite, the three possible equilibrium configurations are rotation about the minimum inertia principal axis, rotation about the intermediate axis, and rotation about the maximum inertia principal axis. Figures \ref{fig:ps4_problem2a_1}, \ref{fig:ps4_problem2a_2}, \ref{fig:ps4_problem2a_3} show that the Euler angles are stable about the minimum and maximum axes, but it is unstable about the intermediate axes. This is as expected for our system, with the minimum and maximum axes exhibiting periodic stability with small oscillations in angular velocity.
 
 \begin{figure}[H]
 \centering
@@ -70,6 +72,8 @@ maximum principal axis. Figures \ref{fig:ps4_problem2a_1}, \ref{fig:ps4_problem2
 \caption{Simulation of satellite spinning on its minimum principal axis}
 \label{fig:ps4_problem2a_1}
 \end{figure}
+
+Note that while in Figure \ref{fig:ps4_problem2a_1} the angular velocities are periodically stable, the Euler angles oscillate. This is likely a consequence of the sequence of rotations used for our choice of Euler angle convention.
 
 \begin{figure}[H]
 \centering
@@ -90,7 +94,7 @@ maximum principal axis. Figures \ref{fig:ps4_problem2a_1}, \ref{fig:ps4_problem2
 
 \textit{a. Re-program Euler equations to include a generic momentum wheel or rotor with rotation axis aligned with one of the principal axes of inertia. Ideally the wheel or rotor has specs representative of commercial products (inertia, rotational speed).}
 
-The equations that implement the generic momentum wheel with the rotor into the Euler equations are below.
+We choose to use specifications from the RSI 68 momentum wheel, for which datasheets are readily available online \cite{RSI68}. This particular momentum wheel is intended for spacecraft in the 1,500 to 5,000 kg range, which matches our mission. We use a diameter of 347 mm and mass of 8.9 kg and model our reaction wheel as a hoop with mass concentrated about the outer diameter. We also use 2,500 RPM, which yields approximately the nominal angular momentum from the datasheet–the maximum angular velocity is 6,000 RPM. The following Euler equations are used to model a momentum wheel as a rotor. For this problem, we set the torques on the right side of each equation to zero, as we are not considering external torques.
 
 \begin{align*}
     I_x \dot{\omega_x} + I_r \dot{\omega_r} r_x + (I_z - I_y) \omega_y \omega_z 
@@ -102,50 +106,85 @@ The equations that implement the generic momentum wheel with the rotor into the 
     I_r \dot{\omega_r} = M_r
 \end{align*}
 
-The function kinEulerAngleWheel was used in addition to ode113 to simulate the angular velocities over time.
-
-\textit{b. Numerically integrate Euler AND Kinematic equations from equilibrium initial condition. Verify that integration is correct as from previous tests (conservation laws, rotations, etc.).}
-
-kinEulerAngleWheel was modified to also account for the kinematic equations, as shown before. As we see in Figure \ref{fig:ps4_problem3c_principal}, the overall momentum is conserved in the principal frame, as expected. Additionally, Figure \ref{fig:ps4_problem3c_inertial} shows that the angular momentum vector is conserved in the inertial frame, as expected.
+The function \texttt{kinEulerAngleWheel}, shown below, is used in addition to \texttt{ode113} to simulate the angular velocities over time.
 
 \lstinputlisting{src/kinEulerAngleWheel.m}
 
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.6]{Images/NISAR.jpg}
-\caption{Angular Momentum in Principal Frame}
-\label{fig:ps4_problem3c_principal}
-\end{figure}
+\textit{b. Numerically integrate Euler AND Kinematic equations from equilibrium initial condition. Verify that integration is correct as from previous tests (conservation laws, rotations, etc.).}
+
+Simulating the Euler and kinematic equations, Figure \ref{fig:ps4_problem3b} shows the angular momentum vector remain constant in the inertial frame, as expected.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/NISAR.jpg}
-\caption{Angular Momentum in Inertial Frame}
-\label{fig:ps4_problem3c_inertial}
+\includegraphics[scale=0.6]{Images/ps4_problem3b.png}
+\caption{Angular momentum conserved with angular momentum components constant}
+\label{fig:ps4_problem3b}
 \end{figure}
 
 \textit{c. Verify equilibrium and its stability similar to previous pset.}
 
-Based on linearizing the Euler equations around equilibrium, it can be found that periodic stability can be met with a reaction wheel if one of the following conditions are met:
+By linearizing the Euler equations about equilibrium, the following result shows that periodic stability (in this case, about the z-axis) can be met with a reaction wheel if one of the following conditions are met:
 
 \begin{align*}
     1)\; I_r \omega_r > (I_y - I_z) \omega_z \;\; AND \;\; I_r \omega_r > (I_x - I_z) \omega_z \\
-    2)\; I_r \omega_r < (I_y - I_z) \omega_z \;\; AND \;\; I_r \omega_r < (I_x - I_z) \omega_z \\
+    2)\; I_r \omega_r < (I_y - I_z) \omega_z \;\; AND \;\; I_r \omega_r < (I_x - I_z) \omega_z
 \end{align*}
 
-The above equation is specifically for equilibrium about the z-axis, but similar equations hold true for stability about the x and y axes.
+We demonstrate equilibrium and stability for this new system with the reaction wheel. Figures \ref{fig:ps4_problem3c_x.png}, \ref{fig:ps4_problem3c_y.png}, \ref{fig:ps4_problem3c_z.png} show the analysis for each of the principal axes. As before, the minimum and maximum inertia principal axes are periodically stable, but the intermediate axis is unstable.
 
-Below are the angular velocity plots for stability about the maximum, intermediate, and minimum principal axes.
+This behavior resembles that found in Problem 2 above. In this case, we perturb each angular velocity as well as the rotor angular velocity. Our rotor velocity in this case is not enough to stabilize spin about the intermediate axis.
 
-\textbf{figs}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem3c_x.png}
+\caption{Stability analysis about minimum inertia principal axis}
+\label{fig:ps4_problem3c_x.png}
+\end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem3c_y.png}
+\caption{Stability analysis about intermediate axis}
+\label{fig:ps4_problem3c_y.png}
+\end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem3c_z.png}
+\caption{Stability analysis about maximum inertia principal axis}
+\label{fig:ps4_problem3c_z.png}
+\end{figure}
+
+\newpage
 \textit{d. Use the stability condition to make attitude motion stable for rotation about intermediate moment of inertia by changing moment of inertia and/or angular velocity of the momentum wheel or rotor.}
 
+By increasing the angular velocity of the rotor by a factor of 10, we obtain a stable system for spin about the intermediate axes.
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem3d.png}
+\caption{}
+\label{fig:ps4_problem3d.png}
+\end{figure}
 
-
+\newpage
 \textit{e. Try to make rotation about another arbitrary axis (potentially relevant to your project) stable through a generic momentum wheel or rotor.}
+
+We choose to stabilize spin about the body x-axis, which is important for pointing our satellite and appropriately sweeping the target with our SAR. We use the rotation previously found between the principal and body axes to achieve this, applying the rotation to the angular velocity and the angular momentum vector direction of the momentum wheel.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem3e_unstable.png}
+\caption{Initially unstable attitude with low momentum wheel angular velocity}
+\label{fig:ps4_problem3e_unstable.png}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem3e_stable.png}
+\caption{Periodically stable attitude after increasing momentum wheel angular velocity 10x}
+\label{fig:ps4_problem3e_stable.png}
+\end{figure}
 
 \subsection{PROBLEM 4}
 \textit{Gravity gradient torque (modeling)}
@@ -162,9 +201,9 @@ The equations for the gravity gradient torque are below.
     I_x \dot{\omega_x} + (I_z - I_y) \omega_y \omega_z = 3 n^2 (I_z - I_y) c_y c_z \\
     I_y \dot{\omega_y} + (I_x - I_z) \omega_z \omega_x = 3 n^2 (I_x - I_z) c_z c_x \\
     I_z \dot{\omega_z} + (I_y - I_x) \omega_x \omega_y = 3 n^2 (I_y - I_x) c_x c_y \\
-\end{align*}
+3\end{align*}
 
-In the above equation, $\Vec{c} = [cx, cy, cz]$ is the normalized direction of $\Vec{R}$.
+In the above equation, $\Vec{c} = [c_x, c_y, c_z]^\intercal$ is the normalized direction of $\Vec{R}$.
 
 The function \texttt{gravGrad} was developed to be used with \texttt{ode113} to propagate the Euler equations and kinematics with gravity gradient torques.
 
@@ -172,9 +211,7 @@ The function \texttt{gravGrad} was developed to be used with \texttt{ode113} to 
 
 \textit{c. Verify that the magnitude of the modeled torque is consistent with the orbit and inertia tensor of your satellite. Hint: use simplified formulas from class on modeling of gravity gradient torque.}
 
-The general trends we would expect in the gradient gravity torque is for the value to be zero if the satellite spins on its normal axis at the mean motion and for the magnitude to grow linearly with the inertia tensor. The first property is demonstrated in Figure \textbf{fig1} and the second is demonstrated in Figure \textbf{fig2}.
-
-Additionally, we can estimate the order of magnitude to expect our gravity gradient torques to be based on the below equation.
+We can estimate the order of magnitude for gravity gradient torques using the following equation.
 
 \begin{align*}
     \Vec{M} &= \frac{3 \mu}{a^3}
@@ -200,12 +237,50 @@ The parameters used were the known moments of inertia ($I_x = \qty{7707}{}$, $I_
 }{\newton\meter}
 \end{align*}
 
-These values are in line with what we see in Figure \textbf{fig}.
+These values are in line with what we see in Figure \ref{fig:ps4_problem4d_torque}.
 
+\newpage
 \textit{d. Numerically integrate Euler and Kinematic equations including gravity gradient from initial conditions corresponding to body axes aligned with the orbital frame (RTN). Verify that gravity gradient torque is zero, besides numerical errors. Hint: you may need to simplify the orbit to unperturbed circular to achieve this. Check that initial angular velocity matches mean motion.}
 
-The constant gravity gradient was demonstrated in problem 4c in Figure \textbf{same fig as before}. Figure \textbf{fig3} demonstrated that the angular velocity in the normal direction matches the mean motion throughout the orbit.
+Figures \ref{fig:ps4_problem4d_torque}, \ref{fig:ps4_problem4d_angvel} demonstrate zero torque when aligned with RTN frame and constant angular velocity. Simulating for longer periods reveals the torque error is periodically stable.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem4d_torque.png}
+\caption{Zero gravity gradient torque for satellite aligned with RTN frame}
+\label{fig:ps4_problem4d_torque}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem4d_angvel.png}
+\caption{Angular velocity parallel to RTN normal equal to mean motion, all others zero}
+\label{fig:ps4_problem4d_angvel}
+\end{figure}
 
 \textit{e. Numerically integrate Euler and Kinematic equations including gravity gradient from arbitrary initial conditions (e.g., relevant to your project). Plot external torque (3 components w.r.t. time) and resulting attitude motion (depends on attitude parameterization, add Euler angles for better geometrical interpretation) over multiple orbits. Comment on results.}
 
-fuck me with a shoe idk what to put here rn (will add later)
+We choose initial conditions by aligning our body axes to RTN, which will more closely resemble the orientation of the satellite when collecting science data.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem4e_angle.png}
+\caption{Euler angles with gravity gradient for satellite with arbitrary initial conditions}
+\label{fig:ps4_problem4e_angle.png}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem4e_angvel.png}
+\caption{Angular velocity with gravity gradient for satellite with arbitrary initial conditions}
+\label{fig:ps4_problem4e_angvel.png}
+\end{figure}
+
+The figures show that there is a noticeable effect of gravity gradient torque on the satellite, although the magnitude of the torque is low. This causes changes to our Euler angles throughout the orbit, meaning we will need a control system to stabilize and point our satellite in order to meet mission requirements.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps4_problem4e_torque.png}
+\caption{Gravity gradient torques for satellite with arbitrary initial conditions}
+\label{fig:ps4_problem4e_torque.png}
+\end{figure}
