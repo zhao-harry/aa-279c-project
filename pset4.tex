@@ -201,7 +201,7 @@ The equations for the gravity gradient torque are below.
     I_x \dot{\omega_x} + (I_z - I_y) \omega_y \omega_z = 3 n^2 (I_z - I_y) c_y c_z \\
     I_y \dot{\omega_y} + (I_x - I_z) \omega_z \omega_x = 3 n^2 (I_x - I_z) c_z c_x \\
     I_z \dot{\omega_z} + (I_y - I_x) \omega_x \omega_y = 3 n^2 (I_y - I_x) c_x c_y \\
-3\end{align*}
+\end{align*}
 
 In the above equation, $\Vec{c} = [c_x, c_y, c_z]^\intercal$ is the normalized direction of $\Vec{R}$.
 
@@ -222,7 +222,7 @@ We can estimate the order of magnitude for gravity gradient torques using the fo
     \end{bmatrix}
 \end{align*}
 
-The parameters used were the known moments of inertia ($I_x = \qty{7707}{}$, $I_y = \qty{14563}{}$, $I_z = \qty{18050}{\kilogram\cdot\meter^2}$), known values for Earth ($a = \qty{7125.49}{km}$, $\mu = \qty{398600}{\km^3\per\second^2}$), and an arbitrary $\Vec{c} = [\frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}]$. With these values, we get:
+The parameters used were the known moments of inertia ($I_x = \qty{7707}{}$, $I_y = \qty{14563}{}$, $I_z = \qty{18050}{\kilogram\cdot\meter^2}$), known values for Earth ($a = \qty{7125.49}{km}$, $\mu = \qty{398600}{\km^3\per\second^2}$), and an arbitrary $\Vec{c} = [\frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}]$. With these values, we arrive at:
 
 \begin{align*}
     \Vec{M} &=
@@ -237,7 +237,7 @@ The parameters used were the known moments of inertia ($I_x = \qty{7707}{}$, $I_
 }{\newton\meter}
 \end{align*}
 
-These values are in line with what we see in Figure \ref{fig:ps4_problem4d_torque}.
+These values are in line with what we see in Figure \ref{fig:ps4_problem4e_torque}.
 
 \newpage
 \textit{d. Numerically integrate Euler and Kinematic equations including gravity gradient from initial conditions corresponding to body axes aligned with the orbital frame (RTN). Verify that gravity gradient torque is zero, besides numerical errors. Hint: you may need to simplify the orbit to unperturbed circular to achieve this. Check that initial angular velocity matches mean motion.}
@@ -266,14 +266,14 @@ We choose initial conditions by aligning our body axes to RTN, which will more c
 \centering
 \includegraphics[scale=0.6]{Images/ps4_problem4e_angle.png}
 \caption{Euler angles with gravity gradient for satellite with arbitrary initial conditions}
-\label{fig:ps4_problem4e_angle.png}
+\label{fig:ps4_problem4e_angle}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps4_problem4e_angvel.png}
 \caption{Angular velocity with gravity gradient for satellite with arbitrary initial conditions}
-\label{fig:ps4_problem4e_angvel.png}
+\label{fig:ps4_problem4e_angvel}
 \end{figure}
 
 The figures show that there is a noticeable effect of gravity gradient torque on the satellite, although the magnitude of the torque is low. This causes changes to our Euler angles throughout the orbit, meaning we will need a control system to stabilize and point our satellite in order to meet mission requirements.
@@ -282,5 +282,5 @@ The figures show that there is a noticeable effect of gravity gradient torque on
 \centering
 \includegraphics[scale=0.6]{Images/ps4_problem4e_torque.png}
 \caption{Gravity gradient torques for satellite with arbitrary initial conditions}
-\label{fig:ps4_problem4e_torque.png}
+\label{fig:ps4_problem4e_torque}
 \end{figure}
