@@ -14,7 +14,7 @@ yECI = oe2eci(a,e,i,O,w,nu);
 days = 0.5;
 tspan = 0:days*86400;
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
-[t,y] = ode113(@propagator,tspan,yECI,options);
+[t,y] = ode113(@orbitSimple,tspan,yECI,options);
 
 plot3(y(:,1),y(:,2),y(:,3),'LineWidth',2,'Color','green')
 xlabel('x [km]')
