@@ -21,8 +21,9 @@ function V = magFieldPotential(R, lambda, theta, RE)
     V_sum = 0;
     for n = 1:4
         innerTerm = 0;
-        for m = 1:n
+        for mInd = 1:n
             delta_0m = (m == 0); %Q: is 0 1 here because matlab indexing
+            m = mInd - 1;
 
             % calculate 2n-1
             fact_2nMin1 = 1;
@@ -33,7 +34,7 @@ function V = magFieldPotential(R, lambda, theta, RE)
             P = (sqrt((2-delta_0m)*factorial(n-m)/factorial(n+m))*fact_2nMin1/factorial(n-m))*(sin(theta))^m ...
                     * ((cos(theta))^(n-m) - (n-m)*(n-m-1)/(2*(2*n-1))*(cos(theta))^(n-m-2) ...
                     + (n-m)*(n-m-1)*(n-m-3)/(8*(2*n-1)*(2*n-3))*(cos(theta))^(n-m-4));
-            newTerm_inner = (g(n,m)*cos(m*lambda) + h(n,m)*sin(m*lambda)) * P;
+            newTerm_inner = (g(n,mInd)*cos(m*lambda) + h(n,mInd)*sin(m*lambda)) * P;
             innerTerm = innerTerm + newTerm_inner;
         end
 
