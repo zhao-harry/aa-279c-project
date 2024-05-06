@@ -17,7 +17,7 @@ We convert these using a MATLAB function into ECI coordinates that can be fed in
 
 Then, we can numerically propagate in MATLAB using \texttt{ode113} using a function that computes the time derivative of the ECI state. This is accomplished simply by setting the time derivative of position equal to the velocity portion of the state and setting the time derivative of velocity equal to an acceleration computed using the law of universal gravitation. Note that while our propagator does not include disturbance forces, it will be easy to incorporate these later. See the appendix corresponding to Problem Set 2 for application of \texttt{ode113}.
 
-\lstinputlisting{src/propagator.m}
+\lstinputlisting{src/orbitSimple.m}
 
 Now, we plot the trajectory for one orbit in Figure \ref{fig:simple_propagator}. Plotting multiple orbits (for example, over 12 days) yields the same plot, as \texttt{ode113} is very stable for this application.
 
