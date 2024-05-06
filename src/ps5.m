@@ -151,7 +151,7 @@ plotGravGradStability(kR,kT, ...
     'Images/ps5_problem1c.png');
 
 %% Problem 1(c) (Stable, Perturbed)
-tFinal = 6000 * 100; % 100 orbits
+tFinal = 6000 * 10; % 10 orbits
 tStep = 1;
 tspan = 0:tStep:tFinal;
 
