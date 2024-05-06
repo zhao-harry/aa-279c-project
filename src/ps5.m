@@ -210,6 +210,36 @@ if savePlot == true
     saveas(gcf,'Images/ps5_problem1c_angle.png')
 end
 
+%% Problem 2
+% Initial parameters for testing
+a = 7125.48662; % km
+e = 0;
+i = 0; % degree
+O = 0; % degree
+w = 89.99764; % degree
+nu = -89.99818; % degree
+muE = 3.986 * 10^5;
+n = sqrt(muE / a^3);
+
+y = oe2eci(a,e,i,O,w,nu);
+r0 = y(1:3);
+v0 = y(4:6);
+rE = 6178;
+r3_B0 = 7.943e15;
+
+B1 = -magFieldPotentialGrad(R_norm, 0, 90, rE, 10, 0.01, 0.01);
+B1_z = B1(3)
+
+B_dipole_z = r3_B0/(norm(r0))^3*(-cosd(168.6))
+
+%% Playground
+theta = pi/6;
+n = 3;
+m = 1;
+
+P = getPnm(theta, n, m)
+dP = getdPdTheta(theta, n, m)
+
 %% Problem 3
 tFinal = 6000;
 tStep = 1;
