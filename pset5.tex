@@ -8,7 +8,7 @@ The following equations show the relationships for gravity gradient stability in
 
 % Insert equations for kR and kT as well as moment of inertia inequalities from lecture 8
 
-We show the plot of stable and unstable motion under gravity gradient. When computing the coefficients using moments of inertia about the principal axes, we obtain the following plot.
+We show the plot of stable and unstable motion under gravity gradient. When computing the coefficients using moments of inertia about the principal axes, we obtain the following plot. In this case, we investigate the stability for the satellite when it is rotated such that the spacecraft is oriented appropriately for SAR operations, that is, principal x-axis is anti-radial, principal y-axis is opposite of cross-track, and principal z-axis is opposite of along-track. However, this orientation is unstable, as shown below.
 
 \begin{figure}[H]
 \centering
@@ -19,28 +19,42 @@ We show the plot of stable and unstable motion under gravity gradient. When comp
 
 \textit{b. Considering the results from 1a, comments on the expected stability of the attitude motion of your satellite about equilibrium. Try to reproduce stable and unstable motion by setting proper initial conditions and perturbing those conditions slightly (e.g., by 1\%). Plot attitude parameters (e.g., Euler angles) to show stability or instability.}
 
-We expect stable behavior for small perturbations. Previously, we have already shown that aligning principal axes with RTN produces stable behavior when there are no perturbations. Now, we will introduce small perturbations.
+First, without perturbations, the satellite can maintain steady attitude, demonstrating that this chosen orientation is indeed an equilibrium.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem1b_angle_unperturbed.png}
+\caption{Attitude evolution for unstable orientation without perturbations}
+\label{fig:ps5_problem1b_angle_unperturbed}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem1b_angvel_unperturbed.png}
+\caption{Angular velocity evolution for unstable orientation without perturbations}
+\label{fig:ps5_problem1b_angvel_unperturbed}
+\end{figure}
+
+We expect unstable behavior for small perturbations. Previously, we have already shown that aligning principal axes with RTN produces stable behavior when there are no perturbations. Now, we will introduce small perturbations, causing the system to leave equilibrium and demonstrating that it is unstable.
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps5_problem1b_angle.png}
-\caption{Attitude evolution for stable orientation with 1\% perturbations}
+\caption{Attitude evolution for unstable orientation with 1\% perturbations}
 \label{fig:ps5_problem1b_angle}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps5_problem1b_angvel.png}
-\caption{Angular velocity evolution for stable orientation with 1\% perturbations}
+\caption{Angular velocity evolution for unstable orientation with 1\% perturbations}
 \label{fig:ps5_problem1b_angvel}
 \end{figure}
-
-As expected, our attitude motion (angular velocities and Euler angles) are periodically stable with a small perturbation in initial condition.
 
 
 \textit{c. How would you need to change the mass distribution and/or nominal attitude of your satellite to obtain stable motion from the gravity gradient torque? Would it make sense for your project? Show a couple of potential configurations in the Ki plane and resulting stability of attitude motion at the equilibrium. This is done by changing your inertia tensor and simulating numerically.}
 
-While we have already shown that the existing mass distribution is stable for gravity gradient torque, we investigate the stability for the satellite when it is rotated such that the spacecraft is oriented appropriately for SAR operations, that is, body x-axis is cross-track, body y-axis is along-track, and body z-axis is radial. However, this orientation is unstable, as shown in part (e) of Section 4.4.
+We will have to align the principal axes XYZ with RTN (respectively) to obtain a stable attitude motion.
 
 \begin{figure}[H]
 \centering
@@ -49,7 +63,25 @@ While we have already shown that the existing mass distribution is stable for gr
 \label{fig:ps5_problem1c}
 \end{figure}
 
-We must maintain this orientation in order to properly point the radar antenna located at the top of the spacecraft, so it does not make sense to orient the satellite along principal axes for gravity gradient stability. Instead, we will likely require magnetorquers to offset angular momentum changes from environmental torques.
+We expect stable behavior for small perturbations. Previously, we have already shown that aligning principal axes with RTN produces stable behavior when there are no perturbations. Now, we will introduce small perturbations.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem1c_angle.png}
+\caption{Attitude evolution for stable orientation with 1\% perturbations}
+\label{fig:ps5_problem1c_angle}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem1c_angvel.png}
+\caption{Angular velocity evolution for stable orientation with 1\% perturbations}
+\label{fig:ps5_problem1c_angvel}
+\end{figure}
+
+As expected, our attitude motion (angular velocities and Euler angles) are periodically stable with a small perturbation in initial condition.
+
+We cannot maintain this orientation if we want to properly point the radar antenna located at the top of the spacecraft, so it does not make sense to orient the satellite along principal axes for gravity gradient stability. Instead, we will likely require magnetorquers to offset angular momentum changes from environmental torques, including gravity gradient torques due to our unstable equilibrium.
 
 
 \subsection{PROBLEM 2}
