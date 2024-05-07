@@ -15,15 +15,14 @@ function V = magFieldPotential(R, lambda, theta, RE)
             0, -2124, -37, 0, 0;
             0, -361, 249, -253, 0;
             0, 148, -264, 37, -307] * 1e-9; % T
-    % NOTE: potential indexing error here!
 
     % Find P matrix
     V_sum = 0;
     for n = 1:4
         innerTerm = 0;
         for mInd = 1:n
-            delta_0m = (m == 0); %Q: is 0 1 here because matlab indexing
             m = mInd - 1;
+            delta_0m = (m == 0); %Q: is 0 1 here because matlab indexing
 
             % calculate 2n-1
             fact_2nMin1 = 1;
@@ -38,7 +37,7 @@ function V = magFieldPotential(R, lambda, theta, RE)
             innerTerm = innerTerm + newTerm_inner;
         end
 
-        newTerm_outer = (R_E/R).^(n+1) * innerTerm; %Q: elementwise of nonelementwise vector?
+        newTerm_outer = (RE/R).^(n+1) * innerTerm; %Q: elementwise of nonelementwise vector?
         V_sum = V_sum + newTerm_outer;
 
     end
