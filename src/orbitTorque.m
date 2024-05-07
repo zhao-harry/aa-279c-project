@@ -26,7 +26,7 @@ function [stateDot] = orbitTorque(t,state,Ix,Iy,Iz, ...
     % Hard-coded with Earth radius for now
     [~,density] = atmosnrlmsise00(1000 * (norm(r) - 6378.1),0,0,2000,1,0);
     rho = density(6);
-    vPrincipal = A_ECI2P * v;
+    vPrincipal = A_ECI2P * (v + cross([0; 0; 7.2921159E-5],r));
     [~,Md] = drag(vPrincipal,rho,CD,barycenter,normal,area,cm);
 
     % Solar radiation pressure torque
