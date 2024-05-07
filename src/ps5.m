@@ -241,19 +241,19 @@ P = getPnm(theta, n, m)
 dP = getdPdTheta(theta, n, m)
 
 %% Problem 3
-tFinal = 6000;
+tFinal = 100000;
 tStep = 1;
 tspan = 0:tStep:tFinal;
 
+% Satellite orbit initial conditions
 a = 7125.48662; % km
 e = 0;
 i = 98.40508; % degree
 O = -19.61601; % degree
 w = 89.99764; % degree
 nu = -89.99818; % degree
-muE = 3.986 * 10^5;
+muE = 3.986 * 10^5; % km^3 / s^2
 n = sqrt(muE / a^3);
-
 y = oe2eci(a,e,i,O,w,nu);
 r0 = y(1:3);
 v0 = y(4:6);
@@ -263,11 +263,87 @@ normal = h / norm(h);
 tangential = cross(normal,radial);
 A_RTN = [radial tangential normal]';
 
+% Earth orbit initial conditions
+aE = 149.60E6; % km
+eE = 0.0167086;
+iE = 7.155; % degree
+OE = 174.9; % degree
+wE = 288.1; % degree
+nuE = 0;
+muSun = 1.327E11; % km^3 / s^2
+nE = sqrt(muSun / aE^3);
+ySun = oe2eci(aE,eE,iE,OE,wE,nuE);
+
 state0 = zeros(12,1);
 state0(1:6) = y;
 state0(7:9) = [0; 0; n];
-state0(10:12) = A2e(A_Body);
+state0(10:12) = A2e(A_RTN);
+state0(13:18) = ySun;
+
+CD = 2;
+Cd = 0; Cs = 1;
+P = 1358/3E8;
+UT1 = [2025 1 1];
+
+[barycenter,normal,area] = surfaces('res/area.csv',rot');
+cm = computeCM('res/mass.csv');
+I = computeMOI('res/mass.csv',cm);
+[rot,~] = eig(I);
+cmP = rot' * cm;
 
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
-[t,state] = ode113(@(t,state) orbitTorque(t,state,Ix,Iy,Iz,n), ...
-        tspan,state0,options);
+[t,state] = ode113(@(t,state) orbitTorque(t,state,Ix,Iy,Iz, ...
+    CD,Cd,Cs,P, ...
+    barycenter,normal,area,cmP,n), ...
+    tspan,state0,options);
+
+% Compute torques
+Rx = [1 0 0; 0 cosd(23.5) -sind(23.5); 0 sind(23.5) cosd(23.5)];
+c = zeros(size(state(:,1:3)));
+Mgg = zeros(size(state(:,1:3)));
+Md = zeros(size(state(:,1:3)));
+Msrp = zeros(size(state(:,1:3)));
+for i = 1:length(t)
+    r = state(i,1:3)';
+    v = state(i,1:3)';
+    radial = r / norm(r);
+    rEarth = state(i,13:15)';
+    A_ECI2P = e2A(state(i,10:12));
+
+    c(i,1:3) = A_ECI2P * radial;
+    Mgg(i,1:3) = gravGradTorque(Ix,Iy,Iz,n,c(i,1:3));
+    
+    [~,density] = atmosnrlmsise00(1000 * (norm(r) - 6378.1),0,0,2000,1,0);
+    rho = density(6);
+    vPrincipal = A_ECI2P * v;
+    [~,M] = drag(vPrincipal,rho,CD,barycenter,normal,area,cmP);
+    Md(i,1:3) = M;
+
+    s = A_ECI2P * (-Rx * rEarth - r);
+    [~,M] = srp(s,P,Cd,Cs,barycenter,normal,area,cmP);
+    Msrp(i,1:3) = M;
+end
+
+figure()
+plot(t / 3600,state(:,7:9))
+xlabel('Time [h]')
+ylabel('Angular Velocity in Principal Axes [rad/s]')
+legend('\omega_{x}','\omega_{y}','\omega_{z}')
+
+figure()
+plot(t / 3600,Mgg)
+xlabel('Time [h]')
+ylabel('Gravity Gradient Torque in Principal Axes [Nm]')
+legend('M_{x}','M_{y}','M_{z}')
+
+figure()
+plot(t / 3600,Md)
+xlabel('Time [h]')
+ylabel('Drag Torque in Principal Axes [Nm]')
+legend('M_{x}','M_{y}','M_{z}')
+
+figure()
+plot(t / 3600,Msrp)
+xlabel('Time [h]')
+ylabel('Solar Radiation Torque in Principal Axes [Nm]')
+legend('M_{x}','M_{y}','M_{z}')
