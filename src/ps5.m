@@ -254,19 +254,21 @@ state0(7:9) = [0; 0; n];
 state0(10:12) = A2e(A_RTN);
 state0(13:18) = ySun;
 
-% Parameters
-CD = 2;
-Cd = 0; Cs = 0.9;
-P = 1358/3E8;
-m = [1; 1; 1]; % Arbitrarily defined satellite dipole for now
-UT1 = [2024 1 1];
-
 % Properties
 [barycenter,normal,area] = surfaces('res/area.csv',rot');
 cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
 [rot,~] = eig(I);
 cmP = rot' * cm;
+
+% Parameters
+CD = 2;
+Cd = 0; Cs = 0.9;
+P = 1358/3E8;
+S_sat = sum(area);
+m_max = 4*pi*1e-7 * S_sat * 0.1;
+m = m_max*[1; 1; 1]; % Arbitrarily defined satellite dipole for now
+UT1 = [2024 1 1];
 
 % Run numerical method
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
@@ -282,6 +284,7 @@ Mgg = zeros(size(state(:,1:3)));
 Md = zeros(size(state(:,1:3)));
 Msrp = zeros(size(state(:,1:3)));
 Mm = zeros(size(state(:,1:3)));
+
 for i = 1:length(t)
     r = state(i,1:3)';
     v = state(i,1:3)';
@@ -350,3 +353,69 @@ legend('M_{x}','M_{y}','M_{z}')
 if savePlot == true
     saveas(gcf,'Images/ps5_problem3_mag.png')
 end
+
+%% Playground
+% B_vec = zeros(size(state(:,1:3)));
+% for i = 1:length(t)
+%     r = state(i,1:3)';
+%     v = state(i,1:3)';
+%     radial = r / norm(r);
+%     rEarth = state(i,13:15)';
+%     A_ECI2P = e2A(state(i,10:12));
+%     
+%     M = magFieldEarthDipole
+%     M = magFieldTorque(m,r,state(10:12),t(i),6378.1,UT1);
+%     Mm(i,1:3) = M;
+% end
+
+R = r0;
+rE = rEarth;
+rE3_B0 = 7.943e15; %Wb*m
+GMST = time2GMST(0,UT12MJD(UT1));
+[lat,lon,~] = ECEF2Geoc(ECI2ECEF(R,GMST),t);
+lambda = lat;
+phi = lon;
+theta_m = pi/2 - phi;
+
+dalphadt = 7.292115827689e-5;
+t0 = 0;
+
+alpha_m = GMST + dalphadt*t0 + lambda;
+
+mE = [sin(theta_m)*cos(alpha_m);
+         sin(theta_m)*sin(alpha_m);
+         cos(theta_m)];
+
+B1 = norm(magFieldEarthDipole(R, rE, rE3_B0))
+[B2_1, B2_2, B2_3] = magFieldEarth(R, lambda, theta_m, norm(rE));
+B2 = norm([B2_1, B2_2, B2_3])
+
+%% Problem 3 Maximum Torques
+% Parameters
+CD = 2;
+Cd = 0; Cs = 0.9;
+q = Cd + Cs;
+P = 1358/3E8;
+S_sat = sum(area);
+m_max = 4*pi*1e-7 * S_sat * 0.1;
+UT1 = [2024 1 1];
+rE3_B0 = 7.943e15; %Wb*m
+
+r_norm = norm(state(1,1:3));
+Mgg_max = 3/2 * muE/(r_norm^3) * abs(max([Ix Iy Iz]) - min([Ix Iy Iz]));
+Mm_max = 2*m_max*rE3_B0/(r_norm^3);
+Msrp_max = 0;
+Md_max = 0;
+
+vMax = max(vecnorm(state(:,4:6)')) * 1e3;
+
+for n = 1:length(area)
+    Msrp_max = Msrp_max + P*area(n)*(1+q) * norm(barycenter(:,n) - cmP);
+    Md_max = Md_max + 0.5*rho*CD*vMax^2*area(n) * norm(barycenter(:,n) - cmP);
+end
+
+fprintf("Maximum expected values: \n" + ...
+        "M_gg: %f Nm \n" + ...
+        "M_m: %f Nm \n" + ...
+        "M_srp: %f Nm \n" + ...
+        "M_d: %f Nm\n", Mgg_max, Mm_max, Msrp_max, Md_max);

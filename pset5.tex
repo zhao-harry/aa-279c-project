@@ -118,20 +118,50 @@ Since the satellite is expected operate in LEO, the spherical harmonic model up 
 The equations below define the solar radiation torque, where $C_S$ is the specular reflection coefficient, $C_d$ is the diffuse reflection coefficient, $\Vec{S}$ is the vector facing the Sun, and $e_i$ is 1 if the surface is illuminated and 0 otherwise.
 
 \begin{align*}
-    \Vec{M_S} = \sum^{n}_{i=1} \Vec{r_i} \times e_i \int_{S_i} \Vec{df_{total_i}} \\
-    \Vec{df_{total}} = -P 2 ((1-C_S) \hat{\Vec{S}} + (C_S \cos{\theta} + \frac{1}{3} C_d) \cos{\theta} dA
+    \Vec{M_S} = \sum^{n}_{i=1} \Vec{r_i} \times e_i \int_{S_i} d \Vec{f}_{total_i} \\
+    d \Vec{f}_{total} = -P ((1-C_S) \Vec{\hat{S}} + 2 (C_S \cos{\theta} + \frac{1}{3} C_d) \cos{\theta} dA
 \end{align*}
 
 The equations below define the aerodynamic torque.
 \begin{align*}
-    \Vec{df_{aero}} = - \frac{1}{2} C_D \rho V^2 (\hat{\Vec{V}} \dot \hat{\Vec{V}}
+    d \Vec{f}_{aero} = - \frac{1}{2} C_D \rho V^2 (\Vec{\hat{V}} \cdot \Vec{\hat{N}}) \Vec{\hat{V}} dA
 \end{align*}
 
 
 The following function enables the propagation of the orbit with the specified perturbation torques.
 
 \lstinputlisting{src/orbitTorque.m}
+\lstinputlisting{src/drag.m}
+\lstinputlisting{src/srp.m}
+\lstinputlisting{src/magFieldTorque.m}
 
 \subsection{PROBLEM 3}
 \textit{Include all torques you have been able to model in numerical integration. Please show comparison of numerically computed disturbance torques with expected values and trend from theory (model) and tables (Wertz) referenced in class. Plot all torque components in principal axes over time. Plot the resultant (sum) of all torques in principal axes. Make sure that your model is not too ideal, i.e. make sure that center of pressure and center of mass do not coincide.}
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem3_grav.png}
+\caption{Numerical simulation of gravity gradient torques}
+\label{fig:ps5_problem3_grav}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem3_drag.png}
+\caption{Numerical simulation of drag torques}
+\label{fig:ps5_problem3_drag}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem3_srp.png}
+\caption{Numerical simulation of solar radiation pressure torques}
+\label{fig:ps5_problem3_srp}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem3_mag.png}
+\caption{Numerical simulation of magnetic field torques}
+\label{fig:ps5_problem3_mag}
+\end{figure}
