@@ -14,6 +14,7 @@ Iz = IPrincipal(3,3);
 IR = Ix;
 IT = Iz;
 IN = Iy;
+
 kT = (IN - IR) / IT;
 kR = (IN - IT) / IR;
 
