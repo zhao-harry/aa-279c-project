@@ -211,32 +211,8 @@ if savePlot == true
     saveas(gcf,'Images/ps5_problem1c_angle.png')
 end
 
-%% Problem 2
-% Initial parameters for testing
-a = 7125.48662; % km
-e = 0;
-i = 0; % degree
-O = 0; % degree
-w = 89.99764; % degree
-nu = -89.99818; % degree
-muE = 3.986 * 10^5;
-n = sqrt(muE / a^3);
-
-y = oe2eci(a,e,i,O,w,nu);
-r0 = y(1:3);
-v0 = y(4:6);
-rE = 6178;
-r3_B0 = 7.943e15;
-eulerAngle0 = [0; 0; 0];
-
-m = [1; 1; 1];
-t0 = 0;
-UT1 = [2000, 1, 1];
-
-M1 = magFieldTorque(m, r0, eulerAngle0, t0, rE, UT1)
-
 %% Problem 3
-tFinal = 100000;
+tFinal = 6000;
 tStep = 1;
 tspan = 0:tStep:tFinal;
 
@@ -249,6 +225,8 @@ w = 89.99764; % degree
 nu = -89.99818; % degree
 muE = 3.986 * 10^5; % km^3 / s^2
 n = sqrt(muE / a^3);
+
+% Compute initial position and attitude
 y = oe2eci(a,e,i,O,w,nu);
 r0 = y(1:3);
 v0 = y(4:6);
@@ -269,35 +247,41 @@ muSun = 1.327E11; % km^3 / s^2
 nE = sqrt(muSun / aE^3);
 ySun = oe2eci(aE,eE,iE,OE,wE,nuE);
 
+% Initial conditions
 state0 = zeros(12,1);
 state0(1:6) = y;
 state0(7:9) = [0; 0; n];
 state0(10:12) = A2e(A_RTN);
 state0(13:18) = ySun;
 
+% Parameters
 CD = 2;
-Cd = 0; Cs = 1;
+Cd = 0; Cs = 0.9;
 P = 1358/3E8;
-UT1 = [2025 1 1];
+m = [1; 1; 1]; % Arbitrarily defined satellite dipole for now
+UT1 = [2024 1 1];
 
+% Properties
 [barycenter,normal,area] = surfaces('res/area.csv',rot');
 cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
 [rot,~] = eig(I);
 cmP = rot' * cm;
 
+% Run numerical method
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) orbitTorque(t,state,Ix,Iy,Iz, ...
-    CD,Cd,Cs,P, ...
+    CD,Cd,Cs,P,m,UT1, ...
     barycenter,normal,area,cmP,n), ...
     tspan,state0,options);
 
-% Compute torques
+% Compute torques (since ode113 does not allow returning these)
 Rx = [1 0 0; 0 cosd(23.5) -sind(23.5); 0 sind(23.5) cosd(23.5)];
 c = zeros(size(state(:,1:3)));
 Mgg = zeros(size(state(:,1:3)));
 Md = zeros(size(state(:,1:3)));
 Msrp = zeros(size(state(:,1:3)));
+Mm = zeros(size(state(:,1:3)));
 for i = 1:length(t)
     r = state(i,1:3)';
     v = state(i,1:3)';
@@ -317,6 +301,9 @@ for i = 1:length(t)
     s = A_ECI2P * (-Rx * rEarth - r);
     [~,M] = srp(s,P,Cd,Cs,barycenter,normal,area,cmP);
     Msrp(i,1:3) = M;
+
+    M = magFieldTorque(m,r,state(10:12),t(i),6378.1,UT1);
+    Mm(i,1:3) = M;
 end
 
 figure()
@@ -324,21 +311,42 @@ plot(t / 3600,state(:,7:9))
 xlabel('Time [h]')
 ylabel('Angular Velocity in Principal Axes [rad/s]')
 legend('\omega_{x}','\omega_{y}','\omega_{z}')
+if savePlot == true
+    saveas(gcf,'Images/ps5_problem3_angvel.png')
+end
 
 figure()
 plot(t / 3600,Mgg)
 xlabel('Time [h]')
 ylabel('Gravity Gradient Torque in Principal Axes [Nm]')
 legend('M_{x}','M_{y}','M_{z}')
+if savePlot == true
+    saveas(gcf,'Images/ps5_problem3_grav.png')
+end
 
 figure()
 plot(t / 3600,Md)
 xlabel('Time [h]')
 ylabel('Drag Torque in Principal Axes [Nm]')
 legend('M_{x}','M_{y}','M_{z}')
+if savePlot == true
+    saveas(gcf,'Images/ps5_problem3_drag.png')
+end
 
 figure()
 plot(t / 3600,Msrp)
 xlabel('Time [h]')
-ylabel('Solar Radiation Torque in Principal Axes [Nm]')
+ylabel('Solar Radiation Pressure Torque in Principal Axes [Nm]')
 legend('M_{x}','M_{y}','M_{z}')
+if savePlot == true
+    saveas(gcf,'Images/ps5_problem3_srp.png')
+end
+
+figure()
+plot(t / 3600,Mm)
+xlabel('Time [h]')
+ylabel('Magnetic Field Torque in Principal Axes [Nm]')
+legend('M_{x}','M_{y}','M_{z}')
+if savePlot == true
+    saveas(gcf,'Images/ps5_problem3_mag.png')
+end

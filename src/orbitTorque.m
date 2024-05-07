@@ -1,4 +1,6 @@
-function [stateDot] = orbitTorque(t,state,Ix,Iy,Iz,CD,Cd,Cs,P,barycenter,normal,area,cm,n)
+function [stateDot] = orbitTorque(t,state,Ix,Iy,Iz, ...
+    CD,Cd,Cs,P,m,UT1, ...
+    barycenter,normal,area,cm,n)
     warning('off','aero:atmosnrlmsise00:setf107af107aph')
 
     % Orbit position and velocity
@@ -20,21 +22,27 @@ function [stateDot] = orbitTorque(t,state,Ix,Iy,Iz,CD,Cd,Cs,P,barycenter,normal,
     c = A_ECI2P * radial;
     Mgg = gravGradTorque(Ix,Iy,Iz,n,c);
 
-    % Drag
+    % Drag torque
+    % Hard-coded with Earth radius for now
     [~,density] = atmosnrlmsise00(1000 * (norm(r) - 6378.1),0,0,2000,1,0);
     rho = density(6);
     vPrincipal = A_ECI2P * v;
     [~,Md] = drag(vPrincipal,rho,CD,barycenter,normal,area,cm);
 
-    % Solar radiation pressure
+    % Solar radiation pressure torque
+    % Hard-coded with Earth axial tilt for now
     Rx = [1 0 0; 0 cosd(23.5) -sind(23.5); 0 sind(23.5) cosd(23.5)];
-    s = A_ECI2P * (-Rx * rEarth - r); % Double check this
+    s = A_ECI2P * (-Rx * rEarth - r); % SCI -> ECI -> XYZ
     [~,Msrp] = srp(s,P,Cd,Cs,barycenter,normal,area,cm);
 
+    % Magnetic field torque
+    % Hard-coded with Earth radius for now
+    Mm = magFieldTorque(m,r,state(10:12),t,6378.1,UT1);
+
     % Compute net moments
-    Mx = Mgg(1) + Md(1) + Msrp(1);
-    My = Mgg(2) + Md(2) + Msrp(2);
-    Mz = Mgg(3) + Md(3) + Msrp(3);
+    Mx = Mgg(1) + Md(1) + Msrp(1) + Mm(1);
+    My = Mgg(2) + Md(2) + Msrp(2) + Mm(2);
+    Mz = Mgg(3) + Md(3) + Msrp(3) + Mm(3);
 
     % Time derivatives
     stateDot = zeros(12,1);
