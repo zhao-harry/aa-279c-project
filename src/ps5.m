@@ -220,11 +220,8 @@ tspan = 0:tStep:tFinal;
 a = 7125.48662; % km
 e = 0;
 i = 98.40508; % degree
-i = 0;
 O = -19.61601; % degree
-O = 0;
 w = 89.99764; % degree
-w = 0;
 nu = -89.99818; % degree
 muE = 3.986 * 10^5; % km^3 / s^2
 n = sqrt(muE / a^3);
@@ -268,9 +265,10 @@ cmP = rot' * cm;
 CD = 2;
 Cd = 0; Cs = 0.9;
 P = 1358/3E8;
-S_sat = sum(area);
+S_sat = 24.92;
 m_max = 4*pi*1e-7 * S_sat * 0.1;
-m_direction = [1; 1; 1];
+m_direction_body = [1; 0; 0];
+m_direction = rot * m_direction_body;
 m = m_max*m_direction/norm(m_direction); % Arbitrarily defined satellite dipole for now
 UT1 = [2024 1 1];
 
@@ -364,7 +362,7 @@ CD = 2;
 Cd = 0; Cs = 0.9;
 q = Cd + Cs;
 P = 1358/3E8;
-S_sat = sum(area);
+S_sat = 24.92;
 m_max = 4*pi*1e-7 * S_sat * 0.1;
 UT1 = [2024 1 1];
 rE3_B0 = 7.943e15; %Wb*km
@@ -385,5 +383,5 @@ end
 fprintf("Maximum expected values: \n" + ...
         "M_gg: %d Nm \n" + ...
         "M_m: %d Nm \n" + ...
-        "M_srp: %f Nm \n" + ...
-        "M_d: %f Nm\n", Mgg_max, Mm_max, Msrp_max, Md_max);
+        "M_srp: %d Nm \n" + ...
+        "M_d: %d Nm\n", Mgg_max, Mm_max, Msrp_max, Md_max);
