@@ -299,7 +299,7 @@ for i = 1:length(t)
     
     [~,density] = atmosnrlmsise00(1000 * (norm(r) - 6378.1),0,0,2000,1,0);
     rho = density(6);
-    vPrincipal = A_ECI2P * v;
+    vPrincipal = A_ECI2P * (v + cross([0; 0; 7.2921159E-5],r));
     [~,M] = drag(vPrincipal,rho,CD,barycenter,normal,area,cmP);
     Md(i,1:3) = M;
 

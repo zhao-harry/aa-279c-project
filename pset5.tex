@@ -101,7 +101,7 @@ In addition to gravity gradient torques, we modeled torque from magnetic field i
 The equation for the torque from the magnetic field interactions is below.
 
 \begin{align*}
-    \Vec{M_m} = \Vec{m_{sat}} \times \Vec{B_{Earth}}
+    \Vec{M}_{m} = \Vec{m}_{sat} \times \Vec{B}_{Earth}
 \end{align*}
 
 Since the satellite is expected operate in LEO, the spherical harmonic model up to n = 4 was used for maximum accuracy. This model is based on the geocentric distance ($R$), colatitude ($\theta$, and longitude $\phi$. The model requires Gaussian coefficients ($g^{n,m}$, $h^{n,m}$) and Legendre functions ($P^{n,m}$) and their derivatives ($\frac{\delta P^{n,m} (\theta)}{\delta \theta}$), which are explained in more detail in Wertz \cite{Wertz}.
@@ -118,13 +118,13 @@ Since the satellite is expected operate in LEO, the spherical harmonic model up 
 The equations below define the solar radiation torque, where $C_S$ is the specular reflection coefficient, $C_d$ is the diffuse reflection coefficient, $\Vec{S}$ is the vector facing the Sun, and $e_i$ is 1 if the surface is illuminated and 0 otherwise.
 
 \begin{align*}
-    \Vec{M_S} = \sum^{n}_{i=1} \Vec{r_i} \times e_i \int_{S_i} d \Vec{f}_{total_i} \\
-    d \Vec{f}_{total} = -P ((1-C_S) \Vec{\hat{S}} + 2 (C_S \cos{\theta} + \frac{1}{3} C_d) \cos{\theta} dA
+    \Vec{M}_{S} = \sum^{n}_{i=1} \Vec{r}_{i} \times e_i \int_{S_i} d \Vec{f}_{total_{i}} \\
+    d \Vec{f}_{total} = -P ((1-C_S) \hat{\Vec{S}} + 2 (C_S \cos{\theta} + \frac{1}{3} C_d) \cos{\theta} dA
 \end{align*}
 
 The equations below define the aerodynamic torque.
 \begin{align*}
-    d \Vec{f}_{aero} = - \frac{1}{2} C_D \rho V^2 (\Vec{\hat{V}} \cdot \Vec{\hat{N}}) \Vec{\hat{V}} dA
+    d \Vec{f}_{aero} = - \frac{1}{2} C_D \rho V^2 (\hat{\Vec{V}} \cdot \hat{\Vec{N}}) \hat{\Vec{V}} dA
 \end{align*}
 
 
