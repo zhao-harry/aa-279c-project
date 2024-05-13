@@ -12,7 +12,7 @@ Iy = IPrincipal(2,2);
 Iz = IPrincipal(3,3);
 
 %% Problem 2
-tFinal = 600;
+tFinal = 86400;
 tStep = 1;
 tspan = 0:tStep:tFinal;
 
@@ -91,11 +91,29 @@ tangent = cross(radial, normal);
 RTN = cat(3, radial, normal, tangent);
 RTN = permute(RTN, [1, 3, 2]); % in ECI
 
+% Get Euler angles of ideal rotation
+eulerAngs_ideal = nan(size(state(:,10:12)));
+for n = 1:length(t)
+    eulerAngs_ideal(n,:) = A2e(RTN(:,:,n));
+end
+eulerAngs_ideal = wrapTo2Pi(eulerAngs_ideal);
+
+
 % Get Euler angles of principal axis
-eulerAngs = state(:,10:12);
+eulerAngs_actual = state(:,10:12);
 A_ECI2P = nan(3,3,length(t));
 for n = 1:length(t)
-    A_ECI2P(:,:,n) = e2A(eulerAngs(n,:));
+    A_ECI2P(:,:,n) = e2A(eulerAngs_actual(n,:));
 end
+eulerAngs_actual = wrapTo2Pi(eulerAngs_actual);
+
+% Plot
+figure()
+hold on
+plot(t/3600, rad2deg(eulerAngs_actual - eulerAngs_ideal))
+legend(["\phi_{error}", "\theta_{error}", "\psi_{error}"])
+xlabel("time [hr]"); ylabel("Euler Angles [deg]")
+xlim([0, 24])
+
 
 %% Problem 6

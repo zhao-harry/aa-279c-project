@@ -356,6 +356,10 @@ if savePlot == true
     saveas(gcf,'Images/ps5_problem3_mag.png')
 end
 
+%%
+figure()
+plot(t, state(:,10:12))
+
 %% Problem 3 Maximum Torques
 % Parameters
 CD = 2;
