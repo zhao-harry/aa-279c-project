@@ -1,5 +1,5 @@
 close all; clear; clc
-savePlot = true;
+savePlot = false;
 
 %% Import mass properties
 cm = computeCM('res/mass.csv');
@@ -235,7 +235,7 @@ radial = r0 / norm(r0);
 normal = h / norm(h);
 tangential = cross(normal,radial);
 A_RTN = [radial tangential normal]';
-
+%%
 % Earth orbit initial conditions
 aE = 149.60E6; % km
 eE = 0.0167086;
