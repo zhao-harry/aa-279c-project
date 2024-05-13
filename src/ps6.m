@@ -1,6 +1,7 @@
 close all; clear; clc
 
 % From PS6 onward, we use Simulink to model the spacecraft
+savePlots = true;
 
 %% Import mass properties
 cm = computeCM('res/mass.csv');
@@ -90,13 +91,16 @@ tangent = cross(radial, normal);
 
 RTN = cat(3, radial, normal, tangent);
 RTN = permute(RTN, [1, 3, 2]); % in ECI
+idx = [1 3 2];
+A_ideal = [-1, 1, 1] .* RTN(:,idx,:);
 
 % Get Euler angles of ideal rotation
 eulerAngs_ideal = nan(size(state(:,10:12)));
 for n = 1:length(t)
-    eulerAngs_ideal(n,:) = A2e(RTN(:,:,n));
+    eulerAngs_ideal(n,:) = A2e(A_ideal(:,:,n));
 end
-eulerAngs_ideal = wrapTo2Pi(eulerAngs_ideal);
+% eulerAngs_ideal = wrapTo2Pi(eulerAngs_ideal);
+eulerAngs_ideal = unwrap(eulerAngs_ideal);
 
 
 % Get Euler angles of principal axis
@@ -105,7 +109,7 @@ A_ECI2P = nan(3,3,length(t));
 for n = 1:length(t)
     A_ECI2P(:,:,n) = e2A(eulerAngs_actual(n,:));
 end
-eulerAngs_actual = wrapTo2Pi(eulerAngs_actual);
+% eulerAngs_actual = wrapTo2Pi(eulerAngs_actual);
 
 % Plot
 figure()
@@ -114,6 +118,6 @@ plot(t/3600, rad2deg(eulerAngs_actual - eulerAngs_ideal))
 legend(["\phi_{error}", "\theta_{error}", "\psi_{error}"])
 xlabel("time [hr]"); ylabel("Euler Angles [deg]")
 xlim([0, 24])
-
+saveAsBool(gcf, 'Images/ps6_problem2.png', savePlots)
 
 %% Problem 6
