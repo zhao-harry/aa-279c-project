@@ -1,8 +1,18 @@
 close all; clear; clc
 
 % From PS6 onward, we use Simulink to model the spacecraft
+
+%% Import mass properties
+cm = computeCM('res/mass.csv');
+I = computeMOI('res/mass.csv',cm);
+
+[rot,IPrincipal] = eig(I);
+Ix = IPrincipal(1,1);
+Iy = IPrincipal(2,2);
+Iz = IPrincipal(3,3);
+
 %% Problem 2
-tFinal = 6000;
+tFinal = 600;
 tStep = 1;
 tspan = 0:tStep:tFinal;
 
@@ -68,5 +78,24 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
     CD,Cd,Cs,P,m,UT1, ...
     barycenter,normal,area,cmP,n), ...
     tspan,state0,options);
+
+% Calculate RTN frame
+r = state(:,1:3);
+v = state(:,4:6);
+h = cross(r,v);
+
+radial = r' ./ (vecnorm(r').*ones([3,1]));
+normal = h' ./ (vecnorm(h').*ones([3,1]));
+tangent = cross(radial, normal);
+
+RTN = cat(3, radial, normal, tangent);
+RTN = permute(RTN, [1, 3, 2]); % in ECI
+
+% Get Euler angles of principal axis
+eulerAngs = state(:,10:12);
+A_ECI2P = nan(3,3,length(t));
+for n = 1:length(t)
+    A_ECI2P(:,:,n) = e2A(eulerAngs(n,:));
+end
 
 %% Problem 6
