@@ -1,4 +1,4 @@
-function [M, B_ECEF] = magFieldTorque(m,R,eulerAngle,t,RE,UT1)
+function [M, B_ECEF, F, XYZ] = magFieldTorque(m,R,eulerAngle,t,RE,UT1)
     % Calculated the expected torque due to Earth's magnetic field
     % Inputs:
     % - m: magnetic moment of satellite [N * m / T]
