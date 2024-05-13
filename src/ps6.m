@@ -14,6 +14,7 @@ Iz = IPrincipal(3,3);
 
 %% Problem 2
 tFinal = 86400;
+% tFinal = 60;
 tStep = 1;
 tspan = 0:tStep:tFinal;
 
@@ -35,7 +36,7 @@ h = cross(r0,v0);
 radial = r0 / norm(r0);
 normal = h / norm(h);
 tangential = cross(normal,radial);
-A_RTN = [radial tangential normal]';
+A_RTN = -[radial tangential normal]';
 
 % Earth orbit initial conditions
 aE = 149.60E6; % km
@@ -80,28 +81,22 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
     barycenter,normal,area,cmP,n), ...
     tspan,state0,options);
 
-% Calculate RTN frame
-r = state(:,1:3);
-v = state(:,4:6);
-h = cross(r,v);
-
-radial = r' ./ (vecnorm(r').*ones([3,1]));
-normal = h' ./ (vecnorm(h').*ones([3,1]));
-tangent = cross(radial, normal);
-
-RTN = cat(3, radial, normal, tangent);
-RTN = permute(RTN, [1, 3, 2]); % in ECI
-idx = [1 3 2];
-A_ideal = [-1, 1, 1] .* RTN(:,idx,:);
 
 % Get Euler angles of ideal rotation
 eulerAngs_ideal = nan(size(state(:,10:12)));
+A_ideal = nan([3, 3, length(t)]);
 for n = 1:length(t)
+    r = state(n,1:3);
+    v = state(n,4:6);
+    h = cross(r,v);
+    radial = r' / norm(r);
+    normal = h' / norm(h);
+    tangential = cross(normal, radial);
+    RTN = [radial tangential normal]';
+    A_ideal(:,:,n) = -RTN;
     eulerAngs_ideal(n,:) = A2e(A_ideal(:,:,n));
 end
-% eulerAngs_ideal = wrapTo2Pi(eulerAngs_ideal);
 eulerAngs_ideal = unwrap(eulerAngs_ideal);
-
 
 % Get Euler angles of principal axis
 eulerAngs_actual = state(:,10:12);
@@ -109,7 +104,7 @@ A_ECI2P = nan(3,3,length(t));
 for n = 1:length(t)
     A_ECI2P(:,:,n) = e2A(eulerAngs_actual(n,:));
 end
-% eulerAngs_actual = wrapTo2Pi(eulerAngs_actual);
+eulerAngs_actual = unwrap(eulerAngs_actual);
 
 % Plot
 figure()
@@ -118,6 +113,16 @@ plot(t/3600, rad2deg(eulerAngs_actual - eulerAngs_ideal))
 legend(["\phi_{error}", "\theta_{error}", "\psi_{error}"])
 xlabel("time [hr]"); ylabel("Euler Angles [deg]")
 xlim([0, 24])
-saveAsBool(gcf, 'Images/ps6_problem2.png', savePlots)
+% saveAsBool(gcf, 'Images/ps6_problem2.png', savePlots)
+saveAsBool(gcf, 'Images/ps6_problem3.png', savePlots)
+hold off
 
-%% Problem 6
+% figure(2)
+% plot(t, rad2deg(eulerAngs_ideal))
+% legend(["\phi", "\theta", "\psi"])
+% 
+% figure(3)
+% plot(t, rad2deg(eulerAngs_actual))
+% legend(["\phi", "\theta", "\psi"])
+
+% %% Problem 6
