@@ -137,5 +137,3 @@ legend(["\phi", "\theta", "\psi"])
 figure(3)
 plot(t, rad2deg(eulerAngs_actual))
 legend(["\phi", "\theta", "\psi"])
-
-%% Problem 6
