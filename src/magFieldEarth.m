@@ -2,9 +2,7 @@ function [B_R,B_theta,B_phi] = magFieldEarth(R,phi,theta,RE)
     % NOTE: slides calls phi lambda (not sure if it's the same thing or not)
 
     % Make sure that R is normalized
-    if length(R) == 3
-        R = norm(R);
-    end
+    R = norm(R);
 
     % For g & h matrix (row = n, col = m + 1)
     g = [-30186 -2036 0 0 0; ...
