@@ -8,19 +8,26 @@ We have implemented models of the drag, gravity gradient, magnetic field, and so
 \subsection{PROBLEM 2}
 \textit{Compute the attitude control error even if a controller is not implemented yet. The attitude control error represents the rotation between the desired and actual attitude. Plot the attitude control error and give its interpretation. Note that this step requires the definition and computation of the desired or nominal or target attitude of the spacecraft. In general, this can be expressed in body or principal axes.}
 
-Given how the goal of the satellite is to have an Earth-pointing antenna, the ideal position for the satellite is to have the principal z-axis facing the negative radial direction. Additionally, to maximize solar coverage the principal y-axis should be aligned with the normal direction. Because of this, the desired attitude of the spacecraft should simply be the negative of the RTN frame, as shown below.
+Given that the goal of the satellite is to have an Earth-pointing antenna, the ideal position for the satellite is to have the principal z-axis facing the negative radial direction. Additionally, to maximize solar coverage the principal y-axis should be aligned with the normal direction. Because of this, the desired attitude of the spacecraft should simply be the negative of the RTN frame, as shown below. Additionally, the satellite was assumed to be traveling at the mean motion to preserve its Earth-pointing behavior.
 
 \begin{align*}
     \Vec{P}_{desired} &= 
     \begin{bmatrix}
     -1 & 0 & 0 \\
-    0 & -1 & 0 \\
-    0 & 0 & -1
+    0 & 0 & 1 \\
+    0 & 1 & 1
     \end{bmatrix}
     \Vec{P}_{RTN}
 \end{align*}
 
-For the sake of this analysis, the simulated orbit was assumed to start off in the ideal attitude, and was assumed to have no torques. Figure \ref{fig:ps6_}
+For the sake of this analysis, the simulated orbit was assumed to start off in the ideal attitude and was assumed to have no torques. Figure \ref{fig:Images/ps6_problem2.png} shows the results of this analysis. Besides some numerical errors, the ideal and simulated attitudes are at the same point, which is expected given the lack of perturbations.
+
+\begin{figure}
+    \centering
+    \includegraphics{Images/ps6_problem2.png}
+    \caption{Error between ideal and simulated attitude without perturbations}
+    \label{fig:Images/ps6_problem2.png}
+\end{figure}
 
 \subsection{PROBLEM 3}
 \textit{Note that the attitude control error represents a rotation matrix (DCM) which quantifies how far the actual attitude is from the true attitude. You can use any parameterization to plot the attitude control errors corresponding to this DCM. Give interpretation of the attitude control errors given the applied disturbances.}
