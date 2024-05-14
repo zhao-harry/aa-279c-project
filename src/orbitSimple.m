@@ -1,4 +1,4 @@
-function [stateDot] = propagator(t, state)
+function [stateDot] = orbitSimple(t, state)
     r = state(1:3);
     v = state(4:6);
     stateDot = zeros(6,1);

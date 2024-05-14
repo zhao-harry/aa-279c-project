@@ -13,9 +13,9 @@ Iy = IPrincipal(2,2);
 Iz = IPrincipal(3,3);
 
 %% Problem 2
-tFinal = 86400;
-% tFinal = 6000;
-tStep = 1;
+% tFinal = 86400;
+tFinal = 2000;
+tStep = 5;
 tspan = 0:tStep:tFinal;
 
 % Satellite orbit initial conditions
@@ -38,11 +38,23 @@ normal = h / norm(h);
 tangential = cross(normal,radial);
 A_ECI2RTN = [radial tangential normal]';
 A_RTN2ideal = [-1 0 0;
-                        0 0 -1;
-                        0 -1 0];
-% A_RTN2ideal = eye(3);
+                        0 0 1;
+                        0 1 0];
+% A_RTN2ideal = -eye(3);
 A_ideal0 = A_RTN2ideal*A_ECI2RTN;
 
+% figure(1)
+% hold on
+% quiver3(0, 0, 0, 1, 0, 0, 'g')
+% quiver3(0, 0, 0, 0, 1, 0, 'c')
+% quiver3(0, 0, 0, 0, 0, 1, 'm')
+% for i = 2%1:3
+%     quiver3(0, 0, 0, A_ECI2RTN(i,1), A_ECI2RTN(i,2), A_ECI2RTN(i,3), 'r--')
+%     quiver3(0, 0, 0, A_ideal0(i,1), A_ideal0(i,2), A_ideal0(i,3), 'b')
+% end
+% hold off
+
+%%
 % Earth orbit initial conditions
 aE = 149.60E6; % km
 eE = 0.0167086;
@@ -55,46 +67,31 @@ nE = sqrt(muSun / aE^3);
 ySun = oe2eci(aE,eE,iE,OE,wE,nuE);
 
 % Initial conditions
-state0 = zeros(18,1);
-state0(1:6) = y;
-state0(7:9) = [0; -n; 0];
-% state0(7:9) = [0; 0; n];
-state0(10:12) = A2e(A_ideal0);
-state0(13:18) = ySun;
+stateOrb0(1:6) = y;
+stateEul0(1:3) = [0; 0; n];
+stateEul0(4:6) = A2e(A_ideal0);
+% stateOrb0(13:18) = ySun;
+
 
 % Properties
-[barycenter,normal,area] = surfaces('res/area.csv',rot');
-cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
 [rot,~] = eig(I);
-cmP = rot' * cm;
-
-% Parameters
-CD = 2;
-Cd = 0; Cs = 0.9;
-P = 1358/3E8;
-S_sat = 24.92;
-m_max = 4*pi*1e-7 * S_sat * 0.1;
-m_direction_body = [1; 0; 0];
-m_direction = rot * m_direction_body;
-m = m_max*m_direction/norm(m_direction); % Arbitrarily defined satellite dipole for now
-UT1 = [2024 1 1];
 
 % Run numerical method
 options = odeset('RelTol',1e-6,'AbsTol',1e-9);
-[t,state] = ode113(@(t,state) orbitTorque(t,state,Ix,Iy,Iz, ...
-    CD,Cd,Cs,P,m,UT1, ...
-    barycenter,normal,area,cmP,n), ...
-    tspan,state0,options);
+[t,stateOrb] = ode113(@(t,stateOrb) orbitSimple(t,stateOrb), ...
+    tspan,stateOrb0,options);
 
+[t, stateEul] = ode113(@(t,stateEul) kinEulerAngle(t,stateEul,Ix,Iy,Iz), ...
+    tspan,stateEul0,options);
 
 % Get Euler angles of ideal rotation
-eulerAngs_ideal = nan(size(state(:,10:12)));
+eulerAngs_ideal = nan(size(stateOrb(:,1:3)));
 A_ECI2Ideal = nan([3, 3, length(t)]);
 
 for n = 1:length(t)
-    r = state(n,1:3);
-    v = state(n,4:6);
+    r = stateOrb(n,1:3);
+    v = stateOrb(n,4:6);
     h = cross(r,v);
     radial = r' / norm(r);
     normal = h' / norm(h);
@@ -106,7 +103,7 @@ end
 eulerAngs_ideal = unwrap(eulerAngs_ideal);
 
 % Get Euler angles of principal axis
-eulerAngs_actual = state(:,10:12);
+eulerAngs_actual = stateEul(:,1:3);
 A_ECI2P = nan(3,3,length(t));
 for n = 1:length(t)
     A_ECI2P(:,:,n) = e2A(eulerAngs_actual(n,:));
@@ -115,28 +112,26 @@ eulerAngs_actual = unwrap(eulerAngs_actual);
 
 eulerAngs_error = nan(size(eulerAngs_actual));
 for n = 1:length(t)
-    A_error = A_ECI2Ideal(:,:,n) * A_ECI2P(:,:,n)';
+    A_error = A_RTN2ideal * A_ECI2Ideal(:,:,n);
     eulerAngs_error(n,:) = A2e(A_error);
 end
-eulerAngs_error = unwrap(eulerAngs_error);
 
 % Plot
 figure(1)
 hold on
-plot(t/3600, eulerAngs_error)
+% plot(t/3600, rad2deg(eulerAngs_error))
+plot(t/3600, rad2deg(eulerAngs_ideal - eulerAngs_actual))
 legend(["\phi_{error}", "\theta_{error}", "\psi_{error}"])
 xlabel("time [hr]"); ylabel("Euler Angles [deg]")
 % xlim([0, 24])
-saveAsBool(gcf, 'Images/ps6_problem2.png', savePlots)
+% saveAsBool(gcf, 'Images/ps6_problem2.png', savePlots)
 % saveAsBool(gcf, 'Images/ps6_problem3.png', savePlots)
 hold off
 
 figure(2)
-plot(t, eulerAngs_ideal)
+plot(t, rad2deg(eulerAngs_ideal))
 legend(["\phi", "\theta", "\psi"])
 
 figure(3)
-plot(t, eulerAngs_actual)
+plot(t, rad2deg(eulerAngs_actual))
 legend(["\phi", "\theta", "\psi"])
-
-%% Problem 6
