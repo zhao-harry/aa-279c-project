@@ -365,27 +365,28 @@ plot(t, state(:,10:12))
 CD = 2;
 Cd = 0; Cs = 0.9;
 q = Cd + Cs;
-P = 1358/3E8;
+P = 1358 / 3E8;
 S_sat = 24.92;
-m_max = 4*pi*1e-7 * S_sat * 0.1;
+m_max = 4e-7 * pi * S_sat * 0.1;
 UT1 = [2024 1 1];
-rE3_B0 = 7.943e15; %Wb*km
+rE3_B0 = 7.943e15; % Wb-km
 
 r_norm = norm(state(1,1:3));
-Mgg_max = 3/2 * muE/(r_norm^3) * abs(max([Ix Iy Iz]) - min([Ix Iy Iz]));
-Mm_max = 2*m_max*rE3_B0/((r_norm*1e3)^3);
+Mgg_max = 3 / 2 * muE / (r_norm^3) * abs(max([Ix Iy Iz]) - min([Ix Iy Iz]));
+Mm_max = 2 * m_max * rE3_B0 / ((r_norm * 1e3)^3);
 Msrp_max = 0;
 Md_max = 0;
 
 vMax = max(vecnorm(state(:,4:6)')) * 1e3;
 
 for n = 1:length(area)
-    Msrp_max = Msrp_max + P*area(n)*(1+q) * norm(barycenter(:,n) - cmP);
-    Md_max = Md_max + 0.5*rho*CD*vMax^2*area(n) * norm(barycenter(:,n) - cmP);
+    Msrp_max = Msrp_max + P * area(n) * (1+q) * norm(barycenter(:,n) - cmP);
+    Md_max = Md_max + 0.5 * rho * CD * vMax^2 * area(n) * norm(barycenter(:,n) - cmP);
 end
 
 fprintf("Maximum expected values: \n" + ...
         "M_gg: %d Nm \n" + ...
         "M_m: %d Nm \n" + ...
         "M_srp: %d Nm \n" + ...
-        "M_d: %d Nm\n", Mgg_max, Mm_max, Msrp_max, Md_max);
+        "M_d: %d Nm\n", ...
+        Mgg_max,Mm_max,Msrp_max,Md_max);
