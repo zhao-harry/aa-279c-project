@@ -20,7 +20,8 @@ function q = qMethod(m, v, w)
 
     [V, lamda] = eig(K);
 
-    [nMax, ~] = max(diag(lamda));
+    [~, nMax] = max(diag(lamda));
 
     q = V(:, nMax);
+    q = q * q(1)/abs(q(1));
 end
