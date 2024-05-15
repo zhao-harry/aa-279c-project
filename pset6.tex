@@ -85,16 +85,50 @@ Initially, three sensor readings were picked to be the "ground truth," and the D
 
 \textit{Implement angular velocity measurements and the reconstruction of the attitude from those (through kinematic equations coded identically to ground truth but replicated in the spacecraft on-board computer)}
 
-The three methods for attitude determination were implemented in three separate functions, shown below.
+The first four methods for attitude determination were implemented in three separate functions, shown below.
+
+\lstinputlisting{src/DAD_twoVecs.m}
+\lstinputlisting{src/DAD.m}
+\lstinputlisting{src/qMethod.m}
+\lstinputlisting{src/kinEulerStepRK4.m}
+
 
 \subsection{PROBLEM 6}
 \textit{Plot the resulting estimated attitude in the absence of sensor errors. Show that it is identical to the true attitude (except for numerical errors).}
 
-Figures \ref{}
+Figures \ref{fig:Images/ps6_problem6_actual}, \ref{fig:Images/ps6_problem6_DADFict}, \ref{fig:Images/ps6_problem6_DAD}, and \ref{fig:Images/ps6_problem6_qMethod} depict the attitude determination using the different methods discussed earlier. As can be seen, they all align, which makes sense given how there is no measurement error.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps6_problem6_1.png}
-\caption{Error between target and actual attitude, with perturbations}
-\label{fig:Images/ps6_problem3_error}
+\includegraphics[scale=0.7]{Images/ps6_problem6_actual.png}
+\caption{Actual satellite attitude in ideal frame}
+\label{fig:Images/ps6_problem6_actual}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Images/ps6_problem6_DADFict.png}
+\caption{Attitude based on Deterministic Attitude Determination with fictitious measurements}
+\label{fig:Images/ps6_problem6_DADFict}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Images/ps6_problem6_DAD.png}
+\caption{Attitude based on Deterministic Attitude Determination with fictitious measurements}
+\label{fig:Images/ps6_problem6_DAD}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Images/ps6_problem6_qMethod.png}
+\caption{Attitude based on q Method}
+\label{fig:Images/ps6_problem6_qMethod}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Images/ps6_problem6_qMethod.png}
+\caption{Attitude based on q Method}
+\label{fig:Images/ps6_problem6_qMethod}
 \end{figure}
