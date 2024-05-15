@@ -95,11 +95,11 @@ sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
 % Settings
-% measType = "dad";
-measType = "q";
+measType = "dad";
+% measType = "q";
 % measType = "kin";
-useFict = true;
-% useFict = false;
+% useFict = true;
+useFict = false;
 
 
 %% Plot
@@ -107,6 +107,14 @@ useFict = true;
 qVals = squeeze(out.q.data);
 qMeasVals = squeeze(out.qMeasured.data);
 timeVals = squeeze(out.q.time);
+
+[t, eulerMATLAB] = sandbox_literallyps6();
+
+eulerSimulink = nan([3 length(timeVals)]);
+
+for n = 1:length(timeVals)
+    eulerSimulink(:,n) = A2e(q2A(qVals(:,n)));
+end
 
 figure(1)
 plot(timeVals, qVals)
