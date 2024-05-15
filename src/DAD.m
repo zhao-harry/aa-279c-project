@@ -6,8 +6,11 @@ function A = DAD(m1, m2, v1, v2)
     % Outputs:
     % - A: DCM between principal axes and ECI
 
-    pm = m1;
-    qm = cross(m1,m2)/norm(cross(m1,m2));
+    m1_tilde = (m1 + m2)/2;
+    m2_tilde = (m1 - m2)/2;
+
+    pm = m1_tilde;
+    qm = cross(m1_tilde,m2_tilde)/norm(cross(m1_tilde,m2_tilde));
     rm = cross(pm, qm);
 
     pv = v1;
