@@ -10,12 +10,12 @@ function A = DAD_twoVecs(m1, m2, v1, v2)
     m2_tilde = (m1 - m2)/2;
     v1_tilde = (v1 + v2)/2;
     v2_tilde = (v1 - v2)/2;
-    
-    % m1_tilde = m1;
-    % m2_tilde = m2;
-    % v1_tilde = v1;
-    % v2_tilde = v2;
 
+    m1_tilde = m1_tilde / norm(m1_tilde);
+    m2_tilde = m2_tilde / norm(m2_tilde);
+    v1_tilde = v1_tilde / norm(v1_tilde);
+    v2_tilde = v2_tilde / norm(v2_tilde);
+    
     pm = m1_tilde;
     cross_qm = cross(m1_tilde, m2_tilde);
     qm = cross_qm/norm(cross_qm);
@@ -28,5 +28,5 @@ function A = DAD_twoVecs(m1, m2, v1, v2)
 
     M = [pm qm rm];
     V = [pv qv rv];
-    A = M * pinv(V);
+    A = M / V;
 end

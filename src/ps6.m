@@ -117,19 +117,12 @@ legend('\phi','\theta','\psi')
 saveAsBool(gcf,'Images/ps6_problem2_error.png',savePlots)
 
 %% Problem 5
-
-
-
-numReadings = 2;
+numReadings = 4;
 
 v = rand([3, numReadings]);
 v  = v ./ vecnorm(v);
 
-m = nan(size(v));
-
-for n = 1:numReadings
-    m(:,n) = A_Nominal * v(:,n);
-end
+m = A_Nominal * v;
 
 qReal = A2q(A_Nominal);
 
@@ -140,10 +133,12 @@ m2 = m(:,2);
 v1 = v(:,1);
 v2 = v(:,2);
 
-A1 = DAD_twoVecs(m1, m2, v1, v2);
-q1 = A2q(A1)
+A1 = DAD_twoVecs(m1, m2, v1, v2)
+q1 = A2q(A1);
 
 A2 = DAD(m, v);
-q2 = A2q(A2)
+q2 = A2q(A2);
 
 q3 = qMethod(m,v,w);
+
+A_Nominal
