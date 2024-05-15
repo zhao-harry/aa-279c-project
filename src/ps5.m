@@ -235,7 +235,7 @@ radial = r0 / norm(r0);
 normal = h / norm(h);
 tangential = cross(normal,radial);
 A_RTN = [radial tangential normal]';
-%%
+
 % Earth orbit initial conditions
 aE = 149.60E6; % km
 eE = 0.0167086;
@@ -264,12 +264,12 @@ cmP = rot' * cm;
 % Parameters
 CD = 2;
 Cd = 0; Cs = 0.9;
-P = 1358/3E8;
+P = 1358 / 3e8;
 S_sat = 24.92;
-m_max = 4*pi*1e-7 * S_sat * 0.1;
+m_max = 4e-7 * pi * S_sat * 0.1;
 m_direction_body = [1; 0; 0];
 m_direction = rot * m_direction_body;
-m = m_max*m_direction/norm(m_direction); % Arbitrarily defined satellite dipole for now
+m = m_max * m_direction / norm(m_direction); % Arbitrary sat dipole
 UT1 = [2024 1 1];
 
 % Run numerical method
