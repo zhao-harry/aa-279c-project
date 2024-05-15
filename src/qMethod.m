@@ -18,8 +18,9 @@ function q = qMethod(m, v, w)
     K = [S - eye(size(S))*sigma, Z;
             Z', sigma];
 
-    [lambda, q] = eig(K);
+    [V, lamda] = eig(K);
 
-    nMax = max(diag(lambda));
-    
+    [nMax, ~] = max(diag(lamda));
+
+    q = V(:, nMax);
 end

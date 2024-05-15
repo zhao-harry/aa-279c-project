@@ -65,7 +65,7 @@ UT1 = [2024 1 1];
 % Get simulink vars
 constants = struct();
 constants.Ix = Ix; constants.Iy = Iy; constants.Iz = Iz;
-constants.RE = 6378; %km
+constants.RE = 6378.1; %km
 constants.n = n;
 constants.cm = cm;
 constants.barycenter = barycenter;
@@ -76,9 +76,19 @@ constants.P = P;
 constants.Cd = Cd;
 constants.Cs = Cs;
 constants.UT1 = UT1;
+constants.m = m;
 constants_bus_info = Simulink.Bus.createObject(constants);
 constants_bus = evalin('base', constants_bus_info.busName);
 rECI0 = r0; vECI0 = v0;
 rSCI0 = ySun(1:3); vSCI0 = ySun(4:6);
 q0 = A2q(A_ideal0);
-w0 = [0, -n, 0];
+w0 = [0, 0, n];
+
+%% Plot
+eulerAngs = nan(3,length(out.q.time));
+
+for n = 1:length(eulerAngs)
+    eulerAngs(:,n) = A2e(q2A(out.q.data(:,:,n)));
+end
+
+plot(out.q.time, eulerAngs)
