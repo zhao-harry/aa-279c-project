@@ -1,7 +1,7 @@
 close all; clear; clc
 
 % From PS6 onward, we use Simulink to model the spacecraft
-savePlots = false;
+savePlots = true;
 
 %% Import mass properties
 cm = computeCM('res/mass.csv');
@@ -127,34 +127,31 @@ w = [100 100 ones([1, numReadings-2])];
 
 % m = A_Nominal * v;
 
-qReals = nan([4, length(t)]);
-qMeas_DAD2 = nan([4, length(t)]);
-qMeas_DAD = nan([4, length(t)]);
-qMeas_qMethod = nan([4, length(t)]);
 eulerReals = state(:,10:12);
 euler_DAD2 = nan([3, length(t)]);
 euler_DAD = nan([3, length(t)]);
 euler_qMethod = nan([3, length(t)]);
+euler_kins = nan([3, length(t)]);
 
-w = [100 100 ones([1, numReadings-2])];
+euler_kins(:,1) = state0(10:12);
+omega = [0; -n; 0];
 
 for n = 1:length(t)
-    qReals(:,n) = A2q(A_Sats(:,:,n));
     m = A_Sats(:,:,n) * v;
     m1 = m(:,1);
     m2 = m(:,2);
     v1 = v(:,1);
     v2 = v(:,2);
     A_DAD2 = DAD_twoVecs(m1, m2, v1, v2);
-    qMeas_DAD2(:,n) = A2q(A_DAD2);
     euler_DAD2(:,n) = A2e(A_DAD2);
     A_DAD = DAD(m,v);
-    qMeas_DAD(:,n) = A2q(A_DAD);
     euler_DAD(:,n) = A2e(A_DAD);
-    qMeas_qMethod(:,n) = qMethod([m1 m2],[v1 v2],[1,1]);
-    euler_qMethod(:,n) = A2e(q2A(qMeas_qMethod(:,n)));
-end
+    qMeas_qMethod = qMethod(m,v,w);
+    euler_qMethod(:,n) = A2e(q2A(qMeas_qMethod));
 
+    % Propogate stateKin
+    [euler_kins(:,n+1), omega] = kinEulerStepRK4(euler_kins(:,1), omega, Ix, Iy, Iz, tStep);
+end
 
 figure()
 plot(t/3600, wrapToPi(eulerReals))
@@ -188,3 +185,11 @@ xlabel('Time [h]')
 ylabel('Euler Angle (Principal) [rad]')
 legend('\phi','\theta','\psi')
 saveAsBool(gcf,'Images/ps6_problem6_qMethod.png',savePlots)
+
+figure()
+plot(t/3600, euler_qMethod)
+title("Angular velocity ")
+xlabel('Time [h]')
+ylabel('Euler Angle (Principal) [rad]')
+legend('\phi','\theta','\psi')
+saveAsBool(gcf,'Images/ps6_problem6_kins.png',savePlots)
