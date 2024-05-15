@@ -167,7 +167,7 @@ saveAsBool(gcf,'Images/ps6_problem6_actual.png',savePlots)
 
 figure()
 plot(t/3600, euler_DAD2)
-title("Deterministic Attitude Determination (Ficticious Measurements)")
+title("Deterministic Attitude Determination (Fictitious Measurements)")
 xlabel('Time [h]')
 ylabel('Euler Angle (Principal) [rad]')
 legend('\phi','\theta','\psi')
