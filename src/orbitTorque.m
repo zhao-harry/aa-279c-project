@@ -43,6 +43,7 @@ function [stateDot] = orbitTorque(t,state,Ix,Iy,Iz, ...
     Mx = Mgg(1) + Md(1) + Msrp(1) + Mm(1);
     My = Mgg(2) + Md(2) + Msrp(2) + Mm(2);
     Mz = Mgg(3) + Md(3) + Msrp(3) + Mm(3);
+    % Mx = 0; My = 0; Mz = 0;
 
     % Time derivatives
     stateDot = zeros(12,1);
