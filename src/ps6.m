@@ -24,7 +24,7 @@ i = 98.40508; % degree
 O = -19.61601; % degree
 w = 89.99764; % degree
 nu = -89.99818; % degree
-muE = 3.986 * 10^5; % km^3 / s^2
+muE = 3.986e5; % km^3 / s^2
 n = sqrt(muE / a^3);
 
 % Compute initial position and attitude

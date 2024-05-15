@@ -47,7 +47,7 @@ function [stateDot] = orbitTorque(t,state,Ix,Iy,Iz, ...
     % Time derivatives
     stateDot = zeros(12,1);
     stateDot(1:3) = v;
-    stateDot(4:6) = (-3.986E5 / norm(r)^2) * r / norm(r); % km/s^2
+    stateDot(4:6) = (-3.986e5 / norm(r)^2) * r / norm(r); % km/s^2
     stateDot(7) = (Mx - (Iz - Iy) * w(2) * w(3)) / Ix;
     stateDot(8) = (My - (Ix - Iz) * w(3) * w(1)) / Iy;
     stateDot(9) = (Mz - (Iy - Ix) * w(1) * w(2)) / Iz;
