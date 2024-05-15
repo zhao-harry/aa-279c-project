@@ -58,6 +58,13 @@ m_direction = rot * m_direction_body;
 m = m_max * m_direction / norm(m_direction); % Arbitrary sat dipole
 UT1 = [2024 1 1];
 
+% Sensor information (assume 5 readings)
+numReadings = 5;
+sensor_weights = [100 100 ones([1, numReadings-2])];
+[~, indBest2Sensors] = maxk(sensor_weights, 2);
+ground_truth_vectors = rand([3, numReadings]);
+ground_truth_vectors = ground_truth_vectors ./ norm(ground_truth_vectors);
+
 % Get simulink vars
 constants = struct();
 constants.Ix = Ix; constants.Iy = Iy; constants.Iz = Iz;
@@ -79,6 +86,13 @@ rECI0 = r0; vECI0 = v0;
 rSCI0 = ySun(1:3); vSCI0 = ySun(4:6);
 q0 = A2q(A_Nominal);
 w0 = [0, -n, 0];
+
+sensors = struct();
+sensors.weights = sensor_weights;
+sensors.ground_truth_vectors = ground_truth_vectors;
+sensors.indBest2Sensors = indBest2Sensors;
+sensors_bus_info = Simulink.Bus.createObject(constants);
+sensors_bus = evalin('base', constants_bus_info.busName);
 
 %% Plot
 eulerAngs = nan(3,length(out.q.time));

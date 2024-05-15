@@ -21,7 +21,7 @@ function A = DAD_twoVecs(m1, m2, v1, v2)
     qm = cross_qm/norm(cross_qm);
     rm = cross(pm, qm);
 
-    pv = v1;
+    pv = v1_tilde;
     cross_qv = cross(v1_tilde, v2_tilde);
     qv = cross_qv/norm(cross_qv);
     rv = cross(pv,qv);
