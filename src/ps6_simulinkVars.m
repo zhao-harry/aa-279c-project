@@ -91,14 +91,25 @@ sensors = struct();
 sensors.weights = sensor_weights;
 sensors.ground_truth_vectors = ground_truth_vectors;
 sensors.indBest2Sensors = indBest2Sensors;
-sensors_bus_info = Simulink.Bus.createObject(constants);
-sensors_bus = evalin('base', constants_bus_info.busName);
+sensors_bus_info = Simulink.Bus.createObject(sensors);
+sensors_bus = evalin('base', sensors_bus_info.busName);
+
+% Settings
+% measType = "dad";
+measType = "q";
+% measType = "kin";
+useFict = true;
+% useFict = false;
+
 
 %% Plot
-eulerAngs = nan(3,length(out.q.time));
 
-for n = 1:length(eulerAngs)
-    eulerAngs(:,n) = A2e(out.A.data(:,:,n));
-end
+qVals = squeeze(out.q.data);
+qMeasVals = squeeze(out.qMeasured.data);
+timeVals = squeeze(out.q.time);
 
-plot(out.q.time, eulerAngs)
+figure(1)
+plot(timeVals, qVals)
+
+figure(2)
+plot(timeVals, qMeasVals-qVals)

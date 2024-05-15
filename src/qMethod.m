@@ -23,5 +23,5 @@ function q = qMethod(m, v, w)
     [~, nMax] = max(diag(lamda));
 
     q = V(:, nMax);
-    q = q * q(1)/abs(q(1));
+    q = A2q(q2A(q));
 end

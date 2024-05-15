@@ -82,6 +82,7 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 
 eulerError = zeros(size(state(:,10:12)));
 eulerTarget = zeros(size(state(:,10:12)));
+A_Sats = zeros([3,3,length(t)]);
 for i = 1:length(t)
     r = state(i,1:3)';
     v = state(i,4:6)';
@@ -91,6 +92,7 @@ for i = 1:length(t)
     tangential = cross(normal,radial);
     A_Target = [-radial -normal -tangential]'; % ECI -> RTN
     A_Sat = e2A(state(i,10:12)); % ECI -> Principal
+    A_Sats(:,:,i) = A_Sat;
     eulerTarget(i,1:3) = A2e(A_Target);
     eulerError(i,1:3) = A2e(A_Sat * A_Target');
 end
@@ -117,26 +119,72 @@ legend('\phi','\theta','\psi')
 saveAsBool(gcf,'Images/ps6_problem2_error.png',savePlots)
 
 %% Problem 5
-numReadings = 4;
+numReadings = 5;
 
 v = rand([3, numReadings]);
 v  = v ./ vecnorm(v);
+w = [100 100 ones([1, numReadings-2])];
 
-m = A_Nominal * v;
+% m = A_Nominal * v;
 
-qReal = A2q(A_Nominal);
+qReals = nan([4, length(t)]);
+qMeas_DAD2 = nan([4, length(t)]);
+qMeas_DAD = nan([4, length(t)]);
+qMeas_qMethod = nan([4, length(t)]);
+eulerReals = state(:,10:12);
+euler_DAD2 = nan([3, length(t)]);
+euler_DAD = nan([3, length(t)]);
+euler_qMethod = nan([3, length(t)]);
 
 w = [100 100 ones([1, numReadings-2])];
 
-m1 = m(:,1);
-m2 = m(:,2);
-v1 = v(:,1);
-v2 = v(:,2);
+for n = 1:length(t)
+    qReals(:,n) = A2q(A_Sats(:,:,n));
+    m = A_Sats(:,:,n) * v;
+    m1 = m(:,1);
+    m2 = m(:,2);
+    v1 = v(:,1);
+    v2 = v(:,2);
+    A_DAD2 = DAD_twoVecs(m1, m2, v1, v2);
+    qMeas_DAD2(:,n) = A2q(A_DAD2);
+    euler_DAD2(:,n) = A2e(A_DAD2);
+    A_DAD = DAD(m,v);
+    qMeas_DAD(:,n) = A2q(A_DAD);
+    euler_DAD(:,n) = A2e(A_DAD);
+    qMeas_qMethod(:,n) = qMethod([m1 m2],[v1 v2],[1,1]);
+    euler_qMethod(:,n) = A2e(q2A(qMeas_qMethod(:,n)));
+end
 
-A1 = DAD_twoVecs(m1, m2, v1, v2);
-q1 = A2q(A1);
 
-A2 = DAD(m, v);
-q2 = A2q(A2);
+figure()
+plot(t/3600, wrapToPi(eulerReals))
+title("Actual Attitude")
+xlabel('Time [h]')
+ylabel('Euler Angle (Principal) [rad]')
+legend('\phi','\theta','\psi')
+saveAsBool(gcf,'Images/ps6_problem6_actual.png',savePlots)
 
-q3 = qMethod(m,v,w);
+
+figure()
+plot(t/3600, euler_DAD2)
+title("Deterministic Attitude Determination (Ficticious Measurements)")
+xlabel('Time [h]')
+ylabel('Euler Angle (Principal) [rad]')
+legend('\phi','\theta','\psi')
+saveAsBool(gcf,'Images/ps6_problem6_DADFict.png',savePlots)
+
+figure()
+plot(t/3600, euler_DAD)
+title("Deterministic Attitude Determination")
+xlabel('Time [h]')
+ylabel('Euler Angle (Principal) [rad]')
+legend('\phi','\theta','\psi')
+saveAsBool(gcf,'Images/ps6_problem6_DAD.png',savePlots)
+
+figure()
+plot(t/3600, euler_qMethod)
+title("q Method")
+xlabel('Time [h]')
+ylabel('Euler Angle (Principal) [rad]')
+legend('\phi','\theta','\psi')
+saveAsBool(gcf,'Images/ps6_problem6_qMethod.png',savePlots)
