@@ -74,12 +74,19 @@ A much larger error appears in Figure \ref{fig:Images/ps6_problem3_error}. When 
 \subsection{PROBLEM 4}
 \textit{You can now start modeling the Simulink spacecraft subsystem which is what the satellite believes is happening (on-board). Initially, the sensors provide ideal measurements (no bias or noise). Just use an empty box for those. The outputs of the sensors are measurements which are used for attitude determination. These measurements are computed from the reference truth or oracle.}
 
-In the 
+We create a Simulink model using the same functions and variables previously modeled in MATLAB and shown in this paper, shown in Figure \ref{fig:Images/ps6_problem4}. Notably, we have a simulation subsystem which is responsible for simulating the dynamics, kinematics, and disturbances of the system, which we have modeled in previous sections. We now add an attitude determination subsystem for this step. Since we choose to model noise-free measurements for now, we directly generate measurements from the true state without injecting noise.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.55]{Images/ps6_problem4.pdf}
+\caption{Simulink model for NISAR spacecraft}
+\label{fig:Images/ps6_problem4}
+\end{figure}
 
 \subsection{PROBLEM 5}
 \textit{Assume a certain set of sensors. In general, a number of unit vectors and angular velocities can be considered as measurements}
 
-We initially model our attitude determination subsystem using "dummy" sensors and measurements. Each of the algorithms is fed randomly generated unit vectors as a noise-free measurement. These unit vectors represent fixed directions in the celestial sphere such that an orientation can be computed when a sufficient number of vectors is available. This represents the functionality of a star tracker sensor, which is able to determine the orientation of the satellite's axes relative to an inertial reference using unit vector directions of known stars. We do not yet model the inner workings of a star tracker, such as the identification and computation of star positions.
+We initially model our attitude determination subsystem using ``dummy'' sensors and measurements. Each of the algorithms is fed randomly generated unit vectors as a noise-free measurement. These unit vectors represent fixed directions in the celestial sphere such that an orientation can be computed when a sufficient number of vectors is available. This represents the functionality of a star tracker sensor, which is able to determine the orientation of the satellite's axes relative to an inertial reference using unit vector directions of known stars. We do not yet model the inner workings of a star tracker, such as the identification and computation of star positions.
 
 In our test implementation, we generate five such random unit vectors. These unit vectors are both our ground truth (analogous to known directions from a star catalog) and our measurement signal, since we do not inject any noise at this step. Thus, we expect to obtain an exact solution from each attitude determination algorithm in the absence of such noise.
 
@@ -87,11 +94,80 @@ Additionally, we can compute the attitude by integration of our angular velocity
 
 \textit{Implement the deterministic attitude determination algorithm discussed in class and its variant which uses fictitious measurements to spread the errors across the measurements}
 
+For measurements $\Vec{M}$ and ground truth $\Vec{V}$, we can use deterministic attitude determination to find the attitude by taking the pseudoinverse.
+
+\begin{align*}
+    \Vec{M} &= 
+    \begin{bmatrix}
+        \vdots & \vdots & \vdots\\
+        \Vec{m}_{1} & \Vec{m}_{2} & \Vec{m}_{3}\\
+        \vdots & \vdots & \vdots
+    \end{bmatrix} =
+    \Vec{A} \begin{bmatrix}
+        \vdots & \vdots & \vdots\\
+        \Vec{v}_{1} & \Vec{v}_{2} & \Vec{v}_{3}\\
+        \vdots & \vdots & \vdots
+    \end{bmatrix} =
+    \Vec{A} \Vec{V} \\
+    \Vec{A} &= \Vec{M} \Vec{V}^{-1}
+\end{align*}
+
+The implementation of the deterministic attitude determination method above assumes that we have three or more measurements. However, if there are only two measurements, a third measurement can be ``created'' using the cross product. This technique creates measurements and corresponding ground truth vectors $p$, $q$, and $r$ as shown below.
+
+\begin{align*}
+    \Tilde{\Vec{{m}}}_1 = \frac{\Vec{m}_1 + \Vec{m}_2}{2} \;\;\;
+    \Tilde{\Vec{{m}}}_2 = \frac{\Vec{m}_1 - \Vec{m}_2}{2} \;\;\;
+    \Tilde{\Vec{{v}}}_1 = \frac{\Vec{v}_1 + \Vec{v}_2}{2} \;\;\;
+    \Tilde{\Vec{{v}}}_2 = \frac{\Vec{v}_1 - \Vec{v}_2}{2} \\
+    \Vec{p}_m = \Tilde{\Vec{{m}}}_1; \;\;\;
+    \Vec{{q}}_m = \frac{\Tilde{\Vec{{m}}}_1 \times \Tilde{\Vec{{m}}}_2}{||\Tilde{\Vec{{m}}}_1 \times \Tilde{\Vec{{m}}}_2||} \;\;\;
+    \Vec{{r}}_m = \Vec{p}_m \times \Vec{v}_m \\
+    \Vec{p}_v = \Tilde{\Vec{{v}}}_1; \;\;\;
+    \Vec{{q}}_v = \frac{\Tilde{\Vec{{v}}}_1 \times \Tilde{\Vec{{v}}}_2}{||\Tilde{\Vec{{v}}}_1 \times \Tilde{\Vec{{v}}}_2||} \;\;\;
+    \Vec{{r}}_v = \Vec{p}_v \times \Vec{v}_v \\
+\end{align*}
+
 \textit{Implement the statistical attitude determination algorithm discussed in class (q-method)}
+
+Given measurements $\Vec{M}$, ground truth $\Vec{V}$, and sensor weights $\Vec{W}$, we can use statistical attitude determination (aka the q-method). This method ultimately finds the quaternions using the eigenvalue/eigenvector below, where the eigenvector associated with the largest eigenvalue is the quaternion vector.
+
+\begin{align*}
+    \Vec{K} \Vec{q} = \lambda \Vec{q}
+\end{align*}
+
+In the eigenvalue decomposition above, $\Vec{K}$ can be found with the following relation.
+
+\begin{align*}
+    \Vec{w}_i = \sqrt{w_1} \Vec{m}_1 \;\;\;
+    \Vec{u}_i = \sqrt{w_1} \Vec{v}_1 \\
+    \Vec{W} = 
+    \begin{bmatrix}
+        \Vec{w}_1 & \Vec{w}_2 & ... & \Vec{w}_n
+    \end{bmatrix} \;\;\;
+    \Vec{U} = 
+    \begin{bmatrix}
+        \Vec{u}_1 & \Vec{u}_2 & ... & \Vec{u}_n
+    \end{bmatrix} \\
+    \Vec{B} = \Vec{W} \Vec{U}^T \;\;\;
+    \Vec{S} = \Vec{B} + \Vec{B}^T \;\;\;
+    \sigma = trace (\Vec{B}) \\
+    Z = 
+    \begin{bmatrix}
+        B_{23} - B_{32} & B_{31} - B_{13} & B_{12} - B_{21}
+    \end{bmatrix} ^T \\
+    K = 
+    \begin{bmatrix}
+        \Vec{S} - \sigma \Vec{I} & \Vec{Z} \\
+        \Vec{Z}^T & \sigma
+    \end{bmatrix}
+\end{align*}
+
 
 \textit{Implement angular velocity measurements and the reconstruction of the attitude from those (through kinematic equations coded identically to ground truth but replicated in the spacecraft on-board computer)}
 
-The methods for attitude determination were implemented in the following functions, with deterministic attitude determination having an implementation with two vectors and another with multiple readings.
+We simply duplicate our previously-implemented kinematic equations and pass in the angular velocity to reconstruct attitude evolution for this technique.
+
+The methods for attitude determination are implemented in the following functions. We include implementations for deterministic attitude determination both for two measurements and for three or more measurements.
 
 \lstinputlisting{src/DAD_twoVecs.m}
 \lstinputlisting{src/DAD.m}
@@ -102,39 +178,39 @@ The methods for attitude determination were implemented in the following functio
 \subsection{PROBLEM 6}
 \textit{Plot the resulting estimated attitude in the absence of sensor errors. Show that it is identical to the true attitude (except for numerical errors).}
 
-Figures \ref{fig:Images/ps6_problem6_actual}, \ref{fig:Images/ps6_problem6_DADFict}, \ref{fig:Images/ps6_problem6_DAD}, and \ref{fig:Images/ps6_problem6_qMethod} depict the attitude determination using the different methods discussed earlier. As can be seen, they all align, which makes sense given how there is no measurement error.
+Figures \ref{fig:Images/ps6_problem6_actual}, \ref{fig:Images/ps6_problem6_DAD}, \ref{fig:Images/ps6_problem6_DADFict}, and \ref{fig:Images/ps6_problem6_qMethod} depict the attitude determination using the different methods discussed earlier. All are identical, which is expected, since each algorithm is given perfect measurements free of noise. Error for each is on the order of $10^{-16}$, which is purely numerical.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{Images/ps6_problem6_actual.png}
-\caption{Actual satellite attitude in ideal frame}
+\includegraphics[scale=0.8]{Images/ps6_problem6_actual.png}
+\caption{True satellite attitude relative to inertial frame}
 \label{fig:Images/ps6_problem6_actual}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{Images/ps6_problem6_DADFict.png}
-\caption{Attitude based on Deterministic Attitude Determination with fictitious measurements}
-\label{fig:Images/ps6_problem6_DADFict}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.7]{Images/ps6_problem6_DAD.png}
-\caption{Attitude based on Deterministic Attitude Determination with fictitious measurements}
+\includegraphics[scale=0.8]{Images/ps6_problem6_DAD.png}
+\caption{Deterministic attitude determination}
 \label{fig:Images/ps6_problem6_DAD}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{Images/ps6_problem6_qMethod.png}
-\caption{Attitude based on q Method}
+\includegraphics[scale=0.8]{Images/ps6_problem6_DADFict.png}
+\caption{Deterministic attitude determination with fictitious measurements}
+\label{fig:Images/ps6_problem6_DADFict}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{Images/ps6_problem6_qMethod.png}
+\caption{q-method}
 \label{fig:Images/ps6_problem6_qMethod}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{Images/ps6_problem6_kins.png}
-\caption{Attitude based on q Method}
+\includegraphics[scale=0.8]{Images/ps6_problem6_kins.png}
+\caption{Attitude reconstruction using kinematic equations}
 \label{fig:Images/ps6_problem6_kins}
 \end{figure}
