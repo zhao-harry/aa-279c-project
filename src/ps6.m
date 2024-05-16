@@ -1,7 +1,7 @@
 close all; clear; clc
 
 % From PS6 onward, we use Simulink to model the spacecraft
-savePlots = false;
+savePlots = true;
 
 %% Import mass properties
 cm = computeCM('res/mass.csv');
@@ -13,6 +13,7 @@ Iy = IPrincipal(2,2);
 Iz = IPrincipal(3,3);
 
 %% Problem 2-3
+% Problem 2 assumes no disturbances. We edit orbitTorque to do this.
 tFinal = 6000;
 tStep = 1;
 tspan = 0:tStep:tFinal;
@@ -102,24 +103,24 @@ plot(t / 3600,wrapToPi(state(:,10:12)))
 xlabel('Time [h]')
 ylabel('Euler Angle (Principal) [rad]')
 legend('\phi','\theta','\psi')
-% saveAsBool(gcf,'Images/ps6_problem2_principal.png',savePlots)
-saveAsBool(gcf,'Images/ps6_problem3_principal.png',savePlots)
+saveAsBool(gcf,'Images/ps6_problem2_principal.png',savePlots)
+% saveAsBool(gcf,'Images/ps6_problem3_principal.png',savePlots)
 
 figure()
 plot(t / 3600,wrapToPi(eulerTarget))
 xlabel('Time [h]')
 ylabel('Euler Angles (Target) [rad]')
 legend('\phi','\theta','\psi')
-% saveAsBool(gcf,'Images/ps6_problem2_target.png',savePlots)
-saveAsBool(gcf,'Images/ps6_problem3_target.png',savePlots)
+saveAsBool(gcf,'Images/ps6_problem2_target.png',savePlots)
+% saveAsBool(gcf,'Images/ps6_problem3_target.png',savePlots)
 
 figure()
 plot(t / 3600,wrapToPi(eulerError))
 xlabel('Time [h]')
 ylabel('Euler Angle Error [rad]')
 legend('\phi','\theta','\psi')
-% saveAsBool(gcf,'Images/ps6_problem2_error.png',savePlots)
-saveAsBool(gcf,'Images/ps6_problem3_error.png',savePlots)
+saveAsBool(gcf,'Images/ps6_problem2_error.png',savePlots)
+% saveAsBool(gcf,'Images/ps6_problem3_error.png',savePlots)
 
 %% Problem 5
 numReadings = 5;

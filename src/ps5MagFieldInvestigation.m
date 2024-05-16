@@ -67,7 +67,7 @@ S_sat = 24.92;
 m_max = 4*pi*1e-7 * S_sat * 0.1;
 m_direction_body = [1; 0; 0];
 m_direction = rot * m_direction_body;
-m = m_max*m_direction/norm(m_direction); % Arbitrarily defined satellite dipole for now
+m = m_max*m_direction/norm(m_direction); % Arbitrary sat dipole
 UT1 = [2024 1 1];
 
 % Run numerical method
@@ -114,45 +114,30 @@ end
 % xlabel('Time [h]')
 % ylabel('Angular Velocity in Principal Axes [rad/s]')
 % legend('\omega_{x}','\omega_{y}','\omega_{z}')
-% if savePlot == true
-%     saveas(gcf,'Images/ps5_problem3_angvel.png')
-% end
 % 
 % figure()
 % plot(t / 3600,Mgg)
 % xlabel('Time [h]')
 % ylabel('Gravity Gradient Torque in Principal Axes [Nm]')
 % legend('M_{x}','M_{y}','M_{z}')
-% if savePlot == true
-%     saveas(gcf,'Images/ps5_problem3_grav.png')
-% end
 % 
 % figure()
 % plot(t / 3600,Md)
 % xlabel('Time [h]')
 % ylabel('Drag Torque in Principal Axes [Nm]')
 % legend('M_{x}','M_{y}','M_{z}')
-% if savePlot == true
-%     saveas(gcf,'Images/ps5_problem3_drag.png')
-% end
 % 
 % figure()
 % plot(t / 3600,Msrp)
 % xlabel('Time [h]')
 % ylabel('Solar Radiation Pressure Torque in Principal Axes [Nm]')
 % legend('M_{x}','M_{y}','M_{z}')
-% if savePlot == true
-%     saveas(gcf,'Images/ps5_problem3_srp.png')
-% end
 % 
 % figure()
 % plot(t / 3600,Mm)
 % xlabel('Time [h]')
 % ylabel('Magnetic Field Torque in Principal Axes [Nm]')
 % legend('M_{x}','M_{y}','M_{z}')
-% if savePlot == true
-%     saveas(gcf,'Images/ps5_problem3_mag.png')
-% end
 
 B_vec = zeros(size(state(:,1:3)));
 for i = 1:length(t)
@@ -168,7 +153,7 @@ end
 
 R = r0;
 rE = rEarth;
-rE3_B0 = 7.943e15; %Wb*m
+rE3_B0 = 7.943e15; % Wb * m
 GMST = time2GMST(0,UT12MJD(UT1));
 [lat,lon,~] = ECEF2Geoc(ECI2ECEF(R,GMST),t);
 lambda = lat;
