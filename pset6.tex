@@ -74,10 +74,16 @@ A much larger error appears in Figure \ref{fig:Images/ps6_problem3_error}. When 
 \subsection{PROBLEM 4}
 \textit{You can now start modeling the Simulink spacecraft subsystem which is what the satellite believes is happening (on-board). Initially, the sensors provide ideal measurements (no bias or noise). Just use an empty box for those. The outputs of the sensors are measurements which are used for attitude determination. These measurements are computed from the reference truth or oracle.}
 
-Five arbitrary vectors were picked to be the "ground truth." With those, the DCM matrix between ECI and the satellite's principal axes were used to get noiseless measurement readings. In the future, some noise will be added to this step, but for now it is not needed.
+In the 
 
 \subsection{PROBLEM 5}
 \textit{Assume a certain set of sensors. In general, a number of unit vectors and angular velocities can be considered as measurements}
+
+We initially model our attitude determination subsystem using "dummy" sensors and measurements. Each of the algorithms is fed randomly generated unit vectors as a noise-free measurement. These unit vectors represent fixed directions in the celestial sphere such that an orientation can be computed when a sufficient number of vectors is available. This represents the functionality of a star tracker sensor, which is able to determine the orientation of the satellite's axes relative to an inertial reference using unit vector directions of known stars. We do not yet model the inner workings of a star tracker, such as the identification and computation of star positions.
+
+In our test implementation, we generate five such random unit vectors. These unit vectors are both our ground truth (analogous to known directions from a star catalog) and our measurement signal, since we do not inject any noise at this step. Thus, we expect to obtain an exact solution from each attitude determination algorithm in the absence of such noise.
+
+Additionally, we can compute the attitude by integration of our angular velocity, equivalent to using a rate gyro sensor that measures angular rate. We can simply use the same kinematics equations used to propagate our attitude to model the evolution of our attitude for the rate gyro. In simulation and without noise, we also expect an exact solution from this technique.
 
 \textit{Implement the deterministic attitude determination algorithm discussed in class and its variant which uses fictitious measurements to spread the errors across the measurements}
 
