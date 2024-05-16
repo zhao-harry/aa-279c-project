@@ -117,7 +117,10 @@ for n = 1:length(timeVals)
 end
 
 figure(1)
-plot(timeVals, qVals)
+plot(timeVals, eulerSimulink)
 
 figure(2)
-plot(timeVals, qMeasVals-qVals)
+hold on
+plot(timeVals, eulerSimulink, 'r')
+plot(t, eulerMATLAB, 'b--')
+hold off
