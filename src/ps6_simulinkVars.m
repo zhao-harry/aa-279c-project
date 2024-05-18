@@ -64,6 +64,7 @@ sensor_weights = [100 100 1];
 sensor_type = ["star", "star", "sun"];
 sun_sensor_error = deg2rad(0.5);
 star_tracker_error = deg2rad(0.01);
+star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
 star_tracker_FOV = deg2rad(20);
 [~, indBest2Sensors] = maxk(sensor_weights, 2);
 ground_truth_vectors = rand([3, numReadings]);
@@ -100,6 +101,7 @@ sensors.types = sensor_type;
 sensors.sun_error = sun_sensor_error;
 sensors.tracker_error = star_tracker_error;
 sensors.tracker_FOV = star_tracker_FOV;
+sensor.tracker_normal_body = star_tracker_normal_body;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
