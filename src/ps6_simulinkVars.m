@@ -59,8 +59,12 @@ m = m_max * m_direction / norm(m_direction); % Arbitrary sat dipole
 UT1 = [2024 1 1];
 
 % Sensor information (assume 5 readings)
-numReadings = 5;
-sensor_weights = [100 100 ones([1, numReadings-2])];
+numReadings = 3;
+sensor_weights = [100 100 1];
+sensor_type = ["star", "star", "sun"];
+sun_sensor_error = deg2rad(0.5);
+star_tracker_error = deg2rad(0.01);
+star_tracker_FOV = deg2rad(20);
 [~, indBest2Sensors] = maxk(sensor_weights, 2);
 ground_truth_vectors = rand([3, numReadings]);
 ground_truth_vectors = ground_truth_vectors ./ norm(ground_truth_vectors);
@@ -68,6 +72,7 @@ ground_truth_vectors = ground_truth_vectors ./ norm(ground_truth_vectors);
 % Get simulink vars
 constants = struct();
 constants.Ix = Ix; constants.Iy = Iy; constants.Iz = Iz;
+constants.A_Body2P = rot;
 constants.RE = 6378.1; %km
 constants.n = n;
 constants.cm = cmP;
@@ -91,6 +96,10 @@ sensors = struct();
 sensors.weights = sensor_weights;
 sensors.ground_truth_vectors = ground_truth_vectors;
 sensors.indBest2Sensors = indBest2Sensors;
+sensors.types = sensor_type;
+sensors.sun_error = sun_sensor_error;
+sensors.tracker_error = star_tracker_error;
+sensors.tracker_FOV = star_tracker_FOV;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
