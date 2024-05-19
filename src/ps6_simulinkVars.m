@@ -60,10 +60,10 @@ UT1 = [2024 1 1];
 
 % Sensor information (assume 5 readings)
 numReadings = 3;
-sensor_weights = [100 100 1];
-sensor_type = ["star", "star", "sun"];
+sensor_weights = [100 1]; %[starTracker, sunSensor]
 sun_sensor_error = deg2rad(0.5);
 star_tracker_error = deg2rad(0.01);
+gyro_error = deg2rad(0.001);
 star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
 star_tracker_FOV = deg2rad(20);
 [~, indBest2Sensors] = maxk(sensor_weights, 2);
@@ -96,19 +96,19 @@ w0 = [0, -n, 0];
 sensors = struct();
 sensors.weights = sensor_weights;
 sensors.ground_truth_vectors = ground_truth_vectors;
-sensors.indBest2Sensors = indBest2Sensors;
-sensors.types = sensor_type;
+% sensors.indBest2Sensors = indBest2Sensors;
 sensors.sun_error = sun_sensor_error;
 sensors.tracker_error = star_tracker_error;
 sensors.tracker_FOV = star_tracker_FOV;
-sensor.tracker_normal_body = star_tracker_normal_body;
+sensors.tracker_normal_body = star_tracker_normal_body;
+sensors.gyro_error = gyro_error;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
 % Settings
 % measType = "dad";
-% measType = "q";
-measType = "kin";
+measType = "q";
+% measType = "kin";
 % useFict = true;
 % useFict = true;
 
