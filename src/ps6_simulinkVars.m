@@ -96,9 +96,9 @@ w0 = [0, -n, 0];
 
 sensors = struct();
 sensors.weights = sensor_weights;
-sensors.weights_vector = sensor_weights_vector;
-sensors.measurement_vectors = measurement_vectors;
-sensors.ground_truth_vectors = ground_truth_vectors;
+% sensors.weights_vector = sensor_weights_vector;
+% sensors.measurement_vectors = measurement_vectors;
+% sensors.ground_truth_vectors = ground_truth_vectors;
 % sensors.indBest2Sensors = indBest2Sensors;
 sensors.sun_error = sun_sensor_error;
 sensors.tracker_error = star_tracker_error;
@@ -108,33 +108,25 @@ sensors.gyro_error = gyro_error;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
+% sensors.sun_error = 0; sensors.tracker_error = 0;
+
 % Settings
 % measType = "dad";
 measType = "q";
 % measType = "kin";
-% useFict = true;
-% useFict = true;
+useFict = true;
+% useFict = false;
 
 %% Plot
 qVals = squeeze(out.q.data);
 qMeasVals = squeeze(out.qMeasured.data);
 timeVals = squeeze(out.q.time);
+timeValsMeas = squeeze(out.qMeasured.time);
 
 [t, eulerMATLAB] = sandbox_literallyps6();
-
-eulerSimulink = nan([3 length(timeVals)]);
-
-for n = 1:length(timeVals)
-    eulerSimulink(:,n) = A2e(q2A(qMeasVals(:,n)));
-end
-
-figure(1)
-plot(timeVals, eulerSimulink)
 
 figure(2)
 hold on
 plot(timeVals, qVals, 'r')
-plot(timeVals, qMeasVals, 'b--')
-% plot(timeVals, eulerSimulink, 'r')
-% plot(t, eulerMATLAB, 'b--')
+plot(timeValsMeas, qMeasVals, 'b--')
 hold off

@@ -1,3 +1,6 @@
 function xNoise = addNoise(x, xRange)
-    xNoise = x - xRange + 2*xRange*rand(size(x));
+    noiseDimensions = size(x);
+    noise = rand(noiseDimensions);
+    
+    xNoise = x + (2 * xRange .* noise - xRange);
 end
