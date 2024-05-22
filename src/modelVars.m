@@ -64,6 +64,7 @@ sensor_weights = [10 1]; %[starTracker, sunSensor]
 sun_sensor_error = deg2rad(0.5);
 star_tracker_error = deg2rad(0.01);
 gyro_error = deg2rad(0.001);
+gyro_bias = ;
 star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
 star_tracker_FOV = deg2rad(20);
 [~, indBest2Sensors] = maxk(sensor_weights, 2);
@@ -105,6 +106,7 @@ sensors.tracker_error = star_tracker_error;
 sensors.tracker_FOV = star_tracker_FOV;
 % sensors.tracker_normal_body = star_tracker_normal_body;
 sensors.gyro_error = gyro_error;
+sensors.gyro_bias = gyro_bias;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
@@ -130,6 +132,6 @@ eulerMeasInterp = imresize(eulerValsMeas, size(qVals), 'bilinear');
 
 figure(1)
 hold on
-plot(timeValsMeas, eulerValsMeas, 'b')
-plot(timeVals, eulerVals, 'r--')
+plot(timeValsMeas, rad2deg(eulerValsMeas), 'b')
+plot(timeVals, rad2deg(eulerVals), 'r--')
 hold off
