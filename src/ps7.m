@@ -1,6 +1,15 @@
+%% Import mass properties
+cm = computeCM('res/mass.csv');
+I = computeMOI('res/mass.csv',cm);
+
+[rot,IPrincipal] = eig(I);
+Ix = IPrincipal(1,1);
+Iy = IPrincipal(2,2);
+Iz = IPrincipal(3,3);
+
 %% Problem 5 (Kalman Filter)
-tFinal = 6000;
-tStep = 1;
+tFinal = 18000;
+tStep = 0.1;
 tspan = 1:tStep:tFinal;
 
 % Satellite orbit initial conditions
@@ -24,21 +33,48 @@ tangential = cross(normal,radial);
 A_Nominal = [-radial -normal -tangential]';
 
 q0 = A2q(A_Nominal);
-w0 = [0; -n; 0];
+w0 = [0.001; -n; 0.001];
 x0 = [q0; w0];
 
 q = q0;
+w = w0;
 euler = A2e(A_Nominal);
-P = eye(3);
-for i = tspan
-    [qkminus,Pkminus] = timeUpdate(tStep,q(:,i),w0,P);
-    q(:,i + 1) = qkminus;
-    euler(:,i + 1) = A2e(q2A(qkminus));
-    P = Pkminus;
+P = eye(6);
+Q = P / 100;
+for i = 1:length(tspan)
+    u = zeros([3 1]);
+    [q(:,i + 1),w(:,i + 1),P] = timeUpdate(tStep,q(:,i),w(:,i),P,Q,Ix,Iy,Iz,u);
+    euler(:,i + 1) = A2e(q2A(q(:,i + 1)));
 end
 
 figure()
-plot(tspan,wrapToPi(euler(:,1:end-1)'))
-xlabel('Time [h]')
+plot(tspan,euler(:,1:end-1)')
+xlabel('Time [s]')
 ylabel('Euler Angle (Principal) [rad]')
 legend('\phi','\theta','\psi')
+
+figure()
+plot(tspan,w(:,1:end-1)')
+xlabel('Time [s]')
+ylabel('Angular Velocity [rad/s]')
+legend('w_{x}','w_{y}','w_{z}')
+
+% Simulation state
+state0 = [A2e(A_Nominal); w0];
+options = odeset('RelTol',1e-6,'AbsTol',1e-9);
+[t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
+    tspan,state0,options);
+
+% Errors
+figure()
+plot(t,euler(:,1:end-1)' - state(:,1:3))
+ylim([-1e-3 1e-3])
+xlabel('Time [s]')
+ylabel('Euler Angle Error [rad]')
+legend('\phi','\theta','\psi')
+
+figure()
+plot(t,w(:,1:end-1)' - state(:,4:6))
+xlabel('Time [s]')
+ylabel('Angular Velocity Error [rad/s]')
+legend('w_{x}','w_{y}','w_{z}')
