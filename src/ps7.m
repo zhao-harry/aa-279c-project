@@ -7,6 +7,23 @@ Ix = IPrincipal(1,1);
 Iy = IPrincipal(2,2);
 Iz = IPrincipal(3,3);
 
+%% Problem 1
+qVals = squeeze(out.q.data);
+qMeasVals = squeeze(out.qMeasured.data);
+qMeasInterp = imresize(qMeasVals, size(qVals));
+timeVals = squeeze(out.q.time);
+timeValsMeas = squeeze(out.qMeasured.time);
+
+eulerVals = quats2Euler(qVals);
+eulerValsMeas = quats2Euler(real(qMeasVals));
+eulerMeasInterp = imresize(eulerValsMeas, size(qVals), 'bilinear');
+
+figure(1)
+hold on
+plot(timeValsMeas, rad2deg(eulerValsMeas), 'b')
+plot(timeVals, rad2deg(eulerVals), 'r--')
+hold off
+
 %% Problem 5 (Kalman Filter)
 tFinal = 18000;
 tStep = 0.1;
