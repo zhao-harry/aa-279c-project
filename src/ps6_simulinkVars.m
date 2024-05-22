@@ -60,7 +60,7 @@ UT1 = [2024 1 1];
 
 % Sensor information (assume 5 readings)
 numReadings = 3;
-sensor_weights = [100 1]; %[starTracker, sunSensor]
+sensor_weights = [10 1]; %[starTracker, sunSensor]
 sun_sensor_error = deg2rad(0.5);
 star_tracker_error = deg2rad(0.01);
 gyro_error = deg2rad(0.001);
@@ -120,13 +120,16 @@ useFict = true;
 %% Plot
 qVals = squeeze(out.q.data);
 qMeasVals = squeeze(out.qMeasured.data);
+qMeasInterp = imresize(qMeasVals, size(qVals));
 timeVals = squeeze(out.q.time);
 timeValsMeas = squeeze(out.qMeasured.time);
 
-[t, eulerMATLAB] = sandbox_literallyps6();
+eulerVals = quats2Euler(qVals);
+eulerValsMeas = quats2Euler(real(qMeasVals));
+eulerMeasInterp = imresize(eulerValsMeas, size(qVals), 'bilinear');
 
-figure(2)
+figure(1)
 hold on
-plot(timeVals, qVals, 'r')
-plot(timeValsMeas, qMeasVals, 'b--')
+plot(timeValsMeas, eulerValsMeas, 'b')
+plot(timeVals, eulerVals, 'r--')
 hold off
