@@ -145,8 +145,15 @@ legend('w_{x}','w_{y}','w_{z}')
 saveAsBool(gcf,'Images/ps7_problem5a_angvel_sim.png',savePlots)
 
 % Errors
+eulerError = size(state(:,1:3));
+for i = 1:length(t)
+    A_MEKF = e2A(euler(:,i));
+    A_Sim = e2A(state(i,1:3));
+    eulerError(i,1:3) = A2e(A_MEKF * A_Sim');
+end
+
 figure()
-plot(t,wrapToPi(euler(:,1:end-1)') - wrapToPi(state(:,1:3)))
+plot(t,wrapToPi(eulerError))
 ylim([-0.01 0.01])
 xlabel('Time [s]')
 ylabel('Euler Angle Error [rad]')
