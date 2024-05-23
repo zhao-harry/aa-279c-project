@@ -114,8 +114,8 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 
 % Settings
 % measType = "dad";
-% measType = "q";
-measType = "kin";
+measType = "q";
+% measType = "kin";
 % useFict = true;
 useFict = false;
 
