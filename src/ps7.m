@@ -1,3 +1,7 @@
+%%
+close all; clear; clc
+savePlots = true;
+
 %% Import mass properties
 cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
@@ -24,7 +28,7 @@ plot(timeValsMeas, rad2deg(eulerValsMeas), 'b')
 plot(timeVals, rad2deg(eulerVals), 'r--')
 hold off
 
-%% Problem 5 (Kalman Filter)
+%% Problem 5-6
 tFinal = 18000;
 tStep = 0.1;
 tspan = 1:tStep:tFinal;
@@ -50,7 +54,7 @@ tangential = cross(normal,radial);
 A_Nominal = [-radial -normal -tangential]';
 
 q0 = A2q(A_Nominal);
-w0 = [0.001; -n; 0.001];
+w0 = [-n; -n; -n];
 x0 = [q0; w0];
 
 q = q0;
@@ -65,16 +69,18 @@ for i = 1:length(tspan)
 end
 
 figure()
-plot(tspan,euler(:,1:end-1)')
+plot(tspan,wrapToPi(euler(:,1:end-1)'))
 xlabel('Time [s]')
 ylabel('Euler Angle (Principal) [rad]')
 legend('\phi','\theta','\psi')
+saveAsBool(gcf,'Images/ps7_problem5a_angle_est.png',savePlots)
 
 figure()
-plot(tspan,w(:,1:end-1)')
+plot(tspan,wrapToPi(w(:,1:end-1)'))
 xlabel('Time [s]')
 ylabel('Angular Velocity [rad/s]')
 legend('w_{x}','w_{y}','w_{z}')
+saveAsBool(gcf,'Images/ps7_problem5a_angvel_est.png',savePlots)
 
 % Simulation state
 state0 = [A2e(A_Nominal); w0];
@@ -82,16 +88,32 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 [t,state] = ode113(@(t,state) kinEulerAngle(t,state,Ix,Iy,Iz), ...
     tspan,state0,options);
 
+figure()
+plot(tspan,wrapToPi(state(:,1:3)))
+xlabel('Time [s]')
+ylabel('Euler Angle (Principal) [rad]')
+legend('\phi','\theta','\psi')
+saveAsBool(gcf,'Images/ps7_problem5a_angle_sim.png',savePlots)
+
+figure()
+plot(tspan,wrapToPi(state(:,4:6)))
+xlabel('Time [s]')
+ylabel('Angular Velocity [rad/s]')
+legend('w_{x}','w_{y}','w_{z}')
+saveAsBool(gcf,'Images/ps7_problem5a_angvel_sim.png',savePlots)
+
 % Errors
 figure()
-plot(t,euler(:,1:end-1)' - state(:,1:3))
-ylim([-1e-3 1e-3])
+plot(t,wrapToPi(euler(:,1:end-1)') - wrapToPi(state(:,1:3)))
+ylim([-0.01 0.01])
 xlabel('Time [s]')
 ylabel('Euler Angle Error [rad]')
 legend('\phi','\theta','\psi')
+saveAsBool(gcf,'Images/ps7_problem6_angle_err.png',savePlots)
 
 figure()
 plot(t,w(:,1:end-1)' - state(:,4:6))
 xlabel('Time [s]')
 ylabel('Angular Velocity Error [rad/s]')
 legend('w_{x}','w_{y}','w_{z}')
+saveAsBool(gcf,'Images/ps7_problem6_angvel_err.png',savePlots)

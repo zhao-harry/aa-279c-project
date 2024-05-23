@@ -27,5 +27,6 @@ function [qkminus,wkminus,Pkminus] = timeUpdate(dt,qkminus1,wkminus1,Pkminus1,Q,
     xkminus = STM * xkminus1 + [zeros([3 1]); B * u];
     wkminus = xkminus(4:6);
     qkminus = O * qkminus1;
+    qkminus = qkminus / norm(qkminus);
     Pkminus = STM * Pkminus1 * STM' + Q;
 end
