@@ -43,8 +43,32 @@ The estimation errors for the Deterministic Attitude Method, q Method, and kinem
 \subsection{PROBLEM 3}
 \textit{For small sensor errors, the DCM corresponds to a small rotation. Can you give an interpretation of small angles (e.g., in Euler angles and quaternions) to the obtained error DCM?}
 
+Given how the q method had the smallest errors noticed, the following analysis was performed using just it. In order to estimate how small the errors were, we compared the error DCM to what the error DCM would be using small angle approximation based on its corresponding euler angles, shown below.
+
+\begin{align*}
+    A_{small angle} &= 
+    \begin{bmatrix}
+        1 & \phi & -\psi \\
+        -\phi & 1 & \theta \\
+        \psi & -\theta & 1
+    \end{bmatrix} \\
+\end{align*}
+
+From there, the Frobenius norm was calculated from the difference in the error DCM and small angle DCM to see how applicable small angle assumptions are for the error. Based on Figure \ref{fig:ps7_problem3}, the magnitudes of the Frobenius norm are small enough to say that the overall errors were relatively small for the q Method.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps7_problem3.png}
+\caption{Frobenius norm of error estimate versus small angle approximation}
+\label{fig:ps7_problem3}
+\end{figure}
+
 \subsection{PROBLEM 4}
 \textit{Start modeling actual sensors in dedicated (Simulink or otherwise) subsystems which are part of the spacecraft. These models take inputs from ground-truth simulation and provides output measurements, including systematic and random errors. Take inspiration from overview of sensors discussed in class and textbook for typical errors.}
+
+Overall, there were three major types of sensors used in this analysis: sun sensors, star sensors, and gyroscopes. The following section will discuss the basics of how the sensors work, and how that information was used in our sensor models.
+
+Sun sensors 
 
 \subsection{PROBLEM 5}
 \textit{Designing and implement the time update of a KF/EKF to obtain the best estimate of the state from the available measurements and models:}
@@ -130,7 +154,7 @@ We have not yet implemented a controller at this step. As such, we will run the 
 
 \textit{Define and code an initial state error covariance matrix P which quantifies the uncertainty of your initial state. This can be picked as diagonal matrix with diagonal elements representing the variance of each state parameter $\sigma^{2}$. Initially you can neglect cross-covariance terms assuming that errors of various state components are not correlated.}
 
-We set our initial state error covariance matrix $P$ as a diagonal matrix, with the diagonal entries corresponding to $\alpha$ set to $1$ and the entries corresponding to $\omega$ to the variance computed from th angular velocity in the 
+We choose our initial state error covariance matrix $P$ as a diagonal matrix, with the diagonal entries corresponding to $\alpha$ set to $1$ and the entries corresponding to $\omega$ to the variance computed from angular velocity history in the propagation shown previously. Once the entire MEKF is implemented, this matrix should converge over time.
 
 \textit{The time update of the EKF needs $\Phi$, B, and P. Hint: You could increment your navigation performance by keeping the filter receptive to new measurements at steady state through the addition of constant process noise Q at each step. Initially you can define Q similar to P but much smaller (e.g., 1/10 or 1/100).}
 
@@ -138,6 +162,8 @@ For the purpose of this section, we arbitrarily define $Q = P_{t=0} \times 0.01$
 
 \subsection{PROBLEM 6}
 \textit{Produce plots showing true attitude estimation errors (estimate vs truth with statistics), formal or estimated attitude estimation errors (covariance from filter). Discuss the results, do they meet expectations? How well is the true estimation error described by the formal covariance? Note that we are only implementing the time update even if we call them “attitude estimates and estimation errors”.}
+
+We show plots of errors for the attitude and angular velocity. We can see that the angular velocity error is very low, reaching a maximum of $10^{-7}$ over three orbits. Note that our raw attitude representation is in quaternions, but we convert to Euler angles for visualization. The Euler angle error is somewhat larger, beginning initially around $10^{-7}$ and ending around $10^{-3}$ over the course of the three orbits. The Euler angle error is possibly larger because there is a compounding effect of errors in computing angular velocity.
 
 \begin{figure}[H]
 \centering
