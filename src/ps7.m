@@ -26,6 +26,7 @@ hold on
 plot(timeValsMeas, rad2deg(eulerValsMeas), 'b')
 plot(timeVals, rad2deg(eulerVals), 'r--')
 hold off
+
 %%
 eulerError = zeros(size(eulerVals));
 A_error = zeros(3,3,length(timeVals));
@@ -44,9 +45,9 @@ xlabel("time [hr]")
 ylabel("euler angle [deg]")
 legend("\phi", "\theta", "\psi")
 ylim([-20, 20])
-saveas(1, "Images/ps7_problem2_qMethod.png")
+% saveas(1, "Images/ps7_problem2_qMethod.png")
 % saveas(1, "Images/ps7_problem2_DAD.png")
-% saveas(1, "Images/ps7_problem2_DADFict.png")
+saveas(1, "Images/ps7_problem2_DADFict.png")
 % saveas(1, "Images/ps7_problem2_kin.png")
 
 %% Problem 3
@@ -69,6 +70,20 @@ ylabel("||A_{error} - A_{small angle}||_F")
 xlim([0 timeVals(end)/3600])
 
 % saveas(2, "Images/ps7_problem3.png")
+
+%% Problem 4
+
+figure(3)
+hold on
+plot(timeValsMeas, rad2deg(eulerValsMeas), 'b')
+plot(timeVals, rad2deg(eulerVals), 'r--')
+legend(["ground truth", "", "", "error"])
+hold off
+
+% saveas(3, "Images/ps7_problem4_qMethod.png")
+% saveas(3, "Images/ps7_problem4_DAD.png")
+saveas(3, "Images/ps7_problem4_DADFict.png")
+% saveas(3, "Images/ps7_problem4_kin.png")
 
 %% Problem 5-6
 tFinal = 18000;

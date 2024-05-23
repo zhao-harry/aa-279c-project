@@ -113,11 +113,11 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 % sensors.sun_error = 0; sensors.tracker_error = 0;
 
 % Settings
-% measType = "dad";
-measType = "q";
+measType = "dad";
+% measType = "q";
 % measType = "kin";
-% useFict = true;
-useFict = false;
+useFict = true;
+% useFict = false;
 
 %% Plot
 qVals = squeeze(out.q.data);
