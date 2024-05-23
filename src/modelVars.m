@@ -60,11 +60,11 @@ UT1 = [2024 1 1];
 
 % Sensor information (assume 5 readings)
 numReadings = 3;
-sensor_weights = [10 1]; %[starTracker, sunSensor]
+sensor_weights = [50 1]; %[starTracker, sunSensor]
 sun_sensor_error = deg2rad(0.5);
 star_tracker_error = deg2rad(0.01);
 gyro_error = deg2rad(0.001);
-gyro_bias = ;
+gyro_bias = deg2rad(0.001);
 star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
 star_tracker_FOV = deg2rad(20);
 [~, indBest2Sensors] = maxk(sensor_weights, 2);
@@ -116,8 +116,8 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 % measType = "dad";
 measType = "q";
 % measType = "kin";
-useFict = true;
-% useFict = false;
+% useFict = true;
+useFict = false;
 
 %% Plot
 qVals = squeeze(out.q.data);
