@@ -47,7 +47,7 @@ legend("\phi", "\theta", "\psi")
 ylim([-20, 20])
 % saveas(1, "Images/ps7_problem2_qMethod.png")
 % saveas(1, "Images/ps7_problem2_DAD.png")
-saveas(1, "Images/ps7_problem2_DADFict.png")
+% saveas(1, "Images/ps7_problem2_DADFict.png")
 % saveas(1, "Images/ps7_problem2_kin.png")
 
 %% Problem 3
@@ -82,7 +82,7 @@ hold off
 
 % saveas(3, "Images/ps7_problem4_qMethod.png")
 % saveas(3, "Images/ps7_problem4_DAD.png")
-saveas(3, "Images/ps7_problem4_DADFict.png")
+% saveas(3, "Images/ps7_problem4_DADFict.png")
 % saveas(3, "Images/ps7_problem4_kin.png")
 
 %% Problem 5-6
