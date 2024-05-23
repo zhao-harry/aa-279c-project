@@ -1,5 +1,5 @@
 close all; clear; clc
-savePlot = false;
+savePlot = true;
 
 %% Import mass properties
 cm = computeCM('res/mass.csv');
@@ -114,12 +114,18 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 
 c = zeros(size(state(:,1:3)));
 M = zeros(size(state(:,1:3)));
+eulerRTN = zeros(size(state(:,1:3)));
 for i = 1:length(t)
     r = state(i,1:3);
+    v = state(i,4:6);
     radial = r / norm(r);
+    h = cross(r,v);
+    normal = h / norm(h);
+    tangential = cross(normal,radial);
     A_ECI2P = e2A(state(i,10:12));
     c(i,1:3) = A_ECI2P * radial';
     M(i,1:3) = gravGradTorque(Ix,Iy,Iz,n,c(i,1:3));
+    eulerRTN(i,1:3) = A2e(A_ECI2P * [-radial' -normal' -tangential']);
 end
 
 figure()
@@ -138,6 +144,15 @@ ylabel('Euler Angles in Principal Axes [rad]')
 legend('\phi','\theta','\psi')
 if savePlot == true
     saveas(gcf,'Images/ps5_problem1b_angle.png')
+end
+
+figure()
+plot(t / 3600,wrapToPi(eulerRTN))
+xlabel('Time [h]')
+ylabel('Euler Angles in RTN Axes [rad]')
+legend('\phi','\theta','\psi')
+if savePlot == true
+    saveas(gcf,'Images/ps5_problem1b_angle_rtn.png')
 end
 
 %% Problem 1(c)
@@ -185,12 +200,18 @@ options = odeset('RelTol',1e-6,'AbsTol',1e-9);
 
 c = zeros(size(state(:,1:3)));
 M = zeros(size(state(:,1:3)));
+eulerRTN = zeros(size(state(:,1:3)));
 for i = 1:length(t)
     r = state(i,1:3);
+    v = state(i,4:6);
     radial = r / norm(r);
+    h = cross(r,v);
+    normal = h / norm(h);
+    tangential = cross(normal,radial);
     A_ECI2P = e2A(state(i,10:12));
     c(i,1:3) = A_ECI2P * radial';
     M(i,1:3) = gravGradTorque(Ix,Iy,Iz,n,c(i,1:3));
+    eulerRTN(i,1:3) = A2e(A_ECI2P * [radial' tangential' normal']);
 end
 
 figure()
@@ -209,6 +230,15 @@ ylabel('Euler Angles in Principal Axes [rad]')
 legend('\phi','\theta','\psi')
 if savePlot == true
     saveas(gcf,'Images/ps5_problem1c_angle.png')
+end
+
+figure()
+plot(t / 3600,wrapToPi(eulerRTN))
+xlabel('Time [h]')
+ylabel('Euler Angles in RTN Axes [rad]')
+legend('\phi','\theta','\psi')
+if savePlot == true
+    saveas(gcf,'Images/ps5_problem1c_angle_rtn.png')
 end
 
 %% Problem 3
@@ -354,6 +384,15 @@ ylabel('Magnetic Field Torque in Principal Axes [Nm]')
 legend('M_{x}','M_{y}','M_{z}')
 if savePlot == true
     saveas(gcf,'Images/ps5_problem3_mag.png')
+end
+
+figure()
+plot(t / 3600,Mgg + Md + Msrp + Mm)
+xlabel('Time [h]')
+ylabel('Net Torque in Principal Axes [Nm]')
+legend('M_{x}','M_{y}','M_{z}')
+if savePlot == true
+    saveas(gcf,'Images/ps5_problem3_net.png')
 end
 
 %%
