@@ -2,22 +2,23 @@
 \subsection{PROBLEM 1}
 \textit{Introduce representative (from manufacturer or Wertz or first lectures) sensor errors in the form of constant bias and Gaussian noise with given standard deviation.}
 
-Given how the actual sensors used in NISAR are not public information, much of the sensor error and bias information was extrapolated from data from Wertz and lecture materials and manufacturers making similar sensors for similar satellites. The table below includes the general sensor information used in this analysis.
+As the specific data regarding for NISAR ADCS sensors are not widely available, much of the sensor error and bias information was extrapolated from data from Wertz and lecture materials, as well as manufacturers of sensors for similar satellites. The table below includes the general sensor information used in this analysis.
 
 \begin{table}[H]
+\centering
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{Sensor} & \textbf{Sensor Error} & \textbf{Sensor Bias} \\ \hline
-Sun Sensor \cite{Wertz} & 0.5 \degree & 0 \degree \\ \hline
-Star Tracker \cite{Wertz} & 0.01 \degree & 0 \degree \\ \hline
-Gyroscope \cite{CVGGyro} & 0.001 \degree / s & 5e-5 \degree / s \\ \hline
+Sun Sensor \cite{Wertz} & 0.5\degree & 0\degree \\ \hline
+Star Tracker \cite{Wertz} & 0.01\degree & 0\degree \\ \hline
+Gyroscope \cite{CVGGyro} & 0.001\degree / s & 5E-5\degree/s \\ \hline
 \end{tabular}
 \end{table}
 
 \subsection{PROBLEM 2}
 \textit{Re-apply the attitude determination algorithms from the previous pset. Plot attitude estimation error. Note that the attitude estimation error represents a rotation matrix (DCM) which quantifies how far the estimated attitude is from the true attitude. You can use any parameterization to plot the attitude estimation errors corresponding to this DCM. Is the result consistent with the sensor bias and noise you have introduced?}
 
-The estimation errors for the Deterministic Attitude Method, q Method, and kinematics-based method are plotted below. As expected, the q Method has a significantly lower error than the Deterministic Attitude Method. Additionally, since the gyroscopes were modeled to have a slight bias, the Euler angles slowly drift away from expected values.
+The estimation errors for the deterministic method, q-method, and kinematics-based method are plotted below. As expected, the q-method has a significantly lower error than the deterministic method. Additionally, since the gyroscopes were modeled to have a slight bias, the Euler angles slowly drift away from expected values.
 
 \begin{figure}[H]
 \centering
@@ -29,7 +30,7 @@ The estimation errors for the Deterministic Attitude Method, q Method, and kinem
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps7_problem2_qMethod.png}
-\caption{Attitude error using q Method}
+\caption{Attitude error using q-method}
 \label{fig:ps7_problem2_qMethod}
 \end{figure}
 
@@ -43,10 +44,10 @@ The estimation errors for the Deterministic Attitude Method, q Method, and kinem
 \subsection{PROBLEM 3}
 \textit{For small sensor errors, the DCM corresponds to a small rotation. Can you give an interpretation of small angles (e.g., in Euler angles and quaternions) to the obtained error DCM?}
 
-Given how the q method had the smallest errors noticed, the following analysis was performed using just it. In order to estimate how small the errors were, we compared the error DCM to what the error DCM would be using small angle approximation based on its corresponding euler angles, shown below.
+For this analysis, we choose to use q-method, as it produced the smallest errors in the previous section. In order to estimate the size of the errors, we compare the exact error DCM to the small angle approximation DCM based on the corresponding Euler angles, shown below.
 
 \begin{align*}
-    A_{small angle} &= 
+    A_{\text{small angle}} &= 
     \begin{bmatrix}
         1 & \phi & -\psi \\
         -\phi & 1 & \theta \\
@@ -54,7 +55,7 @@ Given how the q method had the smallest errors noticed, the following analysis w
     \end{bmatrix} \\
 \end{align*}
 
-From there, the Frobenius norm was calculated from the difference in the error DCM and small angle DCM to see how applicable small angle assumptions are for the error. Based on Figure \ref{fig:ps7_problem3}, the magnitudes of the Frobenius norm are small enough to say that the overall errors were relatively small for the q Method.
+The Frobenius norm is then calculated from the difference in the error DCM and small angle DCM to see how applicable small angle assumptions are for the error. Based on Figure \ref{fig:ps7_problem3}, the magnitudes of the Frobenius norm reflect that the overall errors were relatively small for the q-method, implying only a very small angular difference.
 
 \begin{figure}[H]
 \centering
@@ -66,9 +67,46 @@ From there, the Frobenius norm was calculated from the difference in the error D
 \subsection{PROBLEM 4}
 \textit{Start modeling actual sensors in dedicated (Simulink or otherwise) subsystems which are part of the spacecraft. These models take inputs from ground-truth simulation and provides output measurements, including systematic and random errors. Take inspiration from overview of sensors discussed in class and textbook for typical errors.}
 
-Overall, there were three major types of sensors used in this analysis: sun sensors, star sensors, and gyroscopes. The following section will discuss the basics of how the sensors work, and how that information was used in our sensor models.
+There are three major types of sensors used in this analysis: sun sensors, star sensors, and gyroscopes. The following section discusses the basics of each sensor's function and modeling.
 
-Sun sensors take advantage of the photoelectric affect to produce an electric current based on the Sun's radiation. Due to the nature of the 
+Sun sensors utilize a photoelectric effect to produce an electric current based on the Sun's radiation. For a single sensor the current is based on sensitive surface $S$, optical properties $\alpha$, and angle of incidence $\theta$.
+
+\begin{align*}
+    I = \alpha S \cos(\theta)
+\end{align*}
+
+Due to the nonlinearity of this relationship, sun sensors operate within a limited field of view where the relationship between the angle of incidence and current drawn is relatively linear.
+
+However, because NISAR operates in a sun-synchronous orbit, the sun sensor model we used did not factor in the sensor's field of view since a well-placed sensor with a wide enough FOV will always have the sun in frame. Because of this, the sun sensor model would output the direction of the Sun from the simulation and add a Gaussian noise to it.
+
+Star trackers are a bit more complicated. At their core, star trackers are cameras that capture star positions and then compare those stars to an existing star catalog to obtain attitude measurements. These trackers are often designed to have a much narrower field of view to maximize the pixel pitch. From there, they use algorithms like angular separation matching to identify each viewed star with what is in the star catalog.
+
+The star tracker model used in our simulations greatly simplifies how they work. In short, the model we used finds 10 random vectors within the FOV of the star tracker on board ($~20 \degree$) and adds a Gaussian noise to that. The thought process is that the random vectors represent the directions towards 10 stars in the night sky.
+
+Unlike the other two sensors that measure vectors, gyroscopes measure the angular velocity of the satellites. In general, there are two main types of gyroscopes: laser gyroscopes and mechanical gyroscopes. Laser gyroscopes shine two beams of light along a fiberoptic cable path in opposite directions. They then use the time difference between when the laser returns to the initial point to measure the angular velocity. In contrast, mechanical gyroscopes are supported by gimbals and calculate the angle induced in one direction by angular velocity.
+
+To simplify the model of the sensor, the gyroscope model took the angular velocity from the simulation and added a Gaussian noise and expected bias to it.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps7_problem4_DADFict.png}
+\caption{Attitude error using deterministic attitude determination}
+\label{fig:ps7_problem4_DADFict}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps7_problem4_qMethod.png}
+\caption{Attitude error using q-method}
+\label{fig:ps7_problem4_qMethod}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps7_problem4_kin.png}
+\caption{Attitude error using kinematic attitude determination}
+\label{fig:ps7_problem4_kin}
+\end{figure}
 
 \subsection{PROBLEM 5}
 \textit{Designing and implement the time update of a KF/EKF to obtain the best estimate of the state from the available measurements and models:}
@@ -154,7 +192,7 @@ We have not yet implemented a controller at this step. As such, we will run the 
 
 \textit{Define and code an initial state error covariance matrix P which quantifies the uncertainty of your initial state. This can be picked as diagonal matrix with diagonal elements representing the variance of each state parameter $\sigma^{2}$. Initially you can neglect cross-covariance terms assuming that errors of various state components are not correlated.}
 
-We choose our initial state error covariance matrix $P$ as a diagonal matrix, with the diagonal entries corresponding to $\alpha$ set to $1$ and the entries corresponding to $\omega$ to the variance computed from angular velocity history in the propagation shown previously. Once the entire MEKF is implemented, this matrix should converge over time.
+We can choose our initial state error covariance matrix $P$ as a diagonal matrix, with the diagonal entries corresponding to $\alpha$ set to $1$ and the entries corresponding to $\omega$ to the variance computed from angular velocity history. This can be collected as statistics from the propagation shown previously. Once the entire MEKF is implemented, this matrix should converge over time. For now, the state error covariance matrix $P$ has no impact on the output of just our time update.
 
 \textit{The time update of the EKF needs $\Phi$, B, and P. Hint: You could increment your navigation performance by keeping the filter receptive to new measurements at steady state through the addition of constant process noise Q at each step. Initially you can define Q similar to P but much smaller (e.g., 1/10 or 1/100).}
 
@@ -169,12 +207,14 @@ We show plots of errors for the attitude and angular velocity. We can see that t
 \centering
 \includegraphics[scale=0.6]{Images/ps7_problem6_angvel_err.png}
 \caption{Attitude error between estimate and simulation}
-\label{fig:ps7_problem5a_angvel_sim}
+\label{fig:ps7_problem6_angvel_err}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps7_problem6_angle_err.png}
 \caption{Angular velocity error between estimate and simulation}
-\label{fig:ps7_problem5a_angvel_sim}
+\label{fig:ps7_problem6_angle_err}
 \end{figure}
+
+These results are within expectations, as we do not have a modeled measurement update step that could help reduce our errors. Also, our injected process noise $Q$ is not beneficial to the time update alone, as $Q$ is intended to help accommodate measurement updates.
