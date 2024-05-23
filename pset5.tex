@@ -53,6 +53,13 @@ We expect unstable behavior for small perturbations. Previously, we have already
 
 \begin{figure}[H]
 \centering
+\includegraphics[scale=0.6]{Images/ps5_problem1b_angle_rtn.png}
+\caption{Attitude evolution (relative to RTN) for unstable orientation with 1\% perturbations}
+\label{fig:ps5_problem1b_angle_rtn}
+\end{figure}
+
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.6]{Images/ps5_problem1b_angvel.png}
 \caption{Angular velocity evolution for unstable orientation with 1\% perturbations}
 \label{fig:ps5_problem1b_angvel}
@@ -77,6 +84,13 @@ We expect stable behavior for small perturbations. Previously, we have already s
 \includegraphics[scale=0.6]{Images/ps5_problem1c_angle.png}
 \caption{Attitude evolution for stable orientation with 1\% perturbations}
 \label{fig:ps5_problem1c_angle}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps5_problem1c_angle_rtn.png}
+\caption{Attitude evolution (relative to RTN) for stable orientation with 1\% perturbations}
+\label{fig:ps5_problem1c_angle_rtn}
 \end{figure}
 
 \begin{figure}[H]
@@ -139,7 +153,7 @@ The following function enables the propagation of the orbit with the specified p
 \textit{Include all torques you have been able to model in numerical integration. Please show comparison of numerically computed disturbance torques with expected values and trend from theory (model) and tables (Wertz) referenced in class. Plot all torque components in principal axes over time. Plot the resultant (sum) of all torques in principal axes. Make sure that your model is not too ideal, i.e. make sure that center of pressure and center of mass do not coincide.}
 
 For most torques, the worst-case estimated magnitudes were found by using existing properties of the spacecraft model. We use simplified equations (compared to those in the previous section) to estimate these, making assumptions for worst-case torques. However, the magnetic torque calculation assumes a model of the spacecraft's magnetic field as a single coil wrapped around the surface of the RIS and satellite bus. The estimated maximum values of each torque are listed in the table below.
-t
+
 \begin{table}[H]
 \centering
 \begin{tabular}{l|l} 
