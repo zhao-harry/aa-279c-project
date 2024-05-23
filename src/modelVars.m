@@ -64,7 +64,7 @@ sensor_weights = [50 1]; %[starTracker, sunSensor]
 sun_sensor_error = deg2rad(0.5);
 star_tracker_error = deg2rad(0.01);
 gyro_error = deg2rad(0.001);
-gyro_bias = deg2rad(0.001);
+gyro_bias = 5e-5;
 star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
 star_tracker_FOV = deg2rad(20);
 [~, indBest2Sensors] = maxk(sensor_weights, 2);
@@ -114,8 +114,8 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 
 % Settings
 % measType = "dad";
-measType = "q";
-% measType = "kin";
+% measType = "q";
+measType = "kin";
 % useFict = true;
 useFict = false;
 
