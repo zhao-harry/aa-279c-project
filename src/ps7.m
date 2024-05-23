@@ -44,10 +44,10 @@ xlabel("time [hr]")
 ylabel("euler angle [deg]")
 legend("\phi", "\theta", "\psi")
 % ylim([-20, 20])
-% saveas(1, "Images/ps5_p2_qMethod.png")
-% saveas(1, "Images/ps5_p2_DAD.png")
-% saveas(1, "Images/ps5_p2_DADFict.png")
-saveas(1, "Images/ps5_p2_kin.png")
+% saveas(1, "Images/ps7_problem2_qMethod.png")
+% saveas(1, "Images/ps7_problem2_DAD.png")
+% saveas(1, "Images/ps7_problem2_DADFict.png")
+% saveas(1, "Images/ps7_problem2_kin.png")
 
 %% Problem 3
 frob_norm = nan(1, length(timeVals));
@@ -68,7 +68,7 @@ xlabel("time [hr]")
 ylabel("||A_{error} - A_{small angle}||_F")
 xlim([0 timeVals(end)/3600])
 
-% saveas(2, "Images/ps5_p3.png")
+% saveas(2, "Images/ps7_problem3.png")
 
 %% Problem 5-6
 tFinal = 18000;
