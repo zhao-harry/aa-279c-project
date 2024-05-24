@@ -45,14 +45,13 @@ The estimation errors for the deterministic method, q-method, and kinematics-bas
 \textit{For small sensor errors, the DCM corresponds to a small rotation. Can you give an interpretation of small angles (e.g., in Euler angles and quaternions) to the obtained error DCM?}
 
 For this analysis, we choose to use q-method, as it produced the smallest errors in the previous section. In order to estimate the size of the errors, we compare the exact error DCM to the small angle approximation DCM based on the corresponding Euler angles, shown below.
-
 \begin{align*}
     A_{\text{small angle}} &= 
     \begin{bmatrix}
         1 & \phi & -\psi \\
         -\phi & 1 & \theta \\
         \psi & -\theta & 1
-    \end{bmatrix} \\
+    \end{bmatrix}
 \end{align*}
 
 The Frobenius norm is then calculated from the difference in the error DCM and small angle DCM to see how applicable small angle assumptions are for the error. Based on Figure \ref{fig:ps7_problem3}, the magnitudes of the Frobenius norm reflect that the overall errors were relatively small for the q-method, implying only a very small angular difference.
@@ -69,23 +68,29 @@ The Frobenius norm is then calculated from the difference in the error DCM and s
 
 There are three major types of sensors used in this analysis: sun sensors, star sensors, and gyroscopes. The following section discusses the basics of each sensor's function and modeling.
 
-Sun sensors utilize a photoelectric effect to produce an electric current based on the Sun's radiation. For a single sensor the current is based on sensitive surface $S$, optical properties $\alpha$, and angle of incidence $\theta$.
-
+Sun sensors utilize a photoelectric effect to produce an electric current based on the Sun's emitted electromagnetic radiation. For a single sensor, the current is based on sensitive surface $S$, optical properties $\alpha$, and angle of incidence $\theta$.
 \begin{align*}
     I = \alpha S \cos(\theta)
 \end{align*}
 
-Due to the nonlinearity of this relationship, sun sensors operate within a limited field of view where the relationship between the angle of incidence and current drawn is relatively linear.
+Due to the nonlinearity of this relationship, sun sensors operate within a limited field of view where the relationship between the angle of incidence and current draw is approximately linear.
 
-However, because NISAR operates in a sun-synchronous orbit, the sun sensor model we used did not factor in the sensor's field of view since a well-placed sensor with a wide enough FOV will always have the sun in frame. Because of this, the sun sensor model would output the direction of the Sun from the simulation and add a Gaussian noise to it.
+However, because NISAR operates in a sun-synchronous orbit, the sun sensor model we used did not factor in the sensor's field of view, as a well-placed sensor with a wide enough FOV will always have the sun in frame. Our sun sensor model outputs the direction of the Sun from the simulation and adds Gaussian noise.
 
-Star trackers are a bit more complicated. At their core, star trackers are cameras that capture star positions and then compare those stars to an existing star catalog to obtain attitude measurements. These trackers are often designed to have a much narrower field of view to maximize the pixel pitch. From there, they use algorithms like angular separation matching to identify each viewed star with what is in the star catalog.
+Star trackers are more complicated. These sensors are similar to cameras that capture star positions and compare them to an existing star catalog, which can be used to determine the satellite's attitude. These trackers are often designed to have a much narrower field of view to maximize the pixel pitch. Star trackers use algorithms such as angular separation matching to match each star to a star in the star catalog.
 
-The star tracker model used in our simulations greatly simplifies how they work. In short, the model we used finds 10 random vectors within the FOV of the star tracker on board ($~20 \degree$) and adds a Gaussian noise to that. The thought process is that the random vectors represent the directions towards 10 stars in the night sky.
+The star tracker model used in our simulations introduces simplifying assumptions. The model we use generates 10 random unit vectors within the FOV of the star tracker on board (approximately $20 \degree$) and adds Gaussian noise. These random vectors represent the direction of 10 arbitrary stars in the celestial sphere.
 
-Unlike the other two sensors that measure vectors, gyroscopes measure the angular velocity of the satellites. In general, there are two main types of gyroscopes: laser gyroscopes and mechanical gyroscopes. Laser gyroscopes shine two beams of light along a fiberoptic cable path in opposite directions. They then use the time difference between when the laser returns to the initial point to measure the angular velocity. In contrast, mechanical gyroscopes are supported by gimbals and calculate the angle induced in one direction by angular velocity.
+Gyroscopes measure the angular velocity of the satellite. There are two main types of gyroscopes: laser gyroscopes and mechanical gyroscopes. Laser gyroscopes emit light along a fiber optic cable ring in opposite directions. The time or phase difference of the light along the ring can be used to compute the angular velocity. Mechanical gyroscopes, such as rate gyros, use gimbals and measure the angle induced in one direction by angular velocity in another. This measurement can come from a device such as a potentiometer, which provides an electrical voltage signal.
 
-To simplify the model of the sensor, the gyroscope model took the angular velocity from the simulation and added a Gaussian noise and expected bias to it.
+To simplify the model of the sensor, the gyroscope model takes angular velocity from the simulation and adds Gaussian noise and expected bias.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.59]{Images/ps7_problem4_simulink.png}
+\caption{Simulink model of sensors}
+\label{fig:ps7_problem4_simulink}
+\end{figure}
 
 \begin{figure}[H]
 \centering

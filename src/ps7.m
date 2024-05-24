@@ -27,7 +27,7 @@ plot(timeValsMeas, rad2deg(eulerValsMeas), 'b')
 plot(timeVals, rad2deg(eulerVals), 'r--')
 hold off
 
-%%
+%% Problem 2
 eulerError = zeros(size(eulerVals));
 A_error = zeros(3,3,length(timeVals));
 for n = 1:length(timeVals)
