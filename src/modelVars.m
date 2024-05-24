@@ -113,25 +113,8 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 % sensors.sun_error = 0; sensors.tracker_error = 0;
 
 % Settings
-measType = "dad";
-% measType = "q";
+% measType = "dad";
+measType = "q";
 % measType = "kin";
 useFict = true;
 % useFict = false;
-
-%% Plot
-qVals = squeeze(out.q.data);
-qMeasVals = squeeze(out.qMeasured.data);
-qMeasInterp = imresize(qMeasVals, size(qVals));
-timeVals = squeeze(out.q.time);
-timeValsMeas = squeeze(out.qMeasured.time);
-
-eulerVals = quats2Euler(qVals);
-eulerValsMeas = quats2Euler(real(qMeasVals));
-eulerMeasInterp = imresize(eulerValsMeas, size(qVals), 'bilinear');
-
-figure(1)
-hold on
-plot(timeValsMeas, rad2deg(eulerValsMeas), 'b')
-plot(timeVals, rad2deg(eulerVals), 'r--')
-hold off

@@ -1,0 +1,46 @@
+function [qkplus,wkplus,Pkplus] = MEKF(dt,qkminus1,wkminus1,Pkminus1,yk,Q,R,Ix,Iy,Iz,u)
+    xkminus1 = [zeros([3 1]); wkminus1];
+
+    % Predict
+    w = norm(wkminus1);
+    wcross = [0, -wkminus1(3), wkminus1(2); ...
+        wkminus1(3), 0, -wkminus1(1); ...
+        -wkminus1(2), wkminus1(1), 0];
+    cw = cos(w * dt / 2);
+    sw = sin(w * dt / 2);
+
+    A = eye(3) + sw * wcross / w + (1 - cw) * wcross^2 / w^2;
+    phi = eye(3) + 0.5 * dt * ...
+        [0, (Iy - Iz) / Ix * wkminus1(3), (Iy - Iz) / Ix * wkminus1(2); ...
+        (Iz - Ix) / Iy * wkminus1(3), 0, (Iz - Ix) / Iy * wkminus1(1); ...
+        (Ix - Iy) / Iz * wkminus1(2), (Ix - Iy) / Iz * wkminus1(1), 0];
+    B = dt * [1 / Ix, 0, 0; ...
+        0, 1 / Iy, 0; ...
+        0, 0, 1 / Iz];
+    STM = [A, zeros(3); zeros(3), phi];
+    O = eye(4) + 0.5 * dt * ...
+        [0, wkminus1(3), -wkminus1(2), wkminus1(1); ...
+        -wkminus1(3), 0, wkminus1(1), wkminus1(2); ...
+        wkminus1(2), -wkminus1(1), 0, wkminus1(3); ...
+        -wkminus1(1), -wkminus1(2), -wkminus1(3), 0];
+
+    xkminus = STM * xkminus1 + [zeros([3 1]); B * u];
+    qkminus = O * qkminus1;
+    qkminus = qkminus / norm(qkminus);
+    Pkminus = STM * Pkminus1 * STM' + Q;
+
+    % Measurement update
+    hk = % ?
+    Hk = % ?
+    Kk = Pkminus * Hk' * inv(Hk * Pkminus * Hk' + R);
+    xkplus = xkminus + Kk * (yk - hk);
+    Pkplus = Pkminus - Kk * Hk * Pkminus;
+    wkplus = xkplus(4:6);
+    ax = xkplus(1); ay = xkplus(2); az = xkplus(3);
+
+    % Attitude update
+    qkplus = [1, az/2, -ay/2, ax/2; ...
+        -az/2, 1, ax/2, ay/2; ...
+        ay/2, -ax/2, 1, az/2; ...
+        -ax/2, -ay/2, -az/2, 1] * qkminus;
+end
