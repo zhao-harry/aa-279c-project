@@ -71,6 +71,7 @@ star_tracker_FOV = deg2rad(20);
 ground_truth_vectors = zeros([3, 7]);
 measurement_vectors = zeros([3, 7]);
 sensor_weights_vector = zeros([1, 7]);
+sensors_Q = eye(6)/100;
 
 % Get simulink vars
 constants = struct();
@@ -107,6 +108,7 @@ sensors.tracker_FOV = star_tracker_FOV;
 % sensors.tracker_normal_body = star_tracker_normal_body;
 sensors.gyro_error = gyro_error;
 sensors.gyro_bias = gyro_bias;
+sensors.Q = sensors_Q;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
@@ -114,7 +116,8 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 
 % Settings
 % measType = "dad";
-measType = "q";
+% measType = "q";
 % measType = "kin";
+measType = "MEKF";
 useFict = true;
 % useFict = false;
