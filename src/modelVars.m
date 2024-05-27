@@ -59,7 +59,7 @@ m = m_max * m_direction / norm(m_direction); % Arbitrary sat dipole
 UT1 = [2024 1 1];
 
 % Sensor information (assume 5 readings)
-numReadings = 3;
+num_stars = 10;
 sensor_weights = [50 1]; %[starTracker, sunSensor]
 sun_sensor_error = deg2rad(0.5);
 star_tracker_error = deg2rad(0.01);
@@ -68,10 +68,8 @@ gyro_bias = 5e-5;
 star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
 star_tracker_FOV = deg2rad(20);
 [~, indBest2Sensors] = maxk(sensor_weights, 2);
-ground_truth_vectors = zeros([3, 7]);
-measurement_vectors = zeros([3, 7]);
-sensor_weights_vector = zeros([1, 7]);
 sensors_Q = eye(6)/100;
+sensors_R = diag([repelem(star_tracker_error, num_stars), sun_sensor_error]).^2;
 
 % Get simulink vars
 constants = struct();
@@ -98,17 +96,14 @@ w0 = [0, -n, 0];
 
 sensors = struct();
 sensors.weights = sensor_weights;
-% sensors.weights_vector = sensor_weights_vector;
-% sensors.measurement_vectors = measurement_vectors;
-% sensors.ground_truth_vectors = ground_truth_vectors;
-% sensors.indBest2Sensors = indBest2Sensors;
 sensors.sun_error = sun_sensor_error;
+sensors.num_stars = num_stars;
 sensors.tracker_error = star_tracker_error;
 sensors.tracker_FOV = star_tracker_FOV;
-% sensors.tracker_normal_body = star_tracker_normal_body;
 sensors.gyro_error = gyro_error;
 sensors.gyro_bias = gyro_bias;
 sensors.Q = sensors_Q;
+sensors.R = sensors_R;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
