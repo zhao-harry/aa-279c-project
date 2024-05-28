@@ -1,6 +1,6 @@
 %%
 close all; clear; clc
-savePlots = true;
+savePlots = false;
 
 %% Import mass properties
 cm = computeCM('res/mass.csv');
