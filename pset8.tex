@@ -1,0 +1,24 @@
+\section{\Large PROBLEM SET 8}
+\subsection{PROBLEM 1}
+\textit{The time update should be complete and verified at this stage. We need to include the incoming measurements. Search in literature or derive, define, and code a sensitivity matrix \textbf{\textit{H}} which provides your state at step k+1 from your measurement vector at step k+1 (i.e., at the same current time, propagation has already been done).}
+
+\subsection{PROBLEM 2}
+Define and code your constant measurement error covariance matrix \textbf{\textit{R}} which quantifies the uncertainty of your measurements. This can be picked as diagonal matrix with diagonal elements representing the variance of each parameter $\sigma^{2}_{m}$. Hint: If your instrument is well characterized you can use $\sigma_{m}$ applied in your simulation to generate the measurements from your ground-truth.
+
+\subsection{PROBLEM 3}
+\textit{Compute your modelled measurement vector at step k+1 from your state at step k+1. This transformation can be rigorous (non-linear, EKF) or approximate (linear, KF).}
+
+\subsection{PROBLEM 4}
+\textit{Compute your pre-fit residuals \textit{z} by differencing modelled and actual measurement vector at k+1.}
+
+\subsection{PROBLEM 5}
+\textit{The measurement update of the EKF needs \textbf{\textit{H}}, \textbf{\textit{P}}, \textbf{\textit{R}}, and \textbf{\textit{z}} to compute the Kalman gain \textbf{\textit{K}}, the new estimated state and its associated covariance matrix.}
+
+\subsection{PROBLEM 6}
+\textit{Compute your post-fit residuals \textit{z} by differencing modelled and actual measurement vector at k+1 using your new state. These should be smaller than the pre-fit residuals and should capture the standard deviation of your measurements at steady state.}
+
+\subsection{PROBLEM 7}
+\textit{Produce plots showing true attitude estimation errors (estimate vs truth with statistics at steady state), formal or estimated attitude estimation errors (covariance from filter), pre- and post-fit residuals (with statistics at steady state), etc. Discuss the results, do they meet expectations? Is the true estimation error well described by the formal covariance? Are the measurements residuals consistent with the applied measurement errors? Hint: show estimation errors, do not overlap state estimate with reference truth.}
+
+\subsection{PROBLEM 8}
+\textit{Start thinking/planning possible upgrades for the final project deliverable. Upgrades can go in several directions tailored to your project needs. For example, define different modes for attitude estimation using different sensors and algorithms based on your concept of operations. What would it take to implement a UKF instead of an EKF? Can you improve your dynamics and measurement models? Can you use measurements that are more representative of what your sensors are going to actually provide you? Hint: you should not panic if your Kalman filter is not working, you can always address the rest of the problem sets bypassing the Kalman filter. Do not give up though!}
