@@ -23,3 +23,12 @@ hold on
 plot(timeValsMeas, wMeasVals, 'b')
 plot(timeVals, wVals, 'r--')
 hold off
+
+zNorm = squeeze(vecnorm(out.z.data,2,1));
+zPostNorm = squeeze(vecnorm(out.zPost.data,2,1));
+figure(3)
+hold on
+i = 21; % Index of measurement residual (norm) to plot
+plot(out.zPost.time, zPostNorm(i,:), 'b')
+plot(out.z.time, zNorm(i,:), 'r')
+hold off
