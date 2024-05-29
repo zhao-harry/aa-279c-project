@@ -19,6 +19,8 @@ nu = -89.99818; % degree
 muE = 3.986 * 10^5; % km^3 / s^2
 n = sqrt(muE / a^3);
 
+period = 2*pi*sqrt(a^3/muE);
+
 % Compute initial position and attitude
 y = oe2eci(a,e,i,O,w,nu);
 r0 = y(1:3);
@@ -69,7 +71,7 @@ star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
 star_tracker_FOV = deg2rad(20);
 [~, indBest2Sensors] = maxk(sensor_weights, 2);
 sensors_Q = eye(6)/100;
-sensors_R = diag([repelem(star_tracker_error, num_stars), sun_sensor_error]).^2;
+sensors_R = diag([repelem(star_tracker_error, 2*num_stars), sun_sensor_error]).^2;
 
 % Get simulink vars
 constants = struct();
@@ -93,6 +95,7 @@ rECI0 = r0; vECI0 = v0;
 rSCI0 = ySun(1:3); vSCI0 = ySun(4:6);
 q0 = A2q(A_Nominal);
 w0 = [0, -n, 0];
+P0 = eye(6);
 
 sensors = struct();
 sensors.weights = sensor_weights;
