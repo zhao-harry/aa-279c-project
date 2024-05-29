@@ -1,6 +1,8 @@
 function xNoise = addNoise(x, xRange, bias, biasRange)
     if nargin < 3
         bias = 0;
+    end
+    if nargin < 4
         biasRange = 0;
     end
     noiseDimensions = size(x);
