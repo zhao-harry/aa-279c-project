@@ -99,18 +99,19 @@ P0 = eye(6);
 
 sensors = struct();
 sensors.weights = sensor_weights;
-sensors.sun_error = sun_sensor_error;
-sensors.num_stars = num_stars;
-sensors.tracker_error = star_tracker_error;
-sensors.tracker_FOV = star_tracker_FOV;
-sensors.gyro_error = gyro_error;
-sensors.gyro_bias = gyro_bias;
+sensors.sunError = sun_sensor_error;
+sensors.numStars = num_stars;
+sensors.trackerError = star_tracker_error;
+sensors.trackerFOV = star_tracker_FOV;
+sensors.gyroError = gyro_error;
+sensors.gyroBias = gyro_bias;
 sensors.Q = sensors_Q;
 sensors.R = sensors_R;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
-% sensors.sun_error = 0; sensors.tracker_error = 0;
+% sensors.sunError = 0; sensors.trackerError = 0;
+% sensors.gyroError = 0; sensors.gyroBias = 0;
 
 % Settings
 % measType = "dad";

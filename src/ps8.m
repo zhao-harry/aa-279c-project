@@ -2,6 +2,8 @@
 close all; clear; clc
 
 %%  Plots
+savePlots = true;
+
 qVals = squeeze(out.q.data);
 qMeasVals = squeeze(out.qMeasured.data);
 wVals = squeeze(out.w.data);
@@ -12,23 +14,63 @@ timeValsMeas = squeeze(out.qMeasured.time);
 eulerVals = quats2Euler(qVals);
 eulerValsMeas = quats2Euler(qMeasVals);
 
-figure(1)
+zNorm = squeeze(vecnorm(out.z.data,2,1));
+zPostNorm = squeeze(vecnorm(out.zPost.data,2,1));
+zNormVect = vecnorm(zNorm(1:end-1,:), 2);
+zPostNormVect = vecnorm(zPostNorm(1:end-1,:), 2);
+zNormGyro = squeeze(out.z.data(:,end,:));
+zPostNormGyro = squeeze(out.zPost.data(:,end,:));
+
+figure()
+hold on
+plot(timeVals, zNormVect, 'b')
+plot(timeVals, zPostNormVect, 'r')
+xlabel('Time [s]')
+ylabel('Residual norms')
+legend('pre-fit','post-fit')
+hold off
+saveAsBool(gcf,'Images/ps8_problem7_res_units.png',savePlots)
+
+figure()
+hold on
+plot(timeVals, zNormGyro, 'b')
+plot(timeVals, zPostNormGyro, 'r')
+xlabel('Time [s]')
+ylabel('Residual norms')
+legend('pre-fit','','','post-fit')
+hold off
+saveAsBool(gcf,'Images/ps8_problem7_res_gyro.png',savePlots)
+
+figure()
 hold on
 plot(timeValsMeas, rad2deg(eulerValsMeas), 'b')
 plot(timeVals, rad2deg(eulerVals), 'r--')
+xlabel('Time [s]')
+ylabel('Euler Angle (Principal) [rad]')
+legend('MEKF','','','','Ground Truth')
 hold off
+saveAsBool(gcf,'Images/ps8_problem7_state.png',savePlots)
 
-figure(2)
-hold on
-plot(timeValsMeas, wMeasVals, 'b')
-plot(timeVals, wVals, 'r--')
-hold off
+% Get error
+figure()
+eulerError = zeros(size(eulerVals));
+A_error = zeros(3,3,length(timeVals));
+for n = 1:length(timeVals)
+    A_ECI2true = e2A(eulerVals(:,n));
+    A_ECI2err = e2A(eulerValsMeas(:,n));
+    A_true2err = A_ECI2err * A_ECI2true';
+    eulerError(:,n) = A2e(A_true2err);
+    A_error(:,:,n) = A_true2err;
+end
+plot(timeVals/3600, rad2deg(eulerError))
+xlim([0 timeVals(end)/3600])
+xlabel("time [hr]")
+ylabel("euler angle [deg]")
+legend("\phi", "\theta", "\psi")
+saveAsBool(gcf,'Images/ps8_problem7_error.png',savePlots)
 
-zNorm = squeeze(vecnorm(out.z.data,2,1));
-zPostNorm = squeeze(vecnorm(out.zPost.data,2,1));
-figure(3)
-hold on
-i = 21; % Index of measurement residual (norm) to plot
-plot(out.zPost.time, zPostNorm(i,:), 'b')
-plot(out.z.time, zNorm(i,:), 'r')
-hold off
+% figure()
+% hold on
+% plot(timeValsMeas, wMeasVals, 'b')
+% plot(timeVals, wVals, 'r--')
+% hold off
