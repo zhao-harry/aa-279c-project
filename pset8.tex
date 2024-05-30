@@ -58,11 +58,19 @@ We implement the measurement update in code with the following function. This MA
 
 \lstinputlisting{src/measurementUpdate.m}
 
+Our entire MEKF is modeled in Simulink as shown in the diagram below.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.28]{Images/ps8_problem5_simulink.png}
+\caption{Simulink model of MEKF}
+\label{fig:ps8_problem5_simulink}
+\end{figure}
 
 \subsection{PROBLEM 6}
 \textit{Compute your post-fit residuals z by differencing modelled and actual measurement vector at k+1 using your new state. These should be smaller than the pre-fit residuals and should capture the standard deviation of your measurements at steady state.}
 
-The post-fit residuals z are found by taking the updated state from the measurement update and plugging them into the noiseless measurement model again. Figures \ref{fig:ps8_problem7_res_units} and \ref{fig:ps8_problem7_res_gyro} show the plots of the post-fit and pre-fit residuals.
+The post-fit residuals z are found by taking the updated state from the measurement update and plugging them into the noiseless measurement model again. Figures \ref{fig:ps8_problem7_res_units} and \ref{fig:ps8_problem7_res_gyro} show the plots of the pre- and post-fit residuals.
 
 \subsection{PROBLEM 7}
 \textit{Produce plots showing true attitude estimation errors (estimate vs truth with statistics at steady state), formal or estimated attitude estimation errors (covariance from filter), pre- and post-fit residuals (with statistics at steady state), etc. Discuss the results, do they meet expectations? Is the true estimation error well described by the formal covariance? Are the measurements residuals consistent with the applied measurement errors? Hint: show estimation errors, do not overlap state estimate with reference truth.}
@@ -71,32 +79,32 @@ Below are the error and residual plots. Figure \ref{fig:ps8_problem7_error} show
 
 Figure \ref{fig:ps8_problem7_cov} shows the estimated attitude determination errors based on the covariance of the filter. Comparing this with Figure \ref{fig:ps8_problem7_error}, it seems that this method tends to under-report the error and is overall not incredibly accurate.
 
-Figures \ref{fig:ps8_problem7_res_units} and \ref{fig:ps8_problem7_res_gyro} below show the difference in the norms of the pre-fit and post-fit residuals. As expected, the post-fit residuals are slightly smaller than the pre-fit residuals. However, the difference between pre-fit and post-fit sensor noise is much better in the gyroscope case than the unit vector case. This is something that could be improved in the future.
-
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps8_problem7_error.png}
+\includegraphics[scale=0.7]{Images/ps8_problem7_error.png}
 \caption{Errors between MEKF measurements and ground truth}
 \label{fig:ps8_problem7_error}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps8_problem7_cov.png}
+\includegraphics[scale=0.7]{Images/ps8_problem7_cov.png}
 \caption{Estimated attitude estimation errors from covariance}
 \label{fig:ps8_problem7_cov}
 \end{figure}
 
+Figures \ref{fig:ps8_problem7_res_units} and \ref{fig:ps8_problem7_res_gyro} below show the difference in the norms of the pre-fit and post-fit residuals. As expected, the post-fit residuals are slightly smaller than the pre-fit residuals. However, the difference between pre-fit and post-fit sensor noise is much better in the gyroscope case than the unit vector case. This is something that could be improved in the future.
+
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.8]{Images/ps8_problem7_res_units.png}
-\caption{Norm of pre-fit and post-fit vector-based residuals}
+\includegraphics[scale=0.7]{Images/ps8_problem7_res_units.png}
+\caption{Norm of pre-fit and post-fit direction-vector residuals}
 \label{fig:ps8_problem7_res_units}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps8_problem7_res_gyro.png}
+\includegraphics[scale=0.7]{Images/ps8_problem7_res_gyro.png}
 \caption{Pre-fit and post-fit gyroscope residuals}
 \label{fig:ps8_problem7_res_gyro}
 \end{figure}
