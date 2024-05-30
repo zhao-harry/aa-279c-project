@@ -68,7 +68,6 @@ ylabel("euler angle [deg]")
 legend("\phi", "\theta", "\psi")
 saveAsBool(gcf,'Images/ps8_problem7_error.png', savePlots)
 
-%%
 figure()
 covError = [squeeze(out.Pkplus.Data(1,1,:)), ...
                   squeeze(out.Pkplus.Data(2,2,:)), ...
