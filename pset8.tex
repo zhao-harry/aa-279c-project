@@ -37,6 +37,12 @@ This transformation can be rigorous (non-linear, EKF) or approximate (linear, KF
 
 We continue with our modeling for an MEKF system. The modeled measurement vector at step k+1 was found by plugging the estimated state at step k+1 into the previously developed measurement model, without measurement noise.
 
+Our modeled measurement uses simulated unit vectors describing directions for a star tracker and sun sensor. We also provide angular velocity data from simulation with noise to simulate a rate gyro. Our functions for the star tracker and sun sensor in the modeled measurements are shown below.
+
+\lstinputlisting{src/starTracker.m}
+
+\lstinputlisting{src/sunSensor.m}
+
 \subsection{PROBLEM 4}
 \textit{Compute your pre-fit residuals \textit{z} by differencing modeled and actual measurement vector at k+1.}
 
@@ -59,15 +65,16 @@ We implement the measurement update in code with the following function. This MA
 
 \lstinputlisting{src/measurementUpdate.m}
 
-Our entire MEKF is modeled in Simulink as shown in the diagram below.
+Our entire MEKF is modeled in Simulink, as shown in the diagram below.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.28]{Images/ps8_problem5_simulink.png}
+\includegraphics[scale=0.27]{Images/ps8_problem5_simulink.png}
 \caption{Simulink model of MEKF}
 \label{fig:ps8_problem5_simulink}
 \end{figure}
 
+\newpage
 \subsection{PROBLEM 6}
 \textit{Compute your post-fit residuals z by differencing modelled and actual measurement vector at k+1 using your new state. These should be smaller than the pre-fit residuals and should capture the standard deviation of your measurements at steady state.}
 
@@ -120,3 +127,5 @@ One possible upgrade for the final project could be to include biases in the EKF
 We also have an opportunity to model the magnetic field–we have already implemented a fourth-order magnetic field model, but additional refinements and fixes could improve this model and make it usable for attitude determination in conjunction with a magnetometer. We can also take advantage of the magnetic field for actuation via magnetorquers.
 
 An interesting topic to study is whether our system is able to accurately predict the attitude of the satellite within the pointing requirements necessary for NISAR to successfully collect science data. These requirements are available in literature for comparison, and we can also examine the effect of this on the image swath captured by the SAR sensor suite.
+
+Finally, a substantial project could be to model the intricacies of the star tracker, such as implementing algorithms for matching stars to a star catalog (as well as incorporating the star catalog itself). This would require modeling the field of view of each star tracker and stars in the celestial sphere.
