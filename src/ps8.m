@@ -76,6 +76,7 @@ covError = [squeeze(out.Pkplus.Data(1,1,:)), ...
 plot(timeVals/3600, rad2deg(covError))
 xlim([0 timeVals(end)/3600])
 xlabel("time [hr]")
-ylabel("euler angle [deg]")
-legend("\phi", "\theta", "\psi")
+ylabel("angles [deg]")
+legend("\alpha_x", "\alpha_y", "\alpha_z")
 saveAsBool(gcf,'Images/ps8_problem7_cov.png', savePlots)
+
