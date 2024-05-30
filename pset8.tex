@@ -54,6 +54,10 @@ The following equations are used in the measurement step calculation.
     \mathbf{K_k} = \mathbf{P_{k+1 | k}} \mathbf{H_k}^T [\mathbf{H_k} \mathbf{P_{k+1 | k}} \mathbf{H_k}^T + \mathbf{R_k}]^{-1}
 \end{align*}
 
+We implement the measurement update in code with the following function. This MATLAB function is used as part of our Simulink model.
+
+\lstinputlisting{src/measurementUpdate.m}
+
 
 \subsection{PROBLEM 6}
 \textit{Compute your post-fit residuals z by differencing modelled and actual measurement vector at k+1 using your new state. These should be smaller than the pre-fit residuals and should capture the standard deviation of your measurements at steady state.}
