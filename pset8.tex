@@ -65,7 +65,7 @@ The post-fit residuals z are found by taking the updated state from the measurem
 
 Below are the error and residual plots. Figure \ref{fig:ps8_problem7_error} shows the attitude estimate errors with the MEKF method. As expected, the errors are incredibly small and beat out the other attitude determination methods used in the previous section.
 
-
+Figure \ref{fig:ps8_problem7_cov} shows the estimated attitude determination errors based on the covariance of the filter. Comparing this with Figure \ref{fig:ps8_problem7_error}, it seems that this method tends to under-report the error and is overall not incredibly accurate.
 
 Figures \ref{fig:ps8_problem7_res_units} and \ref{fig:ps8_problem7_res_gyro} below show the difference in the norms of the pre-fit and post-fit residuals. As expected, the post-fit residuals are slightly smaller than the pre-fit residuals. However, the difference between pre-fit and post-fit sensor noise is much better in the gyroscope case than the unit vector case. This is something that could be improved in the future.
 
@@ -79,8 +79,8 @@ Figures \ref{fig:ps8_problem7_res_units} and \ref{fig:ps8_problem7_res_gyro} bel
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{Images/ps8_problem7_cov.png}
-\caption{Errors between MEKF measurements and ground truth}
-\label{fig:ps8_problem7_error}
+\caption{Estimated attitude estimation errors from covariance}
+\label{fig:ps8_problem7_cov}
 \end{figure}
 
 \begin{figure}[H]
