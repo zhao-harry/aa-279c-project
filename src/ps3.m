@@ -1,4 +1,4 @@
-clear; close all; clc
+clear; close all; clc;
 
 %% Problem 1
 IPrincipal = [7707.07451493673 0 0; ...

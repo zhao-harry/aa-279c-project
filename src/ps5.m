@@ -1,4 +1,4 @@
-close all; clear; clc
+close all; clear; clc;
 savePlot = true;
 
 %% Import mass properties

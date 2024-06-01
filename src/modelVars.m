@@ -1,5 +1,3 @@
-close all; clear; clc
-
 %% Get variables for simulink
 cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
@@ -18,8 +16,6 @@ w = 89.99764; % degree
 nu = -89.99818; % degree
 muE = 3.986 * 10^5; % km^3 / s^2
 n = sqrt(muE / a^3);
-
-period = 2*pi*sqrt(a^3/muE);
 
 % Compute initial position and attitude
 y = oe2eci(a,e,i,O,w,nu);
@@ -109,9 +105,6 @@ sensors.Q = sensors_Q;
 sensors.R = sensors_R;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
-
-% sensors.sunError = 0; sensors.trackerError = 0;
-% sensors.gyroError = 0; sensors.gyroBias = 0;
 
 % Settings
 % measType = "dad";

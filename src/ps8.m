@@ -1,5 +1,5 @@
 %% Model
-close all; clear; clc
+close all; clear; clc;
 savePlots = false;
 
 %%  Plots
