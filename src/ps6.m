@@ -1,6 +1,4 @@
 close all; clear; clc
-
-% From PS6 onward, we use Simulink to model the spacecraft
 savePlots = true;
 
 %% Import mass properties
@@ -129,15 +127,13 @@ v = rand([3, numReadings]);
 v  = v ./ vecnorm(v);
 w = [100 100 ones([1, numReadings-2])];
 
-% m = A_Nominal * v;
-
 eulerReals = state(:,10:12);
-euler_DAD2 = nan([3, length(t)]);
-euler_DAD = nan([3, length(t)]);
-euler_qMethod = nan([3, length(t)]);
-euler_kins = nan([3, length(t)]);
+eulerDAD2 = nan([3, length(t)]);
+eulerDAD = nan([3, length(t)]);
+eulerqMethod = nan([3, length(t)]);
+eulerKin = nan([3, length(t)]);
 
-euler_kins(:,1) = state0(10:12);
+eulerKin(:,1) = state0(10:12);
 omega = [0; -n; 0];
 
 for n = 1:length(t)
@@ -146,15 +142,15 @@ for n = 1:length(t)
     m2 = m(:,2);
     v1 = v(:,1);
     v2 = v(:,2);
-    A_DAD2 = DAD_twoVecs(m1, m2, v1, v2);
-    euler_DAD2(:,n) = A2e(A_DAD2);
+    A_DAD2 = DAD2Vec(m1, m2, v1, v2);
+    eulerDAD2(:,n) = A2e(A_DAD2);
     A_DAD = DAD(m,v);
-    euler_DAD(:,n) = A2e(A_DAD);
+    eulerDAD(:,n) = A2e(A_DAD);
     qMeas_qMethod = qMethod(m,v,w);
-    euler_qMethod(:,n) = A2e(q2A(qMeas_qMethod));
+    eulerqMethod(:,n) = A2e(q2A(qMeas_qMethod));
 
-    % Propogate stateKin
-    [euler_kins(:,n+1), omega] = kinEulerStepRK4(euler_kins(:,1), omega, Ix, Iy, Iz, tStep);
+    % Propagate
+    [eulerKin(:,n+1), omega] = kinEulerStepRK4(eulerKin(:,1), omega, Ix, Iy, Iz, tStep);
 end
 
 figure()
@@ -167,7 +163,7 @@ saveAsBool(gcf,'Images/ps6_problem6_actual.png',savePlots)
 
 
 figure()
-plot(t/3600, euler_DAD2)
+plot(t/3600, eulerDAD2)
 title("Deterministic Attitude Determination (Fictitious Measurements)")
 xlabel('Time [h]')
 ylabel('Euler Angle (Principal) [rad]')
@@ -175,7 +171,7 @@ legend('\phi','\theta','\psi')
 saveAsBool(gcf,'Images/ps6_problem6_DADFict.png',savePlots)
 
 figure()
-plot(t/3600, euler_DAD)
+plot(t/3600, eulerDAD)
 title("Deterministic Attitude Determination")
 xlabel('Time [h]')
 ylabel('Euler Angle (Principal) [rad]')
@@ -183,7 +179,7 @@ legend('\phi','\theta','\psi')
 saveAsBool(gcf,'Images/ps6_problem6_DAD.png',savePlots)
 
 figure()
-plot(t/3600, euler_qMethod)
+plot(t/3600, eulerqMethod)
 title("q Method")
 xlabel('Time [h]')
 ylabel('Euler Angle (Principal) [rad]')

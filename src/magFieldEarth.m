@@ -1,6 +1,4 @@
 function [B_R,B_theta,B_phi] = magFieldEarth(R,phi,theta,RE)
-    % NOTE: slides calls phi lambda (not sure if it's the same thing or not)
-
     % Make sure that R is normalized
     R = norm(R);
 
@@ -22,7 +20,7 @@ function [B_R,B_theta,B_phi] = magFieldEarth(R,phi,theta,RE)
         BTheta_temp = 0;
         BPhi_temp = 0;
 
-        for mInd = 1:n
+        for mInd = 1:n+1
             m = mInd - 1;
 
             P_nm = getPnm(theta,n,m);
@@ -46,5 +44,4 @@ function [B_R,B_theta,B_phi] = magFieldEarth(R,phi,theta,RE)
 
     B_theta = -B_theta;
     B_phi = -1 / sin(theta) * B_phi;
-
 end

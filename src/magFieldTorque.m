@@ -1,4 +1,4 @@
-function [M, B_ECEF, F, XYZ] = magFieldTorque(m,R,eulerAngle,t,RE,UT1)
+function [M,B_ECEF] = magFieldTorque(m,R,eulerAngle,t,RE,UT1)
     % Calculated the expected torque due to Earth's magnetic field
     % Inputs:
     % - m: magnetic moment of satellite [N * m / T]
@@ -7,22 +7,14 @@ function [M, B_ECEF, F, XYZ] = magFieldTorque(m,R,eulerAngle,t,RE,UT1)
     % - RE: radius of Earth [km] (6378 km)
     % - UT1: start time of simulation
 
-    % Find lambda (longitude) and theta (colatitude)
     GMST = time2GMST(t,UT12MJD(UT1));
     [lat,lon,~] = ECEF2Geoc(ECI2ECEF(R,GMST),t);
-    lambda = lat;
-    phi = lon;
-    theta = pi/2 - phi;
+    theta = pi/2 - lat;
 
-    [B_R,B_theta,B_phi] = magFieldEarth(R,lambda,theta,RE);
-%     B_latlon = [B_R, B_theta, B_phi];
-    
-    timeVec = UT1;
-    timeVec(2) = timeVec(2) + t/86400;
-    [XYZ,H,D,I,F] = wrldmagm(norm(R)-RE,lat,lon,decyear(timeVec));
+    [B_R,B_theta,B_phi] = magFieldEarth(R,lon,theta,RE);
 
-    delta = phi;
-    alpha = lambda + GMST;
+    delta = lat;
+    alpha = lon + GMST;
 
     B_x = (B_R * cos(delta) + B_theta * sin(delta)) * ...
         cos(alpha) - B_phi * sin(alpha);
