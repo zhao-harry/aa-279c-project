@@ -1,6 +1,7 @@
-%% Get variables for simulink
+%% General Constants
 cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
+
 
 [rot,IPrincipal] = eig(I);
 Ix = IPrincipal(1,1);
@@ -56,23 +57,6 @@ m_direction = rot * m_direction_body;
 m = m_max * m_direction / norm(m_direction); % Arbitrary sat dipole
 UT1 = [2024 1 1];
 
-% Sensor information (assume 5 readings)
-num_stars = 10;
-sensor_weights = [50 1]; %[starTracker, sunSensor]
-sun_sensor_error = deg2rad(0.5);
-star_tracker_error = deg2rad(0.01);
-gyro_error = deg2rad(0.001);
-gyro_bias = 5e-5;
-star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
-star_tracker_FOV = deg2rad(20);
-[~, indBest2Sensors] = maxk(sensor_weights, 2);
-sensors_Q = eye(6)/100;
-sensors_R = diag([repelem(star_tracker_error, 2*num_stars), sun_sensor_error]).^2;
-
-% Actuators
-I_wheel = 100; % unit
-
-% Get simulink vars
 constants = struct();
 constants.Ix = Ix; constants.Iy = Iy; constants.Iz = Iz;
 constants.A_Body2P = rot;
@@ -96,6 +80,19 @@ q0 = A2q(A_Nominal);
 w0 = [0, -n, 0];
 P0 = eye(6);
 
+%% Sensor information
+num_stars = 10;
+sensor_weights = [50 1]; %[starTracker, sunSensor]
+sun_sensor_error = deg2rad(0.5);
+star_tracker_error = deg2rad(0.01);
+gyro_error = deg2rad(0.001);
+gyro_bias = 5e-5;
+star_tracker_normal_body = {[0; 1; 0], [0; -1; 0]};
+star_tracker_FOV = deg2rad(20);
+[~, indBest2Sensors] = maxk(sensor_weights, 2);
+sensors_Q = eye(6)/100;
+sensors_R = diag([repelem(star_tracker_error, 2*num_stars), sun_sensor_error]).^2;
+
 sensors = struct();
 sensors.weights = sensor_weights;
 sensors.sunError = sun_sensor_error;
@@ -109,12 +106,27 @@ sensors.R = sensors_R;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
+
+%% Actuator
+% Actuators
+IWheel = 0.119; % kg*m^2
+LMaxWheel = 50; %N*m*s
+dipole = [350; 350; 565]; %A*m^2
+thrust = 1; % N
+Isp = 220; %s
+
+
+% Actuator bus
 actuators = struct();
-actuators.IWheel = I_wheel;
+actuators.IWheel = IWheel;
+actuators.LMaxWheel = LMaxWheel;
+actuators.magnetorquerDipole = dipole;
+actuators.thrust = 1;
+actuators.Isp = Isp;
 actuators_bus_info = Simulink.Bus.createObject(actuators);
 actuators_bus = evalin('base', actuators_bus_info.busName);
 
-% Settings
+%% Settings
 % measType = "dad";
 % measType = "q";
 % measType = "kin";
