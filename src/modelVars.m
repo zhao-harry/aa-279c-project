@@ -1,3 +1,21 @@
+%% Simulink Variables 
+% Values needed to run before simulink model works!
+
+%% Settings
+% What kind of measurement method?
+% measType = "dad";
+% measType = "q";
+% measType = "kin";
+measType = "MEKF";
+
+% If dad, do we use fictitious measurements?
+useFict = true;
+% useFict = false;
+
+% Do we use linear or nonlinear control model?
+% useLinearModel = true;
+useLinearModel = false;
+
 %% General Constants
 cm = computeCM('res/mass.csv');
 I = computeMOI('res/mass.csv',cm);
@@ -106,7 +124,7 @@ sensors.R = sensors_R;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
-%% Actuator
+%% Controller
 % Actuators
 IWheel = 0.119; % kg*m^2
 LMaxWheel = 50; %N*m*s
@@ -137,13 +155,7 @@ control.Isp = Isp;
 control.Kp = Kp;
 control.Kd = Kd;
 control.A = A;
+control.useLinearModel = useLinearModel;
 control_bus_info = Simulink.Bus.createObject(control);
 control_bus = evalin('base', control_bus_info.busName);
 
-%% Settings
-% measType = "dad";
-% measType = "q";
-% measType = "kin";
-measType = "MEKF";
-useFict = true;
-% useFict = false;
