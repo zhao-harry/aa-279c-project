@@ -1,2 +1,12 @@
 \section{\Large PROBLEM SET 9}
 \subsection{PROBLEM 1}
+\textit{Start selecting and sizing your actuators using the basic dimensional formulas provided in class (Wertz,SMAD) based on your perturbation environment and attitude slew objectives. Provide rationale for choice.}
+
+\subsection{PROBLEM 2}
+\textit{Start modeling actuators in dedicated (Simulink) subsystems which are part of the spacecraft. These models take inputs from ground-truth simulation and provides output control torques to be directly fed into the Euler equations, including systematic and random errors. Plot output vs input of actuator model. Hint: for the rest of this problem set you should remove all sensing and actuation errors for verification purposes.}
+
+\subsection{PROBLEM 3}
+\textit{Start designing and implementing a linear control law which provides the desired behavior of the dynamic system (damping and frequency) by a feedback done on the control tracking errors. Try using both a small angle approximation and a non-linear approach in defining the control tracking errors used in the control law. Hint: this task requires that you linearize the Euler equations and that you show how the gains of the linear control law are derived, also start applying the control law by assuming that the actuators are doing their job ideally (no actuation equations, no saturation or other limits). Selection of gains can be done through standard PD, pole placement or LQR approaches.}
+
+\subsection{PROBLEM 4}
+\textit{Start plotting all the relevant quantities of your simulation, including attitude determination errors, attitude control errors, control actions (along all axes), etc. Hint: stress difference between what the ADCS believes, and what the spacecraft is actually doing. This affects estimation, control errors, and control actions.}
