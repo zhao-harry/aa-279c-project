@@ -69,6 +69,9 @@ star_tracker_FOV = deg2rad(20);
 sensors_Q = eye(6)/100;
 sensors_R = diag([repelem(star_tracker_error, 2*num_stars), sun_sensor_error]).^2;
 
+% Actuators
+I_wheel = 100; % unit
+
 % Get simulink vars
 constants = struct();
 constants.Ix = Ix; constants.Iy = Iy; constants.Iz = Iz;
@@ -105,6 +108,11 @@ sensors.Q = sensors_Q;
 sensors.R = sensors_R;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
+
+actuators = struct();
+actuators.IWheel = I_wheel;
+actuators_bus_info = Simulink.Bus.createObject(actuators);
+actuators_bus = evalin('base', actuators_bus_info.busName);
 
 % Settings
 % measType = "dad";
