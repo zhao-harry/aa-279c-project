@@ -27,21 +27,22 @@ figure()
 for n = 1:4
     subplot(2,2,n)
     hold on
+    title(sprintf("Wheel %i", n))
     
     yyaxis left
-    plot(time, sinWave, 'r')
-    ylabel("Input Control Moment [Nm]")
+    ylabel("Angular Velocity [rad/s]")
+    plot(time, w_wheel(n,:), 'b')
+    ylim([min(w_wheel(:)), max(w_wheel(:))])
 
     yyaxis right
-    plot(time, w_wheel(n,:), 'b--')
-    ylabel(sprintf("Wheel %i Angular Velocity [rad/s]", n))
-    ylim([min(w_wheel(:)), max(w_wheel(:))])
+    ylabel("Control Moment [Nm]")
+    plot(time, sinWave, 'r')
     hold off
 
     xlabel("Time [s]")
 end
 
-% saveAsBool(gcf, 'Images/ps9_problem2.png', savePlots)
+saveAsBool(gcf, 'Images/ps9_problem2.png', savePlots)
 
 %% Question 3
 % Get attitude detemrinatione error
