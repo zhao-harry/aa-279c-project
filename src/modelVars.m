@@ -106,7 +106,6 @@ sensors.R = sensors_R;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
 sensors_bus = evalin('base', sensors_bus_info.busName);
 
-
 %% Actuator
 % Actuators
 IWheel = 0.119; % kg*m^2
@@ -115,16 +114,31 @@ dipole = [350; 350; 565]; %A*m^2
 thrust = 1; % N
 Isp = 220; %s
 
+% Control parameters
+f = 250;
+Kp = [f^2/Ix;
+         f^2/Iy;
+         f^2/Iz];
+Kd = [2*sqrt(Ix*(3*n^2*(Iz-Iy) + Kp(1)));
+         2*sqrt(Iy*(3*n^2*(Ix-Iz) + Kp(2)));
+         2*sqrt(Iz*(3*n^2*(Iy-Ix) + Kp(3)))];
+A = 1/sqrt(3)*[-1 1 1 -1;
+                      -1 -1 1 1;
+                      1 1 1 1];
+Lw0 = [0; 0; 0; 0];
 
 % Actuator bus
-actuators = struct();
-actuators.IWheel = IWheel;
-actuators.LMaxWheel = LMaxWheel;
-actuators.magnetorquerDipole = dipole;
-actuators.thrust = 1;
-actuators.Isp = Isp;
-actuators_bus_info = Simulink.Bus.createObject(actuators);
-actuators_bus = evalin('base', actuators_bus_info.busName);
+control = struct();
+control.IWheel = IWheel;
+control.LMaxWheel = LMaxWheel;
+control.magnetorquerDipole = dipole;
+control.thrust = 1;
+control.Isp = Isp;
+control.Kp = Kp;
+control.Kd = Kd;
+control.A = A;
+control_bus_info = Simulink.Bus.createObject(control);
+control_bus = evalin('base', control_bus_info.busName);
 
 %% Settings
 % measType = "dad";
