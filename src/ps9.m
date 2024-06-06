@@ -3,6 +3,32 @@ savePlots = true;
 sinWave = false;
 modelVars
 
+%% Problem 1
+% Satellite orbit initial conditions
+a = 7125.48662; % km
+e = 0;
+i = 98.40508; % degree
+O = -19.61601; % degree
+w = 89.99764; % degree
+nu = -89.99818; % degree
+muE = 3.986 * 10^5; % km^3 / s^2
+n = sqrt(muE / a^3);
+
+% Max expected torque
+Md = 0.0024; % N*m
+
+% Reaction Wheel
+T = 2*pi*sqrt(a^3/muE); %s
+L = Md*T*0.707/4; %Nms
+
+% Magnetorquer
+B = 4.3578e-05;
+D = Md/B;
+
+% Thruster
+b = 0.6;
+T = Md/b;
+
 %% Problem 2
 time = squeeze(out.q.time);
 sinWave = squeeze(out.sinWave.Data);
