@@ -10,6 +10,6 @@ function xNoise = addNoise(x, xRange, bias, biasRange)
     biasNoise = randn(noiseDimensions);
     xBias = bias*ones(noiseDimensions);
     
-    xNoise = x + (xRange .* noise) + xBias;
-    % xNoise = x + (noise .* xRange) + (biasNoise .* biasRange) .* xBias;
+    % xNoise = x + (xRange .* noise) + xBias;
+    xNoise = x + (noise .* xRange) + (biasNoise .* biasRange) .* xBias;
 end

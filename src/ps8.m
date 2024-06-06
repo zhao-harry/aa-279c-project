@@ -1,6 +1,7 @@
 %% Model
 close all; clear; clc;
 savePlots = false;
+modelVars
 
 %%  Plots
 qVals = squeeze(out.q.data);

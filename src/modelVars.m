@@ -118,7 +118,8 @@ sensors.numStars = num_stars;
 sensors.trackerError = star_tracker_error;
 sensors.trackerFOV = star_tracker_FOV;
 sensors.gyroError = gyro_error;
-sensors.gyroBias = gyro_bias;
+% sensors.gyroBias = gyro_bias;
+sensors.gyroBias = 0;
 sensors.Q = sensors_Q;
 sensors.R = sensors_R;
 sensors_bus_info = Simulink.Bus.createObject(sensors);
@@ -133,7 +134,7 @@ thrust = 1; % N
 Isp = 220; %s
 
 % Control parameters
-f = 250;
+f = 100;
 Kp = [f^2/Ix;
          f^2/Iy;
          f^2/Iz];

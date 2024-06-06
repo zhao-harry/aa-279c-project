@@ -2,21 +2,6 @@ close all; clear; clc;
 savePlots = true;
 modelVars
 
-%%
-q = squeeze(out.q.data);
-qMeas = squeeze(out.qMeasured.data);
-time = squeeze(out.q.time);
-timeMeas = squeeze(out.qMeasured.time);
-
-eulerVals = quats2Euler(q);
-eulerValsMeas = quats2Euler(qMeas);
-
-figure()
-hold on
-plot(time, rad2deg(eulerVals))
-legend(["\phi" "\theta" "\psi"])
-hold off
-
 %% Problem 2
 time = squeeze(out.q.time);
 sinWave = squeeze(out.sinWave.Data);
@@ -45,10 +30,10 @@ end
 saveAsBool(gcf, 'Images/ps9_problem2.png', savePlots)
 
 %% Question 3
-% Get attitude detemrinatione error
+% Get attitude determination error
 time = squeeze(out.q.Time);
 q = squeeze(out.q.data);
-qMeas = squeeze(out.qMeasured.data);
+qMeas = squeeze(out.qEstimated.data);
 
 eulerAngs = quats2Euler(q);
 eulerAngsMeas = quats2Euler(qMeas);
@@ -88,6 +73,13 @@ legend(["\phi", "\theta", "\psi"])
 hold off
 saveAsBool(gcf, ['Images/ps9_problem3_controlError_', model, '.png'], savePlots)
 
+figure()
+hold on
+plot(time, rad2deg(squeeze(out.alpha.data)))
+xlabel("Time [s]"); ylabel("Euler Angles [deg]")
+legend(["\alpha_x", "\alpha_y", "\alpha_z"])
+hold off
+
 Mc = squeeze(out.Mc.data);
 figure()
 hold on
@@ -97,4 +89,19 @@ legend(["M_{cx}" "M_{cy}" "M_{cz}"])
 hold off
 saveAsBool(gcf, ['Images/ps9_problem3_controlMoments', model, '.png'], savePlots)
 
-%% Problem 4
+%% 
+time = squeeze(out.w.Time);
+w = squeeze(out.w.data);
+wMeas = squeeze(out.wEstimated.data);
+% wMeasPre = squeeze(out.wMeasPre.data);
+% wMeasMinus = squeeze(out.wMeasMinus.data);
+
+figure(1)
+hold on
+plot(time, wMeas, 'r')
+% plot(time, wMeasMinus, 'g')
+plot(time, w, 'b')
+% plot(time, wMeasPre, 'g')
+% plot(time, wMeas - wMeasPre)
+% plot(time, wMeas - wMeasPre)
+hold off
