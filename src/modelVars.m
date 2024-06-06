@@ -13,8 +13,8 @@ useFict = true;
 % useFict = false;
 
 % Do we use linear or nonlinear control model?
-% useLinearModel = true;
-useLinearModel = false;
+useLinearModel = true;
+% useLinearModel = false;
 
 %% General Constants
 cm = computeCM('res/mass.csv');

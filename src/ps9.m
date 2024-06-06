@@ -1,5 +1,6 @@
 close all; clear; clc;
 savePlots = true;
+sinWave = false;
 modelVars
 
 %% Problem 2
@@ -27,7 +28,7 @@ for n = 1:4
     xlabel("Time [s]")
 end
 
-saveAsBool(gcf, 'Images/ps9_problem2.png', savePlots)
+saveAsBool(gcf, 'Images/ps9_problem2.png', savePlots & sinWave)
 
 %% Question 3
 % Get attitude determination error
