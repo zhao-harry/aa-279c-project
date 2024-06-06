@@ -13,8 +13,8 @@ useFict = true;
 % useFict = false;
 
 % Do we use linear or nonlinear control model?
-useLinearModel = true;
-% useLinearModel = false;
+% useLinearModel = true;
+useLinearModel = false;
 
 %% General Constants
 cm = computeCM('res/mass.csv');
@@ -134,7 +134,7 @@ thrust = 1; % N
 Isp = 220; %s
 
 % Control parameters
-f = 100;
+f = 250;
 Kp = [f^2/Ix;
          f^2/Iy;
          f^2/Iz];

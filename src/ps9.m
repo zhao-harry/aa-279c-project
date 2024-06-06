@@ -52,6 +52,9 @@ end
 % Control Error
 eulerControlError = A2eVec(out.AE.data);
 
+Lw = squeeze(out.Lw.Data);
+w_wheel = Lw ./ control.IWheel;
+
 if control.useLinearModel == true
     model = 'linear';
 else
@@ -60,49 +63,56 @@ end
 
 figure()
 hold on
-plot(time, rad2deg(eulerDetError))
-xlabel("Time [s]"); ylabel("Euler Angles [deg]")
+plot(time/3600, rad2deg(eulerDetError))
+xlabel("Time [hr]"); ylabel("Euler Angles [deg]")
 legend(["\phi", "\theta", "\psi"])
+title("Attitude Determination Error")
+xlim([0, time(end)/3600])
 hold off
 saveAsBool(gcf, ['Images/ps9_problem3_determinationError_', model, '.png'], savePlots)
 
 figure()
 hold on
-plot(time, rad2deg(eulerControlError))
-xlabel("Time [s]"); ylabel("Euler Angles [deg]")
+plot(time/3600, rad2deg(eulerControlError))
+xlabel("Time [hr]"); ylabel("Euler Angles [deg]")
 legend(["\phi", "\theta", "\psi"])
+title("Attitude Control Error (Ground Truth)")
+xlim([0, time(end)/3600])
 hold off
 saveAsBool(gcf, ['Images/ps9_problem3_controlError_', model, '.png'], savePlots)
 
 figure()
 hold on
-plot(time, rad2deg(squeeze(out.alpha.data)))
-xlabel("Time [s]"); ylabel("Euler Angles [deg]")
+plot(time/3600, rad2deg(squeeze(out.alpha.data)))
+xlabel("Time [hr]"); ylabel("Euler Angles [deg]")
 legend(["\alpha_x", "\alpha_y", "\alpha_z"])
+title("Attitude Control Error (Measured)")
+xlim([0, time(end)/3600])
 hold off
+saveAsBool(gcf, ['Images/ps9_problem3_controlMomentsMeasured_', model, '.png'], savePlots)
 
 Mc = squeeze(out.Mc.data);
 figure()
 hold on
-plot(time, Mc)
-xlabel("Time [s]"); ylabel("Control Moments [Nm]")
+plot(time/3600, Mc)
+xlabel("Time [hr]"); ylabel("Control Moments [Nm]")
 legend(["M_{cx}" "M_{cy}" "M_{cz}"])
+title("Control Moments")
+xlim([0, time(end)/3600])
 hold off
-saveAsBool(gcf, ['Images/ps9_problem3_controlMoments', model, '.png'], savePlots)
+saveAsBool(gcf, ['Images/ps9_problem3_controlMoments_', model, '.png'], savePlots)
 
-%% 
-time = squeeze(out.w.Time);
-w = squeeze(out.w.data);
-wMeas = squeeze(out.wEstimated.data);
-% wMeasPre = squeeze(out.wMeasPre.data);
-% wMeasMinus = squeeze(out.wMeasMinus.data);
+figure()
+for n = 1:4
+    subplot(2,2,n)
+    hold on
+    title(sprintf("Wheel %i", n))
+    
+    ylabel("Angular Velocity [rad/s]")
+    plot(time/3600, w_wheel(n,:), 'b')
+    ylim([min(w_wheel(:)), max(w_wheel(:))])
+    xlim([0, time(end)/3600])
 
-figure(1)
-hold on
-plot(time, wMeas, 'r')
-% plot(time, wMeasMinus, 'g')
-plot(time, w, 'b')
-% plot(time, wMeasPre, 'g')
-% plot(time, wMeas - wMeasPre)
-% plot(time, wMeas - wMeasPre)
-hold off
+    xlabel("Time [hr]")
+end
+saveAsBool(gcf, ['Images/ps9_problem3_wheelMomentum_', model, '.png'], savePlots)
