@@ -129,7 +129,7 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 % Actuators
 IWheel = 0.119; % kg*m^2
 LMaxWheel = 50; %N*m*s
-LMaxWheel = IWheel * 1; %N*m*s
+LMaxWheel = 0.1; %N*m*s
 dipole = [350; 350; 565]; %A*m^2
 thrust = 1; % N
 Isp = 220; %s
@@ -151,7 +151,7 @@ Lw0 = [0; 0; 0; 0];
 control = struct();
 control.IWheel = IWheel;
 control.LMaxWheel = LMaxWheel;
-control.magnetorquerDipole = dipole;
+control.D = dipole;
 control.thrust = 1;
 control.Isp = Isp;
 control.Kp = Kp;
