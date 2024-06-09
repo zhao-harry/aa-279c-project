@@ -129,14 +129,13 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 % Actuators
 IWheel = 0.119; % kg*m^2
 LMaxWheel = 50; %N*m*s
-LMaxWheel = IWheel * 1; %N*m*s
 LwLimit = 0.5 * LMaxWheel; % N*m*s
 dipole = [350; 350; 565]; %A*m^2
 thrust = 1; % N
 Isp = 220; %s
 Lw_weight = eye(3);
 mag_weight = eye(3) .* 100;
-KMag = 0.1;
+KMag = 0.001;
 
 % Control parameters
 f = 250;
