@@ -1,5 +1,5 @@
 close all; clear; clc;
-savePlots = true;
+savePlots = false;
 sinWave = false;
 modelVars
 

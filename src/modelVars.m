@@ -129,10 +129,14 @@ sensors_bus = evalin('base', sensors_bus_info.busName);
 % Actuators
 IWheel = 0.119; % kg*m^2
 LMaxWheel = 50; %N*m*s
-LMaxWheel = 0.1; %N*m*s
+LMaxWheel = IWheel * 1; %N*m*s
+LwLimit = 0.5 * LMaxWheel; % N*m*s
 dipole = [350; 350; 565]; %A*m^2
 thrust = 1; % N
 Isp = 220; %s
+Lw_weight = eye(3);
+mag_weight = eye(3) .* 100;
+KMag = 0.1;
 
 % Control parameters
 f = 250;
@@ -151,12 +155,14 @@ Lw0 = [0; 0; 0; 0];
 control = struct();
 control.IWheel = IWheel;
 control.LMaxWheel = LMaxWheel;
+control.LwLimit = LwLimit;
 control.D = dipole;
 control.thrust = 1;
 control.Isp = Isp;
 control.Kp = Kp;
 control.Kd = Kd;
 control.A = A;
+control.KMag = KMag;
 control.useLinearModel = useLinearModel;
 control_bus_info = Simulink.Bus.createObject(control);
 control_bus = evalin('base', control_bus_info.busName);
