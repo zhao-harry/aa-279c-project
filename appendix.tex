@@ -1,13 +1,13 @@
 \appendix
 
-\section{Appendix A}
-The following MATLAB code are used in problem sets, in addition to functions already listed in the body of the document. The full code (including helper functions not shown here) and resource files can be found in the GitHub repository: \url{https://github.com/zhao-harry/aa-279c-project}
+\section{APPENDIX A: CODE}
+The following MATLAB code are used in the original AA 279C problem sets. The full code (including helper functions not shown here) and resource files can be found in the GitHub repository: \url{https://github.com/zhao-harry/aa-279c-project}
 
-\subsection{Problem Set 1}
+\subsection{Problem Set 1 – Mass and Surface Properties}
 \lstinputlisting{src/ps1.m}
 
 \newpage
-\subsection{Problem Set 2}
+\subsection{Problem Set 2 – Dynamics}
 \lstinputlisting{src/ps2.m}
 \lstinputlisting{src/plotECI.m}
 \lstinputlisting{src/eulerPropagator.m}
@@ -17,35 +17,48 @@ The following MATLAB code are used in problem sets, in addition to functions alr
 \lstinputlisting{src/polhode2D.m}
 
 \newpage
-\subsection{Problem Set 3}
+\subsection{Problem Set 3 – Axial-Symmetric and Kinematics}
 \lstinputlisting{src/ps3.m}
 \lstinputlisting{src/plotTriad.m}
 
 \newpage
-\subsection{Problem Set 4}
+\subsection{Problem Set 4 – Equilibrium and Gravity Gradient}
 \lstinputlisting{src/ps4.m}
+\lstinputlisting{src/kinEulerAngleWheel.m}
 
 \newpage
-\subsection{Problem Set 5}
+\subsection{Problem Set 5 – Gravity Gradient Stability and Perturbations}
 \lstinputlisting{src/ps5.m}
 \lstinputlisting{src/plotGravGradStability.m}
+\lstinputlisting{src/orbitTorque.m}
+\lstinputlisting{src/drag.m}
+\lstinputlisting{src/srp.m}
+\newpage
+\textbf{The following set of functions are used for our fourth-order magnetic field model.}
+\lstinputlisting{src/magFieldTorque.m}
 \lstinputlisting{src/magFieldEarth.m}
 \lstinputlisting{src/getdPdTheta.m}
 \lstinputlisting{src/getKnm.m}
 \lstinputlisting{src/getPnm.m}
 
 \newpage
-\subsection{Problem Set 6}
+\subsection{Problem Set 6 – Attitude Determination}
 \lstinputlisting{src/ps6.m}
+\lstinputlisting{src/DAD2Vec.m}
+\lstinputlisting{src/DAD.m}
+\lstinputlisting{src/qMethod.m}
+\lstinputlisting{src/kinEulerStepRK4.m}
 
 \newpage
-\subsection{Problem Set 7}
+\subsection{Problem Set 7 – MEKF Time Update}
 \lstinputlisting{src/ps7.m}
 
 \newpage
-\subsection{Problem Set 8}
+\subsection{Problem Set 8 – MEKF Measurement Update}
 \lstinputlisting{src/ps8.m}
+\lstinputlisting{src/starTracker.m}
+\lstinputlisting{src/sunSensor.m}
 
 \newpage
-\subsection{Problem Set 9}
+\subsection{Problem Set 9 – Control}
 \lstinputlisting{src/ps9.m}

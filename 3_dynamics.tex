@@ -1,0 +1,247 @@
+\section{\Large DYNAMICS}
+\subsection{Orbit}
+
+From the science users' handbook, we obtain the following orbital elements \cite{NISARHandbook}.
+
+\begin{table}[H]
+\begin{tabular}{lllllll}
+\textbf{OE} & \textit{a} & \textit{e} & \textit{i} & \textit{$\Omega$} & \textit{$\omega$} & \textit{$\nu$} \\ \hline
+\textbf{Value} & 7125.48662 km & 0.0011650 & 98.40508$\degree$ & -19.61601$\degree$ & 89.99764$\degree$ & -89.99818$\degree$
+\end{tabular}
+\end{table}
+
+We convert these using a MATLAB function into ECI coordinates that can be fed into a numerical orbital propagator. Notice that we first convert the orbital elements a, e, and $\nu$ into perifocal (PQW) coordinates, using a and e to find the semi-latus rectum and a, e, and $\nu$ to find the distance to the central body (Earth). Then, we perform a series of rotations on these coordinates parameterized by $\omega$, i, and $\Omega$ to obtain new coordinates in the ECI frame.
+
+Then, we can numerically propagate in MATLAB using \texttt{ode113} using a function that computes the time derivative of the ECI state. This is accomplished simply by setting the time derivative of position equal to the velocity portion of the state and setting the time derivative of velocity equal to an acceleration computed using the law of universal gravitation. Note that while our propagator does not include disturbance forces, it will be easy to incorporate these later. See the appendix corresponding to Problem Set 2 for application of \texttt{ode113}.
+
+Now, we plot the trajectory for one orbit in Figure \ref{fig:simple_propagator}. Plotting multiple orbits (for example, over 12 days) yields the same plot, as \texttt{ode113} is very stable for this application.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Images/ps2_problem1.png}
+\caption{A single orbit for NISAR in ECI coordinates (no perturbations)}
+\label{fig:simple_propagator}
+\end{figure}
+
+\subsection{Euler Equations}
+Initially, we represent our dynamics using simplified Euler equations. We use the following equations with zero external moments ($M_{x}, M_{y}, M_{z} = 0$).
+
+\begin{align*}
+    I_{x} \Dot{\omega}_{x} + (I_{z} - I_{y}) \omega_{y} \omega_{z} &= M_{x} \\
+    I_{y} \Dot{\omega}_{y} + (I_{x} - I_{z}) \omega_{z} \omega_{x} &= M_{y} \\
+    I_{z} \Dot{\omega}_{z} + (I_{y} - I_{x}) \omega_{x} \omega_{y} &= M_{z}
+\end{align*}
+
+We choose arbitrary initial conditions $\omega_{x} = \qty{8}{\degree\per\second}$, $\omega_{y} = \qty{4}{\degree\per\second}$, and $\omega_{z} = \qty{6}{\degree\per\second}$. The results of numerical integration using \texttt{ode113} are shown in Figure \ref{fig:ps2_euler_equations}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_euler_equations.png}
+\caption{Results from numerical integration of Euler equations}
+\label{fig:ps2_euler_equations}
+\end{figure}
+
+\subsection{Energy Ellipsoid}
+We use the energy ellipsoid to visualize our dynamics. We compute our surface using rotational kinetic energy based on initial conditions and principal axes inertia tensor.
+
+\begin{align*}
+    &2T = \omega_{x}^{2} I_{x} + \omega_{y}^{2} I_{y} + \omega_{z}^{2} I_{z} \\
+    &\frac{\omega_{x}^{2}}{2T/I_{x}} + \frac{\omega_{y}^{2}}{2T/I_{y}} + \frac{\omega_{z}^{2}}{2T/I_{z}} = 1
+\end{align*}
+
+For the given initial conditions, we get semi-major axes of the following lengths: $\omega_{x} = \qty{0.2332}{\radian\per\second}$, $\omega_{y} = \qty{0.1697}{\radian\per\second}$, and $\omega_{z} = \qty{0.1524}{\radian\per\second}$. These values make sense given the equation for the energy ellipsoid.
+
+Similarly, we compute our surface for the momentum ellipsoid with angular momentum based on our initial conditions and the principal axes inertia tensor.
+
+\begin{align*}
+    &L = \omega_{x}^{2} I_{x}^{2} + \omega_{y}^{2} I_{y}^{2} + \omega_{z}^{2} I_{z}^{2} \\
+    &\frac{\omega_{x}^{2}}{(L/I_{x})^{2}} + \frac{\omega_{y}^{2}}{(L/I_{y})^{2}} + \frac{\omega_{z}^{2}}{(L/I_{z})^{2}} = 1
+\end{align*}
+
+For the given initial conditions, we get semi-major axes of the following lengths: $\omega_{x} = \qty{0.3115}{\radian\per\second}$, $\omega_{y} = \qty{0.1649}{\radian\per\second}$, and $\omega_{z} = \qty{0.1330}{\radian\per\second}$. These values make sense given the equation for the momentum ellipsoid and are shown in the plots below.
+
+We plot the energy ellipsoid in Figure \ref{fig:ps2_problem6_energy} and the momentum ellipsoid in Figure \ref{fig:ps2_problem6_momentum}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{Images/ps2_problem6_energy.png}
+\caption{Energy ellipsoid with axes in red}
+\label{fig:ps2_problem6_energy}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{Images/ps2_problem6_momentum.png}
+\caption{Momentum ellipsoid with axes in red}
+\label{fig:ps2_problem6_momentum}
+\end{figure}
+
+\subsection{Polhode}
+We also show the polhode for our system. For a polhode plot to be real, the condition below must be verified.
+
+\begin{equation*}
+    I_x < \frac{L^2}{2T} < I_z
+\end{equation*}
+
+Based on previously calculated values ($I_x = 7707.1$, $\frac{L^2}{2T} = 13752.1$, $I_z = 18050.4$) we can verify that the polhode here will be real.
+
+Figure \ref{fig:ps2_problem8} shows that the polhode is indeed the intersection between the ellipsoids.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.65]{Images/ps2_problem7.png}
+\caption{Energy and momentum ellipsoids with polhode}
+\label{fig:ps2_problem7}
+\end{figure}
+
+We also show polhode conic sections in Figure \ref{fig:ps2_problem8}, which we find to match expected theory. The polhode as seen along the x-axis is an ellipse, while the polhode along the y-axis is a hyperbola. We also see that when seen along the z-axis, the polhode also forms an ellipse, shown as a half-ellipse in our plot.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Images/ps2_problem8.png}
+\caption{2D views of polhode}
+\label{fig:ps2_problem8}
+\end{figure}
+
+Now, changing the initial conditions, we can observe changes in stability for different axes. We show the angular velocity evolution with the initial conditions shown in Table \ref{tab:ps2_problem9_conditions}. Case 1 involves rotation about the principal x-axis, Case 2 involves rotation about the principal y-axis with a slight disturbance, and Case 3 involved rotation about the z-axis with a slight disturbance.
+
+\begin{table}[H]
+\centering
+\label{tab:ps2_problem9_conditions}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Case} & \textbf{$\omega_x$ (deg/s)} & \textbf{$\omega_y$ (deg/s)} & \textbf{$\omega_z$ (deg/s)} \\ \hline
+1             & 8                     & 0                     & 0                     \\ \hline
+2             & 0.08                  & 8                     & 0.08                  \\ \hline
+3             & 0.08                  & 0                     & 8                     \\ \hline
+\end{tabular}
+\end{table}
+
+The specifics of Case 1 are shown in the angular velocity plot in Figure \ref{fig:ps2_problem9_euler_equations_x}, the polhode and ellipsoids in Figure \ref{fig:ps2_problem9_p7_x}, and the 2D views of the polhode in Figure \ref{fig:ps2_problem9_p8_x}. The behavior shown is as expected–when the angular velocity is parallel to the principal axis, we do not have coupling with the other components of angular velocity, and the polhode views in 2D become points rather than conic sections.
+
+For Case 2, Figure \ref{fig:ps2_problem9_euler_equations_y} shows that the satellite's rotational behavior will oscillate as expected, owing to the properties of the intermediate axis. Additionally, Figure \ref{fig:ps2_problem9_p7_y}, and the 2D views in Figure \ref{fig:ps2_problem9_p8_y} show a larger polhode, with the slight disturbances leading to ellipsoids with a substantial intersection. Interestingly, there seems to be a very sharp hyperbola in the xz-plane of the polhode.
+
+Figure \ref{fig:ps2_problem9_euler_equations_z} illustrates a slight oscillation of angular velocities about the x- and y-axes in Case 3. Meanwhile, the actual region of intersection in the polhode as shown in Figures \ref{fig:ps2_problem9_p7_z} and \ref{fig:ps2_problem9_p8_z} is much smaller than in other cases, but not a single point like in the Case 1.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_euler_equations_x.png}
+\caption{Angular velocity evolution for angular velocity vector for Case 1}
+\label{fig:ps2_problem9_euler_equations_x}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_euler_equations_y.png}
+\caption{Angular velocity evolution for angular velocity vector for Case 2}
+\label{fig:ps2_problem9_euler_equations_y}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_euler_equations_z.png}
+\caption{Angular velocity evolution for angular velocity vector for Case 3}
+\label{fig:ps2_problem9_euler_equations_z}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_p7_x.png}
+\caption{Polhode and ellipsoids for angular velocity vector for Case 1}
+\label{fig:ps2_problem9_p7_x}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_p7_y.png}
+\caption{Polhode and ellipsoids for angular velocity vector for Case 2}
+\label{fig:ps2_problem9_p7_y}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_p7_z.png}
+\caption{Polhode and ellipsoids for angular velocity vector for Case 3}
+\label{fig:ps2_problem9_p7_z}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_p8_x.png}
+\caption{2D views of polhode for angular velocity vector for Case 1}
+\label{fig:ps2_problem9_p8_x}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_p8_y.png}
+\caption{2D views of polhode for angular velocity vector for Case 2}
+\label{fig:ps2_problem9_p8_y}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps2_problem9_p8_z.png}
+\caption{2D views of polhode for angular velocity vector for Case 3}
+\label{fig:ps2_problem9_p8_z}
+\end{figure}
+
+\subsection{Axisymmetric Satellite}
+
+For an axisymmetric satellite, we set $I_{x} = I_{y} = \qty{7707.07}{kg \cdot m^2}$ and use the same Euler equation solver from before with the same initial conditions ($\omega_{x} = \qty{8}{\degree\per\second}$, $\omega_{y} = \qty{4}{\degree\per\second}$).
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps3_problem1.png}
+\caption{Numerical solution results}
+\label{fig:ps3_problem1}
+\end{figure}
+
+The analytical solution to the Euler equations for an axial-symmetric satellite is based on variables $\lambda$ and $\omega_{xy}$, as defined below.
+\begin{align*}
+    \lambda = \frac{I_{z} - I_{x}}{I_{x}} \omega_{z_{0}} \\
+    \omega_{xy} = (\omega_{x_{0}} + i \omega_{y_{0}}) e^{i \lambda t}
+\end{align*}
+
+We take the real and imaginary parts of this result to obtain an analytical solution.
+\begin{align*}
+    \omega_x = \text{Re}(\omega_{xy}) \\
+    \omega_y = \text{Im}(\omega_{xy}) \\ 
+    \omega_z = \omega_{z_{0}}
+\end{align*}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps3_problem2.png}
+\caption{Analytical solution results}
+\label{fig:ps3_problem2}
+\end{figure}
+
+Figure \ref{fig:ps3_problem3} is the error between the numerical and analytical solutions. We observe that the error is very small, thus our numerical solution is a good candidate.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{Images/ps3_problem3.png}
+\caption{Error between numerical and analytical solutions}
+\label{fig:ps3_problem3}
+\end{figure}
+
+The angular velocity vector and angular momentum vectors rotate in a plane, offset at a constant angle from the z-axis, as observed in Figure \ref{fig:Body Axis Momentum Snapshots}. This matches the expected theoretical behavior.
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{@{}c@{}}
+  \includegraphics[width=.49\linewidth]{Images/ps3_problem3_vectors_1.png}
+  \end{tabular}
+  \begin{tabular}{@{}c@{}}
+  \includegraphics[width=.49\linewidth]{Images/ps3_problem3_vectors_121.png}
+  \end{tabular}
+  \begin{tabular}{@{}c@{}}
+  \includegraphics[width=.49\linewidth]{Images/ps3_problem3_vectors_241.png}
+  \end{tabular}
+  \begin{tabular}{@{}c@{}}
+  \includegraphics[width=.49\linewidth]{Images/ps3_problem3_vectors_361.png}
+  \end{tabular}
+  \caption{Angular velocity (red) and angular momentum (blue) unit vectors over time.}
+  \label{fig:Body Axis Momentum Snapshots}
+\end{figure}
