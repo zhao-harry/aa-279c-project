@@ -136,7 +136,7 @@ thrust = 1; % N
 Isp = 220; %s
 Lw_weight = eye(3);
 mag_weight = eye(3) .* 100;
-KMag = 0.0002;
+KMag = 0.001;
 
 % Control parameters
 f = 250;

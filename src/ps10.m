@@ -14,9 +14,9 @@ for n = 1:4
     title(sprintf("Wheel %i", n))
     
     ylabel("Angular Velocity [rad/s]")
-    plot(time, w_wheel(n,:), 'b')
+    plot(time/3600, w_wheel(n,:), 'b')
     ylim([min(w_wheel(:)), max(w_wheel(:))])
-    xlabel("Time [s]")
+    xlabel("Time [hr]")
 end
 
 %% Control Error Plot
@@ -34,7 +34,7 @@ hold off
 dipole = squeeze(out.magnetorquerDipole.data);
 hold on
 plot(time/3600, dipole)
-xlabel("Time [hr]"); ylabel("Dipole Moment [A/m^{2}]")
+xlabel("Time [hr]"); ylabel("Dipole Moment [Am^{2}]")
 legend(["x", "y", "z"])
 xlim([0, time(end)/3600])
 hold off
@@ -46,4 +46,12 @@ plot(time/3600, Mmag)
 xlabel("Time [hr]"); ylabel("Magnetorquer Torque [N-m]")
 legend(["x", "y", "z"])
 xlim([0, time(end)/3600])
+hold off
+
+%% Duty Cycle
+hold on
+plot(time/3600, (Mmag(1,:) ~= 0))
+xlabel("Time [hr]"); ylabel("Magnetorquer Duty Cycle")
+xlim([0, time(end)/3600])
+ylim([-1 2])
 hold off
