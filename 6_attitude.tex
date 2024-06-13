@@ -64,16 +64,16 @@ A much larger error appears in Figure \ref{fig:Images/ps6_problem3_error}. When 
 \subsection{Attitude Determination Subsystem}
 We create a Simulink model using the same functions and variables previously modeled in MATLAB and shown in this paper, shown in Figure \ref{fig:Images/ps6_problem4}. Notably, we have a simulation subsystem which is responsible for simulating the dynamics, kinematics, and disturbances of the system, which we have modeled in previous sections. We now add an attitude determination subsystem for this step. Since we choose to model noise-free measurements for now, we directly generate measurements from the true state without injecting noise.
 
+We initially model our attitude determination subsystem using ``dummy'' sensors and measurements. Each of the algorithms is fed randomly generated unit vectors as a noise-free measurement. These unit vectors represent fixed directions in the celestial sphere such that an orientation can be computed when a sufficient number of vectors is available. This represents the functionality of a star tracker sensor, which is able to determine the orientation of the satellite's axes relative to an inertial reference using unit vector directions of known stars. We do not yet model the inner workings of a star tracker, such as the identification and computation of star positions.
+
+In our test implementation, we generate five such random unit vectors. These unit vectors are both our ground truth (analogous to known directions from a star catalog) and our measurement signal, since we do not inject any noise at this step. Thus, we expect to obtain an exact solution from each attitude determination algorithm in the absence of such noise.
+
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.55]{Images/ps6_problem4.pdf}
 \caption{Simulink model for NISAR spacecraft}
 \label{fig:Images/ps6_problem4}
 \end{figure}
-
-We initially model our attitude determination subsystem using ``dummy'' sensors and measurements. Each of the algorithms is fed randomly generated unit vectors as a noise-free measurement. These unit vectors represent fixed directions in the celestial sphere such that an orientation can be computed when a sufficient number of vectors is available. This represents the functionality of a star tracker sensor, which is able to determine the orientation of the satellite's axes relative to an inertial reference using unit vector directions of known stars. We do not yet model the inner workings of a star tracker, such as the identification and computation of star positions.
-
-In our test implementation, we generate five such random unit vectors. These unit vectors are both our ground truth (analogous to known directions from a star catalog) and our measurement signal, since we do not inject any noise at this step. Thus, we expect to obtain an exact solution from each attitude determination algorithm in the absence of such noise.
 
 Additionally, we can compute the attitude by integration of our angular velocity, equivalent to using a rate gyro sensor that measures angular rate. We can simply use the same kinematics equations used to propagate our attitude to model the evolution of our attitude for the rate gyro. In simulation and without noise, we also expect an exact solution from this technique.
 
@@ -113,7 +113,6 @@ Given measurements $\Vec{M}$, ground truth $\Vec{V}$, and sensor weights $\Vec{W
 \begin{align*}
     \Vec{K} \Vec{q} = \lambda \Vec{q}
 \end{align*}
-
 In the eigenvalue decomposition above, $\Vec{K}$ can be found with the following relation.
 \begin{align*}
     \Vec{w}_i = \sqrt{w_1} \Vec{m}_1 \;\;\;
@@ -187,6 +186,7 @@ Figures \ref{fig:Images/ps6_problem6_actual}, \ref{fig:Images/ps6_problem6_DAD},
 As the specific data regarding for NISAR ADCS sensors are not widely available, much of the sensor error and bias information was extrapolated from data from Wertz and lecture materials, as well as manufacturers of sensors for similar satellites. The table below includes the general sensor information used in this analysis.
 
 \begin{table}[H]
+\caption{Sensor performance specifications}
 \centering
 \begin{tabular}{|l|l|l|}
 \hline
@@ -313,7 +313,7 @@ The small angle component of our state is reset every iteration and not updated 
 \end{align*}
 Since we are using a MEKF, we propagate the quaternion attitude representation outside of the state vector. The quaternion attitude is propagated by $\Omega (\Vec{\omega})$, identical to the quaternion kinematics used previously.
 
-We plot the attitude from our MEKF and our numerical integration simulation, respectively. Upon inspection, these plots appear identical. Small errors in the simulation are analyzed later in Problem 6.
+We plot the attitude from our MEKF and our numerical integration simulation, respectively. Upon inspection, these plots appear identical. Small errors in the simulation are analyzed later.
 
 \begin{figure}[H]
 \centering
@@ -433,7 +433,7 @@ Our entire MEKF is modeled in Simulink, as shown in the diagram below.
 \subsection{Multiplicative Extended Kalman Filter, Errors}
 Figure \ref{fig:ps8_problem7_error} shows the attitude estimate errors with the MEKF method. As expected, the errors are very small compared to the attitude determination methods used in the previous section.
 
-Figure \ref{fig:ps8_problem7_cov} shows the estimated attitude determination errors based on the covariance of the filter. Comparing this with Figure \ref{fig:ps8_problem7_error}, it seems that this method may under-report the error and is not necessarily the most accurate representation of error. Figure \ref{fig:ps8_problem7_covComp}, makes the difference between these two values even clearer.
+Figure \ref{fig:ps8_problem7_cov} shows the estimated attitude determination errors based on the covariance of the filter. Comparing this with Figure \ref{fig:ps8_problem7_error}, it seems that this method may under-report the error and is not necessarily the most accurate representation of error. Figure \ref{fig:ps8_problem7_covComp}, makes the difference between these two values even clearer. In short, there is are multiple orders of magnitude difference between the actual error and what the covariance bounds would predict. This could be caused by a couple of factors. After further inspection, it seems that the small covariance values come from the measurement step, where they get shrunken from roughly $1-2 \deg$ to the tiny values plotted. It seems possible that the values in the \textbf{R} matrix might be too low, suggesting that the measurement are being trusted too much, leading to covaraince values that are too low. Tuning the \textbf{R} matrix more could lower this value; however, the current estimate has proven effective in state estimation.
 
 \begin{figure}[H]
 \centering
@@ -452,7 +452,7 @@ Figure \ref{fig:ps8_problem7_cov} shows the estimated attitude determination err
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.8]{Images/ps8_problem7_covComp.png}
-\caption{Estimated attitude estimation errors from covariance (small angles)}
+\caption{Estimated Error (95\% confidence interval) vs Actual Errors}
 \label{fig:ps8_problem7_covComp}
 \end{figure}
 

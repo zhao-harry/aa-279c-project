@@ -58,11 +58,9 @@ RAR      & 4.283   & 0    & 8.308
 \end{longtable}
 
 The center of mass can be found by taking the weighted average of each component centroid, weighted by the mass of each component. The center of mass formula is:
-
 \begin{equation*}
     \Vec{r}_{cm} = \frac{\sum m_{i} \Vec{r}_{i}}{\sum m_{i}}
 \end{equation*}
-
 This yields a result for center of mass at $\qty[parse-numbers = false]{[1.046, 0, 0.683]}{\metre}$ relative to the origin we defined. We use a MATLAB script to compute the center of mass from a CSV file containing centroid and mass data.
 
 We compute the moment of inertia of the satellite, finding an inertia tensor in our body axes. To do this, we break the satellite into individual components, first finding the moment of inertia about the center of mass of each component. We then compute the moment of inertia of the entire satellite about the body axes by using parallel axis theorem and combining all the components.
@@ -86,7 +84,6 @@ RAR & - & - & - & - & 6
 \end{longtable}
 
 For the bus, we choose to model the geometry as a rectangular prism. Since the bus is aligned with the body axes, we obtain a diagonal inertia tensor:
-
 \begin{align*}
 I_{bus} &=
 \begin{bmatrix}
@@ -109,9 +106,7 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{align*}
-
 For the solar panels, we approximate their geometry as a flat plate. These axes are also aligned, so the tensor can be diagonal.
-
 \begin{align*}
 I_{panel} &=
 \begin{bmatrix}
@@ -134,9 +129,7 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{align*}
-
 For the RIS, we model the geometry as an octagonal prism. For the moment of inertia about the axisymmetric axis of the octagon, we use the formula $m \left(\frac{S^{2}}{24} + \frac{a^{2}}{2}\right)$, where $S$ is the side length and $a$ is the apothem length, where the apothem is the perpendicular length from a side of the octagon to the center \cite{McCarron}. When calculating the moment of inertia about the non-axisymmetric axes, we approximate the geometry as a cylinder with radius equal to the average of the octagonal radius (distance from center to vertex) and the apothem. As will be shown later, this approximation yields a very close result to the inertia tensor generated from the CAD model.
-
 \begin{align*}
 I_{RIS} &=
 \begin{bmatrix}
@@ -159,9 +152,7 @@ m \left(\frac{S^{2}}{24} + \frac{a^{2}}{2}\right) & 0 & 0 \\
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{align*}
-
 For the RAB, we first model the geometry as a rectangular prism. We also must rotate the inertia tensor to match the orientation of the body axes, as the RAB itself is rotated relative to the bus about the y-axis by -18\degree{} from vertical (z-axis).
-
 \begin{align*}
 I_{RAB} &=
 \begin{bmatrix}
@@ -184,9 +175,7 @@ m \frac{W^{2} + H^{2}}{12} & 0 & 0 \\
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{align*}
-
 We apply the rotation to the inertia tensor using a rotation matrix about the y-axis. Note that doing so results in non-zero products of inertia, meaning our principal axes will not be aligned with our body axes.
-
 \begin{align*}
 I_{RAB,rotated} &= R_{y}(-18\degree) I_{RAB} R_{y}^{\intercal}(-18\degree) \\
 &=
@@ -198,9 +187,7 @@ I_{RAB,rotated} &= R_{y}(-18\degree) I_{RAB} R_{y}^{\intercal}(-18\degree) \\
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{align*}
-
 Finally, we model the RAR as a flat disk. Similar to the RAB, we must rotate the inertia tensor to match the orientation of the body axes.
-
 \begin{align*}
 I_{RAR} &=
 \begin{bmatrix}
@@ -223,9 +210,7 @@ m \frac{R^{2}}{4} & 0 & 0 \\
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{align*}
-
 Applying a rotation:
-
 \begin{align*}
 I_{RAR,rotated} &= R_{y}(-3.87\degree) I_{RAR} R_{y}^{\intercal}(-3.87\degree) \\
 &=
@@ -237,9 +222,7 @@ I_{RAR,rotated} &= R_{y}(-3.87\degree) I_{RAR} R_{y}^{\intercal}(-3.87\degree) \
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{align*}
-
 Now, we use parallel axis theorem to compute the moment of inertia of each component about the body axes at the specified origin. We can use the following displacement tensor,
-
 \begin{equation*}
 D =
 \begin{bmatrix}
@@ -248,15 +231,11 @@ y^{2} + z^{2} & -xy & -xz \\
 -zx & -yz & x^{2} + y^{2}
 \end{bmatrix},
 \end{equation*}
-
 where $x$, $y$, $z$ are the coordinates of the center of mass of the component, giving the moment of inertia about a new point:
-
 \begin{equation*}
     I' = I_{c} + mD
 \end{equation*}
-
 Performing the parallel axis theorem on each component and summing the inertia tensors, we obtain the following inertia tensor for the entire spacecraft:
-
 \begin{equation*}
 I_{NISAR,body} =
 \qty[parse-numbers = false]{
@@ -267,9 +246,7 @@ I_{NISAR,body} =
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{equation*}
-
 Compare this with the inertia tensor computed by SolidWorks CAD software:
-
 \begin{equation*}
 I_{NISAR,body} =
 \qty[parse-numbers = false]{
@@ -280,7 +257,6 @@ I_{NISAR,body} =
 \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{equation*}
-
 The errors are 0.0230\%, 0.00914\%, 0.0171\%, and 0.230\% for $I_{xx}$, $I_{yy}$, $I_{zz}$, and $I_{xz}$, respectively. We created the following MATLAB script to compute the inertia tensor.
 
 \subsection{Surface Properties}
@@ -366,11 +342,9 @@ We also plot the model in MATLAB by importing an STL version of the CAD model. W
 
 \subsection{Principal Axes}
 The unit vectors of the principal axes with respect to the body axes ($\Vec{e}_i$) and the inertia tensor in the principal axes ($I_i$) can be found by taking the eigenvalue decomposition of the inertia tensor in the body axis. This can be seen in the two equations below.
-
 \begin{equation*}
     I_i \cdot \Vec{e}_i = I_i \cdot \Vec{I}_{body} \\ \hspace{1cm} i = x, y, z
 \end{equation*}
-
 \begin{align*}
 \Vec{I}_{principal} &= 
     \begin{bmatrix}
@@ -387,11 +361,9 @@ The unit vectors of the principal axes with respect to the body axes ($\Vec{e}_i
     \end{bmatrix}
 }{\kilogram\metre\squared}
 \end{align*}
-
 We follow convention $I_z > I_y > I_x$ for defining principal axes.
 
 The unit vectors of the principal axes ($\Vec{e}_i$) can then be used to find the rotation matrix ($\Vec{R}$), as shown below.
-
 \begin{align*}
 \Vec{R} &= 
     \begin{bmatrix}
