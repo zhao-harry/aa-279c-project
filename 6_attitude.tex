@@ -433,7 +433,7 @@ Our entire MEKF is modeled in Simulink, as shown in the diagram below.
 \subsection{Multiplicative Extended Kalman Filter, Errors}
 Figure \ref{fig:ps8_problem7_error} shows the attitude estimate errors with the MEKF method. As expected, the errors are very small compared to the attitude determination methods used in the previous section.
 
-Figure \ref{fig:ps8_problem7_cov} shows the estimated attitude determination errors based on the covariance of the filter. Comparing this with Figure \ref{fig:ps8_problem7_error}, it seems that this method may under-report the error and is not necessarily the most accurate representation of error.
+Figure \ref{fig:ps8_problem7_cov} shows the estimated attitude determination errors based on the covariance of the filter. Comparing this with Figure \ref{fig:ps8_problem7_error}, it seems that this method may under-report the error and is not necessarily the most accurate representation of error. Figure \ref{fig:ps8_problem7_covComp}, makes the difference between these two values even clearer.
 
 \begin{figure}[H]
 \centering
@@ -447,6 +447,13 @@ Figure \ref{fig:ps8_problem7_cov} shows the estimated attitude determination err
 \includegraphics[scale=0.8]{Images/ps8_problem7_cov.png}
 \caption{Estimated attitude estimation errors from covariance (small angles)}
 \label{fig:ps8_problem7_cov}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{Images/ps8_problem7_covComp.png}
+\caption{Estimated attitude estimation errors from covariance (small angles)}
+\label{fig:ps8_problem7_covComp}
 \end{figure}
 
 The post-fit residuals z are found by taking the updated state from the measurement update step and computing a modeled measurement using our measurement model again. Figures \ref{fig:ps8_problem7_res_units} and \ref{fig:ps8_problem7_res_gyro} below show the difference in the norms of the pre-fit and post-fit residuals. As expected, the post-fit residuals are slightly smaller than the pre-fit residuals. However, the difference between pre-fit and post-fit sensor noise is much better for the gyroscope measurements than the unit direction vector measurements.
