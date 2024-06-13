@@ -13,7 +13,6 @@ The equations below describe the propagation of kinematics using quaternions.
     \end{bmatrix}\\
 \frac{d \Vec{q}}{dt} &= \frac{1}{2} \Vec{\Omega} \Vec{q}(t)
 \end{align*}
-
 The following script shows the computation of the time derivative for quaternions
 
 \lstinputlisting{src/kinQuaternion.m}
@@ -33,7 +32,6 @@ The equations for the propagation of kinematics for Euler angles are below.
 \frac{d \theta}{dt} &= \omega_{x} \cos(\psi) - \omega_{y} \sin(\psi)\\
 \frac{d \psi}{dt} &= \omega_{z} - (\omega_{x} \sin(\psi) + \omega_{y} \cos(\psi)) cot(\theta)
 \end{align*}
-
 \lstinputlisting{src/kinEulerAngle.m}
 
 We can propagate this with forward Euler, as in the previous section.
@@ -69,16 +67,16 @@ Figure \ref{fig:ps3_problem7a} shows the components of the angular momentum vect
 \label{fig:ps3_problem7a}
 \end{figure}
 
-Figure \ref{fig:ps3_problem7b} shows the angular momentum and angular velocity vectors overlaid with the herpolhode. The animation (see caption) shows the evolution of the herpolhode and provides a better visualization of the herpolhode's orientation in a plane perpendicular to the angular momentum vector. 
+Figure \ref{fig:ps3_problem7b} shows the angular momentum and angular velocity vectors overlaid with the herpolhode. The animation (see caption) shows the evolution of the herpolhode and provides a better visualization of the herpolhode's geometry. 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.7]{Images/ps3_problem7b.png}
+\includegraphics[scale=0.6]{Images/ps3_problem7b.png}
 \caption{Herpolhode (Animated: \protect\url{https://tinyurl.com/herpolhode})}
 \label{fig:ps3_problem7b}
 \end{figure}
 
-Figures \ref{fig:ps3_problem7c_rtn}, \ref{fig:ps3_problem7c_body}, and \ref{fig:ps3_problem7c_principal} include the plots of the orbital (RTN), body, and principal axes over the course of a single orbit. The RTN frame varies with rotation about the orbit, while rotation can be seen in the body and principal axis plots based on the rotation we chose in our initial condition.
+Figures \ref{fig:ps3_problem7c_rtn}, \ref{fig:ps3_problem7c_body}, and \ref{fig:ps3_problem7c_principal} include the plots of the orbital (RTN), body, and principal axes over the course of a single orbit. The RTN frame varies with rotation about the orbit, while rotation can be seen in the body and principal axis plots based on the rotation in our initial condition.
 
 \begin{figure}[H]
 \centering
@@ -113,7 +111,6 @@ We assume that two components of the initial angular velocity are zero and that 
     \end{bmatrix}
 }{\radian\per\s},
 \end{align*}
-
 and we set all Euler angles to zero. We use a 312 convention for Euler angles, which avoids singularities for this configuration.
 
 Figure \ref{fig:ps4_problem1a_angvel} shows results of the simulation, where $\omega_x$ and $\omega_y$ remain zero and $\omega_z$ maintains a constant value.
@@ -185,7 +182,6 @@ Note that while in Figure \ref{fig:ps4_problem2a_1} the angular velocities are p
 We select a momentum wheel similar to our mission specifications to model a dual-spin satellite.
 
 We choose to use specifications from the RSI 68 momentum wheel, for which datasheets are readily available online \cite{RSI68}. This particular momentum wheel is intended for spacecraft in the 1,500 to 5,000 kg range, which matches our mission. We use a diameter of 347 mm and mass of 8.9 kg and model our reaction wheel as a hoop with mass concentrated about the outer diameter. We also use 2,500 RPM, which yields approximately the nominal angular momentum from the datasheet–the maximum angular velocity is 6,000 RPM. The following Euler equations are used to model a momentum wheel as a rotor. For this problem, we set the torques on the right side of each equation to zero, as we are not considering external torques.
-
 \begin{align*}
     I_x \dot{\omega_x} + I_r \dot{\omega_r} r_x + (I_z - I_y) \omega_y \omega_z 
     + I_r \omega_r (\omega_y r_z - \omega_z r_y) = M_x \\
@@ -195,7 +191,6 @@ We choose to use specifications from the RSI 68 momentum wheel, for which datash
     + I_r \omega_r (\omega_x r_y - \omega_y r_x) = M_z \\
     I_r \dot{\omega_r} = M_r
 \end{align*}
-
 The function \texttt{kinEulerAngleWheel}, shown below, is used in addition to \texttt{ode113} to simulate the angular velocities over time.
 
 \lstinputlisting{src/kinEulerAngleWheel.m}
@@ -210,15 +205,13 @@ Simulating the Euler and kinematic equations, Figure \ref{fig:ps4_problem3b} sho
 \end{figure}
 
 By linearizing the Euler equations about equilibrium, the following result shows that periodic stability (in this case, about the z-axis) can be met with a reaction wheel if one of the following conditions are met:
-
 \begin{align*}
     1)\; I_r \omega_r > (I_y - I_z) \omega_z \;\; AND \;\; I_r \omega_r > (I_x - I_z) \omega_z \\
     2)\; I_r \omega_r < (I_y - I_z) \omega_z \;\; AND \;\; I_r \omega_r < (I_x - I_z) \omega_z
 \end{align*}
-
 We demonstrate equilibrium and stability for this new system with the reaction wheel. Figures \ref{fig:ps4_problem3c_x.png}, \ref{fig:ps4_problem3c_y.png}, \ref{fig:ps4_problem3c_z.png} show the analysis for each of the principal axes. As before, the minimum and maximum inertia principal axes are periodically stable, but the intermediate axis is unstable.
 
-This behavior resembles that found in Problem 2 above. In this case, we perturb each angular velocity as well as the rotor angular velocity. Our rotor velocity in this case is not enough to stabilize spin about the intermediate axis.
+This behavior resembles that found previously. In this case, we perturb each angular velocity as well as the rotor angular velocity. Our rotor velocity in this case is not enough to stabilize spin about the intermediate axis.
 
 \begin{figure}[H]
 \centering

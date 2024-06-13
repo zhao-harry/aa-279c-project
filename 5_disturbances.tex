@@ -7,7 +7,6 @@ The gravity gradient can generate a torque on our spacecraft while in orbit. The
     I_y \dot{\omega_y} + (I_x - I_z) \omega_z \omega_x = 3 n^2 (I_x - I_z) c_z c_x \\
     I_z \dot{\omega_z} + (I_y - I_x) \omega_x \omega_y = 3 n^2 (I_y - I_x) c_x c_y \\
 \end{align*}
-
 In the above equation, $\Vec{c} = [c_x, c_y, c_z]^\intercal$ is the normalized direction of $\Vec{R}$.
 
 The function \texttt{gravGrad} was developed to be used with \texttt{ode113} to propagate the Euler equations and kinematics with gravity gradient torques.
@@ -24,7 +23,6 @@ We can estimate the order of magnitude for gravity gradient torques using the fo
     (I_y - I_x) c_x c_y
     \end{bmatrix}
 \end{align*}
-
 The parameters used were the known moments of inertia ($I_x = \qty{7707}{}$, $I_y = \qty{14563}{}$, $I_z = \qty{18050}{\kilogram\cdot\meter^2}$), known values for Earth ($a = \qty{7125.49}{km}$, $\mu = \qty{398600}{\km^3\per\second^2}$), and an arbitrary $\Vec{c} = [\frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}]$. With these values, we arrive at:
 \begin{align*}
     \Vec{M} &=
@@ -38,7 +36,6 @@ The parameters used were the known moments of inertia ($I_x = \qty{7707}{}$, $I_
     10^{-2}
 }{\newton\meter}
 \end{align*}
-
 These values are in line with what we see in Figure \ref{fig:ps4_problem4e_torque}. We also expect gravity gradient torque to be zero, i.e., in equilibrium, when the principal axes are aligned with RTN and the angular velocity is the same as mean motion. Figures \ref{fig:ps4_problem4d_torque}, \ref{fig:ps4_problem4d_angvel} demonstrate zero torque when aligned with RTN frame and constant angular velocity. Simulating for longer periods reveals the torque error is periodically stable.
 
 \begin{figure}[H]
@@ -59,14 +56,14 @@ We align a permuted set of body axes for a different set of initial conditions, 
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps4_problem4e_angle.png}
+\includegraphics[scale=0.8]{Images/ps4_problem4e_angle.png}
 \caption{Euler angles with gravity gradient for satellite with arbitrary initial conditions}
 \label{fig:ps4_problem4e_angle}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps4_problem4e_angvel.png}
+\includegraphics[scale=0.8]{Images/ps4_problem4e_angvel.png}
 \caption{Angular velocity with gravity gradient for satellite with arbitrary initial conditions}
 \label{fig:ps4_problem4e_angvel}
 \end{figure}
@@ -75,7 +72,7 @@ The figures show that there is a noticeable effect of gravity gradient torque on
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps4_problem4e_torque.png}
+\includegraphics[scale=0.8]{Images/ps4_problem4e_torque.png}
 \caption{Gravity gradient torques for satellite with arbitrary initial conditions}
 \label{fig:ps4_problem4e_torque}
 \end{figure}
@@ -91,12 +88,11 @@ The following equations show the relationships for gravity gradient stability in
     k_R k_T > 0, \;\;\;\;\;
     1 + 3 k_T + k_R k_T > 4 \sqrt{k_R k_T}
 \end{align*}
-
 We show the plot of stable and unstable motion under gravity gradient. When computing the coefficients using moments of inertia about the principal axes, we obtain the following plot. In this case, we investigate the stability for the satellite when it is rotated such that the spacecraft is oriented appropriately for SAR operations, that is, principal x-axis is anti-radial, principal y-axis is opposite of cross-track, and principal z-axis is opposite of along-track. However, this orientation is unstable, as shown below.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.6]{Images/ps5_problem1a.png}
+\includegraphics[scale=0.8]{Images/ps5_problem1a.png}
 \caption{Stability for nominal axes}
 \label{fig:ps5_problem1a}
 \end{figure}
@@ -183,7 +179,6 @@ The equation for the torque from the magnetic field interactions is shown below.
 \begin{align*}
     \Vec{M}_{m} = \Vec{m}_{sat} \times \Vec{B}_{Earth}
 \end{align*}
-
 Since the satellite is operates in LEO, the spherical harmonic model up to n = 4 was used for maximum accuracy. This model is based on the geocentric distance ($R$), colatitude ($\theta$), and longitude ($\phi$). The model requires Gaussian coefficients ($g^{n,m}$, $h^{n,m}$) and Legendre functions ($P^{n,m}$) and their derivatives ($\frac{\delta P^{n,m} (\theta)}{\delta \theta}$), which are explained in more detail in Wertz \cite{Wertz}.
 \begin{align*}
     B_R = \sum^{4}_{n=1} (\frac{R_{Earth}}{R})^{n+2} (n+1) \sum^{n}_{m=0}
@@ -206,17 +201,17 @@ Finally, the equation below define the aerodynamic torque. Velocity is relative 
 \begin{align*}
     d \Vec{f}_{aero} = - \frac{1}{2} C_D \rho V^2 (\hat{\Vec{V}} \cdot \hat{\Vec{N}}) \hat{\Vec{V}} dA
 \end{align*}
-
 Implementation of these disturbances in MATLAB code can be found in the appendix.
 
 \subsection{Analysis}
 For most torques, the worst-case estimated magnitudes were found by using existing properties of the spacecraft model. We use simplified equations (compared to those in the previous section) to estimate these, making assumptions for worst-case torques. However, the magnetic torque calculation assumes a model of the spacecraft's magnetic field as a single coil wrapped around the surface of the RIS and satellite bus. The estimated maximum values of each torque are listed in the table below.
 
 \begin{table}[H]
+\caption{Table of disturbance torques}
 \centering
 \begin{tabular}{l|l} 
 
-Magnetic Field & Estimated Maximum Value (N-m)  \\ 
+Disturbance Torque & Estimated Maximum Value (N-m)  \\ 
 \hline
 $M_{gg}$          & 1.7093e-02                  \\ 
 \hline
