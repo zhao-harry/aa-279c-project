@@ -1,6 +1,6 @@
 \section{\Large CONTROL}
 \subsection{Actuator Specifications}
-We size reaction wheels, magnetorquers, and thrusters in this section. For this problem set, we only simulate the reaction wheels, but we may include magnetorquers and thrusters later.
+We size reaction wheels, magnetorquers, and thrusters in this section. Initially, we only simulate the reaction wheels, but we include magnetorquers later. At this point, we will couple state estimation with the controller by providing the MEKF with the torque control input.
 
 The calculations for actuator sizing are based on the worst case disturbance torque ($M_d$), orbit period ($P$), largest expected magnetic field ($B$), and estimated moment arm of a thruster ($b$). This is used to find the required momentum storage of a reaction wheel ($L$), required dipole of a magnetorquer ($D$), and required thrust of a thruster ($T$), based on the equations below. These values are presented in Table \ref{tab:estimate_actuator_sizing}.
 \begin{align*}
@@ -8,7 +8,6 @@ The calculations for actuator sizing are based on the worst case disturbance tor
     D &= \frac{M_d}{B} \\
     T &= \frac{M_d}{b}
 \end{align*}
-\vspace{-2em}
 \begin{table}[H]
 \centering
 \caption{Actuator Parameters for Disturbance Rejection}
@@ -20,7 +19,7 @@ L [Nms] & D [A\/m\textsuperscript{2}] & T [N]    \\ \hline
 \end{tabular}
 \end{table}
 
-In addition to disturbance rejection, the actuators should also be sized in order to perform necessary maneuvers, meaning that the values in Table \ref{tab:estimate_actuator_sizing} may need to be greater when considering all the operational modes of the satellite ADCS system. The NISAR satellite uses four $50 N m s$ reaction wheels, a combination of three $565 A m^2$ and $350 A m^2$ magnetorquers, and four $1 N$ thrusters for attitude control \cite{NISARMission}. Using these metrics, we found equivalent commercially available actuators to estimate other key actuator parameters. For reaction wheels, we referenced the ASTROFEIN RW3000, which has properties listed in Table \ref{tab:reaction_wheel_data}. For thrusters, we referenced the Ariane Group 1N Hydrazine Thruster, which has properties listed in Table \ref{tab:reaction_thruster}. For the magnetorquer, we only require the dipole moment to perform our sizing.
+In addition to disturbance rejection, the actuators should also be sized in order to perform necessary maneuvers, meaning that the values in Table \ref{tab:estimate_actuator_sizing} may need to be greater when considering all the operational modes of the satellite ADCS system. The NISAR satellite uses four $\qty{50}{Nms}$ reaction wheels, a combination of three $\qty{565}{Am^2}$ and $\qty{350}{Am^2}$ magnetorquers, and four $\qty{1}{N}$ thrusters for attitude control \cite{NISARMission}. Using these metrics, we found equivalent commercially available actuators to estimate other key actuator parameters. For reaction wheels, we referenced the ASTROFEIN RW3000, which has properties listed in Table \ref{tab:reaction_wheel_data}. For thrusters, we referenced the Ariane Group 1N Hydrazine Thruster, which has properties listed in Table \ref{tab:reaction_thruster}. For the magnetorquer, we only require the dipole moment to perform our sizing.
 
 \begin{table}[H]
 \centering
