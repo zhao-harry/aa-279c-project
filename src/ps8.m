@@ -72,6 +72,7 @@ for n = 1:3
 end
 saveAsBool(gcf,'Images/ps8_problem7_error.png', savePlots)
 
+%%
 figure()
 covError = [squeeze(out.Pkplus.Data(1,1,:)), ...
                   squeeze(out.Pkplus.Data(2,2,:)), ...
@@ -90,9 +91,6 @@ end
 saveAsBool(gcf,'Images/ps8_problem7_cov.png', savePlots)
 
 figure()
-covError = [squeeze(out.Pkplus.Data(1,1,:)), ...
-                  squeeze(out.Pkplus.Data(2,2,:)), ...
-                  squeeze(out.Pkplus.Data(3,3,:))]';
 angleNames = ["\alpha_x", "\alpha_y", "\alpha_z"];
 alphaError = squeeze([A_error(2,3,:), A_error(3,1,:), A_error(1,2,:)]);
 for n = 1:3

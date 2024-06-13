@@ -131,11 +131,12 @@ IWheel = 0.119; % kg*m^2
 LMaxWheel = 50; %N*m*s
 LwLimit = 0.5 * LMaxWheel; % N*m*s
 dipole = [350; 350; 565]; %A*m^2
+magMax = 565;
 thrust = 1; % N
 Isp = 220; %s
 Lw_weight = eye(3);
 mag_weight = eye(3) .* 100;
-KMag = 0.001;
+KMag = 0.0002;
 
 % Control parameters
 f = 250;
@@ -156,6 +157,7 @@ control.IWheel = IWheel;
 control.LMaxWheel = LMaxWheel;
 control.LwLimit = LwLimit;
 control.D = dipole;
+control.magMax = magMax;
 control.thrust = 1;
 control.Isp = Isp;
 control.Kp = Kp;
