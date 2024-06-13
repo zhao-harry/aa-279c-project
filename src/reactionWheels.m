@@ -1,4 +1,4 @@
-function [Mw,Lwdot] = momentumWheels(Lw,Mc,control,w)
+function [Mw,Lwdot] = reactionWheels(Lw,Mc,control,w)
     A = control.A;
     Lwdot = pinv(A) * (-Mc - cross(w,A * Lw));
 
