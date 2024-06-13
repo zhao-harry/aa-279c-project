@@ -5,11 +5,11 @@ modelVars
 
 %%  Plots
 qVals = squeeze(out.q.data);
-qMeasVals = squeeze(out.qMeasured.data);
+qMeasVals = squeeze(out.qEstimated.data);
 wVals = squeeze(out.w.data);
-wMeasVals = squeeze(out.wMeasured.data);
+wMeasVals = squeeze(out.wEstimated.data);
 timeVals = squeeze(out.q.time);
-timeValsMeas = squeeze(out.qMeasured.time);
+timeValsMeas = squeeze(out.qEstimated.time);
 
 eulerVals = quats2Euler(qVals);
 eulerValsMeas = quats2Euler(qMeasVals);
@@ -62,22 +62,48 @@ for n = 1:length(timeVals)
     eulerError(:,n) = A2e(A_true2err);
     A_error(:,:,n) = A_true2err;
 end
-plot(timeVals/3600, rad2deg(eulerError))
-xlim([0 timeVals(end)/3600])
-xlabel("time [hr]")
-ylabel("euler angle [deg]")
-legend("\phi", "\theta", "\psi")
+eulerAngNames = ["\phi", "\theta", "\psi"];
+for n = 1:3
+    subplot(3, 1, n)
+    plot(timeVals/3600, rad2deg(eulerError(n,:)))
+    xlim([0 timeVals(end)/3600])
+    xlabel("time [hr]")
+    ylabel(eulerAngNames(n) + " [deg]")
+end
 saveAsBool(gcf,'Images/ps8_problem7_error.png', savePlots)
 
-%%
 figure()
 covError = [squeeze(out.Pkplus.Data(1,1,:)), ...
                   squeeze(out.Pkplus.Data(2,2,:)), ...
                   squeeze(out.Pkplus.Data(3,3,:))]';
-plot(timeVals/3600, rad2deg(covError))
-xlim([0 timeVals(end)/3600])
-xlabel("time [hr]")
-ylabel("angles [deg]")
-legend("\alpha_x", "\alpha_y", "\alpha_z")
+angleNames = ["\alpha_x", "\alpha_y", "\alpha_z"];
+for n = 1:3
+    subplot(3, 1, n)
+    hold on
+    plot(timeVals/3600, 1.96.*rad2deg(covError(n,:)), 'b')
+    plot(timeVals/3600, -1.96.*rad2deg(covError(n,:)), 'b')
+    xlim([0 timeVals(end)/3600])
+    xlabel("time [hr]")
+    ylabel(angleNames(n) + " [deg]")
+    hold off
+end
 saveAsBool(gcf,'Images/ps8_problem7_cov.png', savePlots)
 
+figure()
+covError = [squeeze(out.Pkplus.Data(1,1,:)), ...
+                  squeeze(out.Pkplus.Data(2,2,:)), ...
+                  squeeze(out.Pkplus.Data(3,3,:))]';
+angleNames = ["\alpha_x", "\alpha_y", "\alpha_z"];
+alphaError = squeeze([A_error(2,3,:), A_error(3,1,:), A_error(1,2,:)]);
+for n = 1:3
+    subplot(3, 1, n)
+    hold on
+    plot(timeVals/3600, rad2deg(alphaError(n,:)), 'r')
+    plot(timeVals/3600, 1.96.*rad2deg(covError(n,:)), 'b')
+    plot(timeVals/3600, -1.96.*rad2deg(covError(n,:)), 'b')
+    xlim([0 timeVals(end)/3600])
+    xlabel("time [hr]")
+    ylabel(angleNames(n) + " [deg]")
+    hold off
+end
+saveAsBool(gcf,'Images/ps8_problem7_covComp.png', savePlots)
