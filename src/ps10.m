@@ -29,3 +29,21 @@ legend(["\phi", "\theta", "\psi"])
 title("Attitude Control Error")
 xlim([0, time(end)/3600])
 hold off
+
+%% Dipole Plot
+dipole = squeeze(out.magnetorquerDipole.data);
+hold on
+plot(time/3600, dipole)
+xlabel("Time [hr]"); ylabel("Dipole Moment [A/m^{2}]")
+legend(["x", "y", "z"])
+xlim([0, time(end)/3600])
+hold off
+
+%% Torque Plot
+Mmag = squeeze(out.Mmagnetorquer.data);
+hold on
+plot(time/3600, Mmag)
+xlabel("Time [hr]"); ylabel("Magnetorquer Torque [N-m]")
+legend(["x", "y", "z"])
+xlim([0, time(end)/3600])
+hold off
