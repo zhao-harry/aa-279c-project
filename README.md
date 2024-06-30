@@ -9,14 +9,14 @@ Develop an ADCS for NISAR to achieve 0.075° pointing accuracy for synthetic ape
 MATLAB, Simulink
 
 # Key Tasks
-    - Identified satellite specifications and physical characteristics.
-    - Modeled dynamics and kinematics, analyzed stability, and introduced environmental perturbations.
-    - Implemented sensor models and MEKF for attitude determination and simulated controller-in-the-loop operations.
-    - Designed and validated reaction wheel desaturation using magnetorquers.
+- Identified satellite specifications and physical characteristics.
+- Modeled dynamics and kinematics, analyzed stability, and introduced environmental perturbations.
+- Implemented sensor models and MEKF for attitude determination and simulated controller-in-the-loop operations.
+- Designed and validated reaction wheel desaturation using magnetorquers.
 
 # Achievements:
-    - Stabilized the satellite within pointing accuracy constraints despite disturbance torques.
-    - Demonstrated effective reaction wheel desaturation for extended operations.
+- Stabilized the satellite within pointing accuracy constraints despite disturbance torques.
+- Demonstrated effective reaction wheel desaturation for extended operations.
 
 # Project layout
 - ```doc``` is a folder that contains different reports developed throughout the project development process.
