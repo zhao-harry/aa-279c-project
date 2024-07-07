@@ -24,5 +24,5 @@ MATLAB, Simulink
 - ```https://tinyurl.com/nisaradcs```: CAD model of the satellite
 - ```src```: source code
 - ```src/model.slx```: Simulink model of the satellite
-- ```src/modelVars.m``` important workspace variables, such as those representing physical characteristics of the satellite and ADCS parameters
-- ```src/psX.m``` problem set files which run experiments and generate figures
+- ```src/modelVars.m```: important workspace variables, such as those representing physical characteristics of the satellite and ADCS parameters
+- ```src/psX.m```: problem set files which run experiments and generate figures
